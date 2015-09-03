@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # NML Python Library documentation build configuration file.
@@ -292,7 +291,10 @@ texinfo_documents = [
         u'NML Python Library Documentation',
         author,
         'pynml',
-        'Python library for the Network Markup Language (NML) standard for network topologies representation.',
+        (
+            u'Python library for the Network Markup Language (NML) standard '
+             'for network topologies representation.'
+        ),
         'Miscellaneous'
     ),
 ]
