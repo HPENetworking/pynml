@@ -22,6 +22,8 @@ pynml module entry point.
 from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
+from .nml import *  # noqa
+
 __author__ = 'Hewlett Packard Enterprise Development LP'
 __email__ = 'asicapi@hp.com'
 __version__ = '0.1.0'
