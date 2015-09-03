@@ -23,8 +23,8 @@ from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
 from abc import ABCMeta, abstractmethod
-from lxml import etree
 from rfc3986 import is_valid_uri
+from xml.etree import ElementTree as etree  # noqa
 
 from .exceptions import (
     IdError, ExistsDuringError, IsAliasError, CanProvidePortError
