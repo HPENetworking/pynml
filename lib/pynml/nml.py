@@ -40,9 +40,9 @@ class NetworkObject(object):
 
     @abstractmethod
     def __init__(self, **kwargs):
-        self.existsDuringLifetimes = []
-        self.isAliasNetworkObjects = []
-        self.locatedAtLocation = None
+        self.exists_during_lifetimes = []
+        self.is_alias_network_objects = []
+        self.located_at_location = None
         self.__id = None
         self.__name = None
         self.__version = None
@@ -75,19 +75,19 @@ class NetworkObject(object):
     def version(self, version):
         self.__version = version
 
-    def existsDuring(self, lifetime):
+    def exists_during(self, lifetime):
         if lifetime.__class__.__name__ != 'Lifetime':
             raise ExistsDuringError()
 
-        self.existsDuringLifetimes.append(lifetime)
+        self.exists_during_lifetimes.append(lifetime)
 
-    def isAlias(self, networkObject):
-        if self.__class__.__name__ != networkObject.__class__.__name__:
+    def is_alias(self, network_object):
+        if self.__class__.__name__ != network_object.__class__.__name__:
             raise IsAliasError()
-        self.isAliasNetworkObjects.append(networkObject)
+        self.is_alias_network_objects.append(network_object)
 
     def locatedAt(self, location):
-        self.locatedAtLocation = location
+        self.located_at_location = location
 
     @abstractmethod
     def getNML(self, parent=None):
@@ -106,20 +106,20 @@ class NetworkObject(object):
         if self.__version:
             this.attrib['version'] = self.__version
 
-        for networkObject in self.isAliasNetworkObjects:
+        for network_object in self.is_alias_network_objects:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'isAlias'
-            networkObject.getNML(relation)
+            network_object.getNML(relation)
 
-        for lifetime in self.existsDuringLifetimes:
+        for lifetime in self.exists_during_lifetimes:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'existsDuring'
             lifetime.getNML(relation)
 
-        if self.locatedAtLocation:
+        if self.located_at_location:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'locatedAt'
-            self.locatedAtLocation.getNML(relation)
+            self.located_at_location.getNML(relation)
 
         return this
 
@@ -128,42 +128,42 @@ class Node(NetworkObject):
 
     def __init__(self, **kwargs):
         super(Node, self).__init__(kwargs)
-        self.hasInboundPortPorts = []
-        self.hasOutboundPortPorts = []
-        self.hasServiceServices = []
-        self.implementedByNodes = []
+        self.has_inbound_port_ports = []
+        self.has_outbound_port_ports = []
+        self.has_service_services = []
+        self.implemented_by_nodes = []
 
-    def hasInboundPort(self, port):
-        self.hasInboundPortPorts.append(port)
+    def has_inbound_port(self, port):
+        self.has_inbound_port_ports.append(port)
 
-    def hasOutboundPort(self, port):
-        self.hasOutboundPortPorts.append(port)
+    def has_outbound_port(self, port):
+        self.has_outbound_port_ports.append(port)
 
-    def hasService(self, service):
-        self.hasServiceServices.append(service)
+    def has_service(self, service):
+        self.has_service_services.append(service)
 
     def implementedBy(self, node):
-        self.implementedByNodes.append(node)
+        self.implemented_by_nodes.append(node)
 
     def getNML(self, parent=None):
         this = super(Node, self).getNML(parent)
 
-        for port in self.hasInboundPortPorts:
+        for port in self.has_inbound_port_ports:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasInboundPort'
             port.getNML(relation)
 
-        for port in self.hasOutboundPortPorts:
+        for port in self.has_outbound_port_ports:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasOutoundPort'
             port.getNML(relation)
 
-        for service in self.hasServiceServices:
+        for service in self.has_service_services:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasService'
             service.getNML(relation)
 
-        for node in self.implementedByNodes:
+        for node in self.implemented_by_nodes:
             node.getNML(this)
 
         return this
@@ -173,10 +173,10 @@ class Port(NetworkObject):
 
     def __init__(self, **kwargs):
         super(Port, self).__init__(kwargs)
-        self.hasLabelLabel = None
-        self.hasServiceServices = []
-        self.isSinkLinks = []
-        self.isSourceLinks = []
+        self.has_label_label = None
+        self.has_service_services = []
+        self.is_sink_links = []
+        self.is_source_links = []
         self.__encoding = None
 
     @property
@@ -187,17 +187,17 @@ class Port(NetworkObject):
     def encoding(self, encoding):
         self.__encoding = encoding
 
-    def hasLabel(self, label):
-        self.hasLabelLabel = label
+    def has_label(self, label):
+        self.has_label_label = label
 
-    def hasService(self, service):
-        self.hasServiceServices.append(service)
+    def has_service(self, service):
+        self.has_service_services.append(service)
 
-    def isSink(self, link):
-        self.isSinkLinks.append(link)
+    def is_sink(self, link):
+        self.is_sink_links.append(link)
 
-    def isSource(self, link):
-        self.isSourceLinks.append(link)
+    def is_source(self, link):
+        self.is_source_links.append(link)
 
     def getNML(self, parent=None):
         this = super(Port, self).getNML(parent)
@@ -205,22 +205,22 @@ class Port(NetworkObject):
         if self.__encoding:
             this.attrib['encoding'] = self.__encoding
 
-        if self.hasLabelLabel:
+        if self.has_label_label:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasLabel'
-            self.hasLabelLabel.getNML(relation)
+            self.has_label_label.getNML(relation)
 
-        for service in self.hasServiceServices:
+        for service in self.has_service_services:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasService'
             service.getNML(relation)
 
-        for link in self.isSinkLinks:
+        for link in self.is_sink_links:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'isSink'
             link.getNML(relation)
 
-        for link in self.isSourceLinks:
+        for link in self.is_source_links:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'isSource'
             link.getNML(relation)
@@ -232,10 +232,10 @@ class Link(NetworkObject):
 
     def __init__(self, **kwargs):
         super(Link, self).__init__(kwargs)
-        self.hasLabelLabels = None
-        self.isSerialCompoundLinkLinks = []
+        self.has_label_labels = None
+        self.is_serial_compound_link_links = []
         self.__encoding = None
-        self.__noReturnTraffic = False
+        self.__no_return_traffic = False
 
     @property
     def encoding(self):
@@ -246,18 +246,18 @@ class Link(NetworkObject):
         self.__encoding = encoding
 
     @property
-    def noReturnTraffic(self):
-        return self.__noReturnTraffic
+    def no_return_traffic(self):
+        return self.__no_return_traffic
 
-    @noReturnTraffic.setter
-    def noReturnTraffic(self, noReturnTraffic):
-        self.__noReturnTraffic = noReturnTraffic
+    @no_return_traffic.setter
+    def no_return_traffic(self, no_return_traffic):
+        self.__no_return_traffic = no_return_traffic
 
-    def hasLabel(self, label):
-        self.hasLabelLabel = label
+    def has_label(self, label):
+        self.has_label_label = label
 
-    def isSerialCompoundLink(self, orderedLinks):
-        self.isSerialCompoundLinkLinks = orderedLinks
+    def is_serial_compound_link(self, ordered_links):
+        self.is_serial_compound_link_links = ordered_links
 
     def getNML(self, parent=None):
         this = super(Link, self).getNML(parent)
@@ -265,25 +265,25 @@ class Link(NetworkObject):
         if self.__encoding:
             this.attrib['encoding'] = self.__encoding
 
-        if self.__noReturnTraffic:
-            this.attrib['noReturnTraffic'] = str(self.__noReturnTraffic)
+        if self.__no_return_traffic:
+            this.attrib['no_return_traffic'] = str(self.__no_return_traffic)
 
         return this
 
 
 class Service(NetworkObject):
-    __metaClass__ = ABCMeta
+    __meta_class__ = ABCMeta
 
 
 class SwitchingService(Service):
 
     def __init__(self, **kwargs):
         super(SwitchingService, self).__init__(kwargs)
-        self.hasInboundPortPorts = []
-        self.hasOutboundPortPorts = []
-        self.providesLinkLinks = []
+        self.has_inbound_port_ports = []
+        self.has_outbound_port_ports = []
+        self.provides_link_links = []
         self.__encoding = None
-        self.__labelSwapping = False
+        self.__label_swapping = False
 
     @property
     def encoding(self):
@@ -294,21 +294,21 @@ class SwitchingService(Service):
         self.__encoding = encoding
 
     @property
-    def labelSwapping(self):
-        return self.__labelSwapping
+    def label_swapping(self):
+        return self.__label_swapping
 
-    @labelSwapping.setter
-    def labelSwapping(self, labelSwapping):
-        self.__labelSwapping = labelSwapping
+    @label_swapping.setter
+    def label_swapping(self, label_swapping):
+        self.__label_swapping = label_swapping
 
-    def hasInboundPort(self, port):
-        self.hasInboundPortPorts.append(port)
+    def has_inbound_port(self, port):
+        self.has_inbound_port_ports.append(port)
 
-    def hasOutboundPort(self, port):
-        self.hasOutboundPortPorts.append(port)
+    def has_outbound_port(self, port):
+        self.has_outbound_port_ports.append(port)
 
-    def providesLink(self, link):
-        self.providesLinkLinks.append(link)
+    def provides_link(self, link):
+        self.provides_link_links.append(link)
 
     def getNML(self, parent=None):
         this = super(SwitchingService, self).getNML(parent)
@@ -316,16 +316,16 @@ class SwitchingService(Service):
         if self.__encoding:
             this.attrib['encoding'] = self.__encoding
 
-        if self.__labelSwapping:
-            this.attrib['labelSwapping'] = str(self.__labelSwapping)
+        if self.__label_swapping:
+            this.attrib['label_swapping'] = str(self.__label_swapping)
 
-        for port in self.hasInboundPortPorts:
+        for port in self.has_inbound_port_ports:
             port.getNML(this)
 
-        for port in self.hasOutboundPortPorts:
+        for port in self.has_outbound_port_ports:
             port.getNML(this)
 
-        for link in self.providesLinkLinks:
+        for link in self.provides_link_links:
             link.getNML(this)
 
         return this
@@ -335,36 +335,36 @@ class AdaptationService(Service):
 
     def __init__(self, **kwargs):
         super(AdaptationService, self).__init__(kwargs)
-        self.adaptationFunction = None
-        self.canProvidePortPorts = []
-        self.providesPortPorts = []
+        self.adaptation_function = None
+        self.can_provide_port_ports = []
+        self.provides_port_ports = []
 
     @property
-    def adaptationFunction(self):
-        return self.__adaptationFunction
+    def adaptation_function(self):
+        return self.__adaptation_function
 
-    @adaptationFunction.setter
-    def adaptationFunction(self, adaptationFunction):
-        self.__adaptationFunction = adaptationFunction
+    @adaptation_function.setter
+    def adaptation_function(self, adaptation_function):
+        self.__adaptation_function = adaptation_function
 
-    def canProvidePort(self, port):
+    def can_provide_port(self, port):
         if port.__class__.__name__ not in ['Port', 'PortGroup']:
             raise CanProvidePortError()
-        self.canProvidePortPorts.append(port)
+        self.can_provide_port_ports.append(port)
 
-    def providesPort(self, port):
-        self.providesPort.append(port)
+    def provides_port(self, port):
+        self.provides_port.append(port)
 
     def getNML(self, parent=None):
         this = super(AdaptationService, self).getNML(parent)
 
-        if self.__adaptationFunction:
-            this.attrib['adaptationFunction'] = self.__adaptationFunction
+        if self.__adaptation_function:
+            this.attrib['adaptation_function'] = self.__adaptation_function
 
-        for port in self.canProvidePortPorts:
+        for port in self.can_provide_port_ports:
             port.getNML(this)
 
-        for port in self.providesPortPorts:
+        for port in self.provides_port_ports:
             port.getNML(this)
 
         return this
@@ -374,92 +374,92 @@ class DeadaptationService(Service):
 
     def __init__(self, **kwargs):
         super(DeadaptationService, self).__init__(kwargs)
-        self.adaptationFunction = None
-        self.canProvidePortPorts = []
-        self.providesPortPorts = []
+        self.adaptation_function = None
+        self.can_provide_port_ports = []
+        self.provides_port_ports = []
 
     @property
-    def adaptationFunction(self):
-        return self.__adaptationFunction
+    def adaptation_function(self):
+        return self.__adaptation_function
 
-    @adaptationFunction.setter
-    def adaptationFunction(self, adaptationFunction):
-        self.__adaptationFunction = adaptationFunction
+    @adaptation_function.setter
+    def adaptation_function(self, adaptation_function):
+        self.__adaptation_function = adaptation_function
 
-    def canProvidePort(self, port):
-        self.canProvidePortPorts.append(port)
+    def can_provide_port(self, port):
+        self.can_provide_port_ports.append(port)
 
-    def providesPort(self, port):
-        self.providesPort.append(port)
+    def provides_port(self, port):
+        self.provides_port.append(port)
 
     def getNML(self, parent=None):
         this = super(DeadaptationService, self).getNML(parent)
 
-        if self.__adaptationFunction:
-            this.attrib['adaptationFunction'] = self.__adaptationFunction
+        if self.__adaptation_function:
+            this.attrib['adaptation_function'] = self.__adaptation_function
 
-        for port in self.canProvidePortPorts:
+        for port in self.can_provide_port_ports:
             port.getNML(this)
 
-        for port in self.providesPortPorts:
+        for port in self.provides_port_ports:
             port.getNML(this)
 
         return this
 
 
 class Group(NetworkObject):
-    __metaClass__ = ABCMeta
+    __meta_class__ = ABCMeta
 
 
 class Topology(Group):
 
     def __init__(self, **kwargs):
         super(Topology, self).__init__(kwargs)
-        self.hasNodeNodes = []
-        self.hasInboundPortPorts = []
-        self.hasOutboundPortPorts = []
-        self.hasServiceServices = []
-        self.hasTopologyTopologies = []
+        self.has_node_nodes = []
+        self.has_inbound_port_ports = []
+        self.has_outbound_port_ports = []
+        self.has_service_services = []
+        self.has_topology_topologies = []
 
-    def hasNode(self, node):
-        self.hasNodeNodes.append(node)
+    def has_node(self, node):
+        self.has_node_nodes.append(node)
 
-    def hasInboundPort(self, port):
-        self.hasInboundPortPorts.append(port)
+    def has_inbound_port(self, port):
+        self.has_inbound_port_ports.append(port)
 
-    def hasOutboundPort(self, port):
-        self.hasOutboundPortPorts.append(port)
+    def has_outbound_port(self, port):
+        self.has_outbound_port_ports.append(port)
 
-    def hasService(self, service):
-        self.hasServiceServices.append(service)
+    def has_service(self, service):
+        self.has_service_services.append(service)
 
-    def hasTopology(self, topology):
-        self.hasTopologyTopologies.append(topology)
+    def has_topology(self, topology):
+        self.has_topology_topologies.append(topology)
 
     def getNML(self, parent=None):
         this = super(Topology, self).getNML(parent)
 
-        for node in self.hasNodeNodes:
+        for node in self.has_node_nodes:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasNode'
             node.getNML(relation)
 
-        for port in self.hasInboundPortPorts:
+        for port in self.has_inbound_port_ports:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasInboundPort'
             port.getNML(relation)
 
-        for port in self.hasOutboundPortPorts:
+        for port in self.has_outbound_port_ports:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasOutboundPort'
             port.getNML(relation)
 
-        for service in self.hasServiceServices:
+        for service in self.has_service_services:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasService'
             service.getNML(relation)
 
-        for topology in self.hasTopologyTopologies:
+        for topology in self.has_topology_topologies:
             relation = etree.SubElement(this, 'Relation')
             relation.attrib['type'] = 'hasTopology'
             topology.getNML(relation)
@@ -471,10 +471,10 @@ class PortGroup(Group):
 
     def __init__(self, **kwargs):
         super(PortGroup, self).__init__(kwargs)
-        self.hasLabelGroupGroup = None
-        self.hasPortPorts = []
-        self.isSinkLinkGroups = []
-        self.isSourceLinkGroups = []
+        self.has_label_group_group = None
+        self.has_port_ports = []
+        self.is_sink_link_groups = []
+        self.is_source_link_groups = []
         self.__encoding = None
 
     @property
@@ -485,43 +485,43 @@ class PortGroup(Group):
     def encoding(self, encoding):
         self.__encoding = encoding
 
-    def hasLabelGroup(self, labelGroup):
-        self.hasLabelGroupGroup = labelGroup
+    def has_label_group(self, label_group):
+        self.has_label_group_group = label_group
 
-    def hasPort(self, port):
-        self.hasPortPorts.append(port)
+    def has_port(self, port):
+        self.has_port_ports.append(port)
 
-    def isSink(self, linkGroup):
-        self.isSinkLinkGroups.append(linkGroup)
+    def is_sink(self, link_group):
+        self.is_sink_link_groups.append(link_group)
 
-    def isSource(self, linkGroup):
-        self.isSourceLinkGroups.append(linkGroup)
+    def is_source(self, link_group):
+        self.is_source_link_groups.append(link_group)
 
 
 class LinkGroup(Group):
 
     def __init__(self, **kwargs):
         super(LinkGroup, self).__init__(kwargs)
-        self.hasLabelGroupGroup = None
-        self.hasLinkLinks = []
-        self.isSerialCompoundLinkLinkGroups = []
+        self.has_label_group_group = None
+        self.has_link_links = []
+        self.is_serial_compound_link_link_groups = []
         self.__encoding = None
 
-    def hasLabelGroup(self, labelGroup):
-        self.hasLabelGroupGroup = labelGroup
+    def has_label_group(self, label_group):
+        self.has_label_group_group = label_group
 
-    def hasLink(self, link):
-        self.hasLinkLinks.append(link)
+    def has_link(self, link):
+        self.has_link_links.append(link)
 
-    def isSerialCompoundLink(self, linkGroup):
-        self.isSerialCompoundLinkLinkGroups.append(linkGroup)
+    def is_serial_compound_link(self, link_group):
+        self.is_serial_compound_link_link_groups.append(link_group)
 
 
 class BidirectionalPort(Group):
 
     def __init__(self, **kwargs):
         super(BidirectionalPort, self).__init__(kwargs)
-        self.hasPortPorts = []
+        self.has_port_ports = []
         self.__encoding = None
 
     @property
@@ -532,16 +532,16 @@ class BidirectionalPort(Group):
     def encoding(self, encoding):
         self.__encoding = encoding
 
-    def hasPort(self, port0, port1):
-        self.hasPortPorts.append(port0)
-        self.hasPortPorts.append(port1)
+    def has_port(self, port0, port1):
+        self.has_port_ports.append(port0)
+        self.has_port_ports.append(port1)
 
 
 class BidirectionalLink(Group):
 
     def __init__(self, **kwargs):
         super(BidirectionalLink, self).__init__()
-        self.hasLinkLinks = []
+        self.has_link_links = []
         self.__encoding = None
 
     @property
@@ -552,9 +552,9 @@ class BidirectionalLink(Group):
     def encoding(self, encoding):
         self.__encoding = encoding
 
-    def hasLink(self, link0, link1):
-        self.hasLinkLinks.append(link0)
-        self.hasLinkLinks.append(link1)
+    def has_link(self, link0, link1):
+        self.has_link_links.append(link0)
+        self.has_link_links.append(link1)
 
 
 class Location(object):
