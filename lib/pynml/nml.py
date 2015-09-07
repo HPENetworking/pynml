@@ -48,37 +48,37 @@ class NetworkObject(object):
         self.exists_during_lifetimes = []
         self.is_alias_network_objects = []
         self.located_at_location = None
-        self.__id = None
-        self.__name = None
-        self.__version = None
+        self._id = None
+        self._name = None
+        self._version = None
         self._kwargs = kwargs
 
     @property
     def id(self):
-        return self.__id
+        return self._id
 
     @id.setter
     def id(self, id):
         if is_valid_uri(id, require_scheme=True):
-            self.__id = id
+            self._id = id
         else:
             raise IdError()
 
     @property
     def name(self):
-        return self.__name
+        return self._name
 
     @name.setter
     def name(self, name):
-        self.__name = name
+        self._name = name
 
     @property
     def version(self):
-        return self.__version
+        return self._version
 
     @version.setter
     def version(self, version):
-        self.__version = version
+        self._version = version
 
     def exists_during(self, lifetime):
         if lifetime.__class__.__name__ != 'Lifetime':
@@ -104,12 +104,12 @@ class NetworkObject(object):
             this = etree.SubElement(
                 parent, self.__class__.__name__, nsmap=NAMESPACES
             )
-        if self.__id:
-            this.attrib['id'] = self.__id
-        if self.__name:
-            this.attrib['name'] = self.__name
-        if self.__version:
-            this.attrib['version'] = self.__version
+        if self._id:
+            this.attrib['id'] = self._id
+        if self._name:
+            this.attrib['name'] = self._name
+        if self._version:
+            this.attrib['version'] = self._version
 
         for network_object in self.is_alias_network_objects:
             relation = etree.SubElement(this, 'Relation')
@@ -193,15 +193,15 @@ class Port(NetworkObject):
         self.has_service_services = []
         self.is_sink_links = []
         self.is_source_links = []
-        self.__encoding = None
+        self._encoding = None
 
     @property
     def encoding(self):
-        return self.__encoding
+        return self._encoding
 
     @encoding.setter
     def encoding(self, encoding):
-        self.__encoding = encoding
+        self._encoding = encoding
 
     def has_label(self, label):
         self.has_label_label = label
@@ -218,8 +218,8 @@ class Port(NetworkObject):
     def getNML(self, parent=None):
         this = super(Port, self).getNML(parent)
 
-        if self.__encoding:
-            this.attrib['encoding'] = self.__encoding
+        if self._encoding:
+            this.attrib['encoding'] = self._encoding
 
         if self.has_label_label:
             relation = etree.SubElement(this, 'Relation')
@@ -255,24 +255,24 @@ class Link(NetworkObject):
         super(Link, self).__init__(kwargs)
         self.has_label_labels = None
         self.is_serial_compound_link_links = []
-        self.__encoding = None
-        self.__no_return_traffic = False
+        self._encoding = None
+        self._no_return_traffic = False
 
     @property
     def encoding(self):
-        return self.__encoding
+        return self._encoding
 
     @encoding.setter
     def encoding(self, encoding):
-        self.__encoding = encoding
+        self._encoding = encoding
 
     @property
     def no_return_traffic(self):
-        return self.__no_return_traffic
+        return self._no_return_traffic
 
     @no_return_traffic.setter
     def no_return_traffic(self, no_return_traffic):
-        self.__no_return_traffic = no_return_traffic
+        self._no_return_traffic = no_return_traffic
 
     def has_label(self, label):
         self.has_label_label = label
@@ -283,11 +283,11 @@ class Link(NetworkObject):
     def getNML(self, parent=None):
         this = super(Link, self).getNML(parent)
 
-        if self.__encoding:
-            this.attrib['encoding'] = self.__encoding
+        if self._encoding:
+            this.attrib['encoding'] = self._encoding
 
-        if self.__no_return_traffic:
-            this.attrib['no_return_traffic'] = str(self.__no_return_traffic)
+        if self._no_return_traffic:
+            this.attrib['no_return_traffic'] = str(self._no_return_traffic)
 
         return this
 
@@ -314,24 +314,24 @@ class SwitchingService(Service):
         self.has_inbound_port_ports = []
         self.has_outbound_port_ports = []
         self.provides_link_links = []
-        self.__encoding = None
-        self.__label_swapping = False
+        self._encoding = None
+        self._label_swapping = False
 
     @property
     def encoding(self):
-        return self.__encoding
+        return self._encoding
 
     @encoding.setter
     def encoding(self, encoding):
-        self.__encoding = encoding
+        self._encoding = encoding
 
     @property
     def label_swapping(self):
-        return self.__label_swapping
+        return self._label_swapping
 
     @label_swapping.setter
     def label_swapping(self, label_swapping):
-        self.__label_swapping = label_swapping
+        self._label_swapping = label_swapping
 
     def has_inbound_port(self, port):
         self.has_inbound_port_ports.append(port)
@@ -345,11 +345,11 @@ class SwitchingService(Service):
     def getNML(self, parent=None):
         this = super(SwitchingService, self).getNML(parent)
 
-        if self.__encoding:
-            this.attrib['encoding'] = self.__encoding
+        if self._encoding:
+            this.attrib['encoding'] = self._encoding
 
-        if self.__label_swapping:
-            this.attrib['label_swapping'] = str(self.__label_swapping)
+        if self._label_swapping:
+            this.attrib['label_swapping'] = str(self._label_swapping)
 
         for port in self.has_inbound_port_ports:
             port.getNML(this)
@@ -379,11 +379,11 @@ class AdaptationService(Service):
 
     @property
     def adaptation_function(self):
-        return self.__adaptation_function
+        return self._adaptation_function
 
     @adaptation_function.setter
     def adaptation_function(self, adaptation_function):
-        self.__adaptation_function = adaptation_function
+        self._adaptation_function = adaptation_function
 
     def can_provide_port(self, port):
         if port.__class__.__name__ not in ['Port', 'PortGroup']:
@@ -396,8 +396,8 @@ class AdaptationService(Service):
     def getNML(self, parent=None):
         this = super(AdaptationService, self).getNML(parent)
 
-        if self.__adaptation_function:
-            this.attrib['adaptation_function'] = self.__adaptation_function
+        if self._adaptation_function:
+            this.attrib['adaptation_function'] = self._adaptation_function
 
         for port in self.can_provide_port_ports:
             port.getNML(this)
@@ -425,11 +425,11 @@ class DeadaptationService(Service):
 
     @property
     def adaptation_function(self):
-        return self.__adaptation_function
+        return self._adaptation_function
 
     @adaptation_function.setter
     def adaptation_function(self, adaptation_function):
-        self.__adaptation_function = adaptation_function
+        self._adaptation_function = adaptation_function
 
     def can_provide_port(self, port):
         self.can_provide_port_ports.append(port)
@@ -440,8 +440,8 @@ class DeadaptationService(Service):
     def getNML(self, parent=None):
         this = super(DeadaptationService, self).getNML(parent)
 
-        if self.__adaptation_function:
-            this.attrib['adaptation_function'] = self.__adaptation_function
+        if self._adaptation_function:
+            this.attrib['adaptation_function'] = self._adaptation_function
 
         for port in self.can_provide_port_ports:
             port.getNML(this)
@@ -533,15 +533,15 @@ class PortGroup(Group):
         self.has_port_ports = []
         self.is_sink_link_groups = []
         self.is_source_link_groups = []
-        self.__encoding = None
+        self._encoding = None
 
     @property
     def encoding(self):
-        return self.__encoding
+        return self._encoding
 
     @encoding.setter
     def encoding(self, encoding):
-        self.__encoding = encoding
+        self._encoding = encoding
 
     def has_label_group(self, label_group):
         self.has_label_group_group = label_group
@@ -564,7 +564,7 @@ class LinkGroup(Group):
         self.has_label_group_group = None
         self.has_link_links = []
         self.is_serial_compound_link_link_groups = []
-        self.__encoding = None
+        self._encoding = None
 
     def has_label_group(self, label_group):
         self.has_label_group_group = label_group
@@ -587,15 +587,15 @@ class BidirectionalPort(Group):
     def __init__(self, **kwargs):
         super(BidirectionalPort, self).__init__(kwargs)
         self.has_port_ports = []
-        self.__encoding = None
+        self._encoding = None
 
     @property
     def encoding(self):
-        return self.__encoding
+        return self._encoding
 
     @encoding.setter
     def encoding(self, encoding):
-        self.__encoding = encoding
+        self._encoding = encoding
 
     def has_port(self, port0, port1):
         self.has_port_ports.append(port0)
@@ -611,15 +611,15 @@ class BidirectionalLink(Group):
     def __init__(self, **kwargs):
         super(BidirectionalLink, self).__init__()
         self.has_link_links = []
-        self.__encoding = None
+        self._encoding = None
 
     @property
     def encoding(self):
-        return self.__encoding
+        return self._encoding
 
     @encoding.setter
     def encoding(self, encoding):
-        self.__encoding = encoding
+        self._encoding = encoding
 
     def has_link(self, link0, link1):
         self.has_link_links.append(link0)
@@ -633,70 +633,70 @@ class Location(object):
     A Location object describes where a NetworkObject is.
     """
     def __init__(self, **kwargs):
-        self.__id = None
-        self.__name = None
-        self.__long = None
-        self.__lat = None
-        self.__alt = None
-        self.__unlocode = None
-        self.__address = None
+        self._id = None
+        self._name = None
+        self._long = None
+        self._lat = None
+        self._alt = None
+        self._unlocode = None
+        self._address = None
         self._kwargs = kwargs
 
     @property
     def id(self):
-        return self.__id
+        return self._id
 
     @id.setter
     def id(self, id):
-        self.__id = id
+        self._id = id
 
     @property
     def name(self):
-        return self.__name
+        return self._name
 
     @name.setter
     def name(self, name):
-        self.__name = name
+        self._name = name
 
     @property
     def long(self):
-        return self.__long
+        return self._long
 
     @long.setter
     def long(self, long):
-        self.__long = long
+        self._long = long
 
     @property
     def lat(self):
-        return self.__lat
+        return self._lat
 
     @lat.setter
     def lat(self, lat):
-        self.__lat = lat
+        self._lat = lat
 
     @property
     def alt(self):
-        return self.__alt
+        return self._alt
 
     @alt.setter
     def alt(self, alt):
-        self.__alt = alt
+        self._alt = alt
 
     @property
     def unlocode(self):
-        return self.__unlocode
+        return self._unlocode
 
     @unlocode.setter
     def unlocode(self, unlocode):
-        self.__unlocode = unlocode
+        self._unlocode = unlocode
 
     @property
     def address(self):
-        return self.__address
+        return self._address
 
     @address.setter
     def address(self, address):
-        self.__address = address
+        self._address = address
 
     def getNML(self, parent=None):
         if parent is None:
@@ -711,11 +711,11 @@ class Location(object):
             this.attrib['long'] = self.long
         if self.lat:
             this.attrib['lat'] = self.lat
-        if self.__alt:
+        if self._alt:
             this.attrib['alt'] = self.alt
         if self.unlocode:
             this.attrib['unlocode'] = self.unlocode
-        if self.__address:
+        if self._address:
             this.attrib['address'] = self.address
 
         return this
@@ -729,25 +729,25 @@ class Lifetime(object):
     the union of all its Lifetimes time intervals.
     """
     def __init__(self, **kwargs):
-        self.__start = None
-        self.__end = None
+        self._start = None
+        self._end = None
         self._kwargs = kwargs
 
     @property
     def start(self):
-        return self.__start
+        return self._start
 
     @start.setter
     def start(self, start):
-        self.__start = start
+        self._start = start
 
     @property
     def end(self):
-        return self.__end
+        return self._end
 
     @end.setter
     def end(self, end):
-        self.__end = end
+        self._end = end
 
     def getNML(self, parent=None):
         if parent is None:
@@ -755,9 +755,9 @@ class Lifetime(object):
         else:
             this = etree.SubElement(parent, self.__class__.__name__)
         if self.start:
-            this.attrib['start'] = self.start
+            this.attrib['start'] = self._start
         if self.end:
-            this.attrib['end'] = self.end
+            this.attrib['end'] = self._end
 
         return this
 
@@ -770,25 +770,25 @@ class Label(object):
     A VLAN number can be represented using a Label object, for example.
     """
     def __init__(self, **kwargs):
-        self.__labeltype = None
-        self.__value = None
+        self._labeltype = None
+        self._value = None
         self._kwargs = kwargs
 
     @property
     def labeltype(self):
-        return self.__labeltype
+        return self._labeltype
 
     @labeltype.setter
     def labeltype(self, labeltype):
-        self.__labeltype = labeltype
+        self._labeltype = labeltype
 
     @property
     def value(self):
-        return self.__value
+        return self._value
 
     @value.setter
     def value(self, value):
-        self.__value = value
+        self._value = value
 
     def getNML(self, parent=None):
         if parent is None:
@@ -796,9 +796,9 @@ class Label(object):
         else:
             this = etree.SubElement(parent, self.__class__.__name__)
         if self.labeltype:
-            this.attrib['labeltype'] = self.labeltype
+            this.attrib['labeltype'] = self._labeltype
         if self.value:
-            this.attrib['value'] = self.value
+            this.attrib['value'] = self._value
 
         return this
 
