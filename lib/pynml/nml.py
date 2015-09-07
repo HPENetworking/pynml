@@ -36,6 +36,11 @@ NAMESPACES = {'nml': 'http://schemas.ogf.org/nml/2013/05/base'}
 
 
 class NetworkObject(object):
+    """
+    Abstract class abstract class for most other classes.
+
+    This class cannot be instantiated directly.
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -125,7 +130,12 @@ class NetworkObject(object):
 
 
 class Node(NetworkObject):
+    """
+    This class represents a device in a network topology.
 
+    Any device can be represented by this class. Take into consideration that
+    a Node instance does not necesarily represents a physical device.
+    """
     def __init__(self, **kwargs):
         super(Node, self).__init__(kwargs)
         self.has_inbound_port_ports = []
@@ -170,6 +180,12 @@ class Node(NetworkObject):
 
 
 class Port(NetworkObject):
+    """
+    A Port object allows a Network Object to connect to the rest of a network.
+
+    Ports connect to other ports by using Link objects. A Port object does not
+    necesarily represents a physical interface.
+    """
 
     def __init__(self, **kwargs):
         super(Port, self).__init__(kwargs)
@@ -229,7 +245,12 @@ class Port(NetworkObject):
 
 
 class Link(NetworkObject):
+    """
+    A Link object defines unidirectional communication.
 
+    It communicates source objects to sink ones. A Link object can represent
+    any connection between individual or grouped sources and sinks.
+    """
     def __init__(self, **kwargs):
         super(Link, self).__init__(kwargs)
         self.has_label_labels = None
@@ -272,10 +293,21 @@ class Link(NetworkObject):
 
 
 class Service(NetworkObject):
+    """
+    Abstract class that defines an ability of a network.
+
+    Service inherits from Network Object.
+    This class cannot be instantiated directly.
+    """
     __meta_class__ = ABCMeta
 
 
 class SwitchingService(Service):
+    """
+    This class describes the ability to create new Links between its Ports.
+
+    These Links can connect inbound ports to outbound ones.
+    """
 
     def __init__(self, **kwargs):
         super(SwitchingService, self).__init__(kwargs)
@@ -332,7 +364,13 @@ class SwitchingService(Service):
 
 
 class AdaptationService(Service):
+    """
+    This class describes the ability to embed data from one port into another.
 
+    Commonly referred to adding data from the higher layer into the lower one.
+    A multiplexing adaptation function is defined, so different channels can
+    be embedded in a sinle data stream.
+    """
     def __init__(self, **kwargs):
         super(AdaptationService, self).__init__(kwargs)
         self.adaptation_function = None
@@ -371,7 +409,14 @@ class AdaptationService(Service):
 
 
 class DeadaptationService(Service):
+    """
+    Inverse of the AdaptationService class.
 
+    This class describes the ability to extract data of one port from the
+    encoding of another.
+    A demultiplexing adaptation function is defined, so different channels can
+    be extracted from a single data stream.
+    """
     def __init__(self, **kwargs):
         super(DeadaptationService, self).__init__(kwargs)
         self.adaptation_function = None
@@ -408,11 +453,23 @@ class DeadaptationService(Service):
 
 
 class Group(NetworkObject):
+    """
+    Abstract class that describes a collection of objects.
+
+    Groups inherits from Network Object.
+    Groups can be part of other groups and an object can be part of several
+    different groups.
+    """
     __meta_class__ = ABCMeta
 
 
 class Topology(Group):
+    """
+    A set of connected Network Objects.
 
+    Connected means that the objects in the Topology object can communicate
+    between them or means for their communication can be created.
+    """
     def __init__(self, **kwargs):
         super(Topology, self).__init__(kwargs)
         self.has_node_nodes = []
@@ -468,6 +525,7 @@ class Topology(Group):
 
 
 class PortGroup(Group):
+    """An unordered set of Ports."""
 
     def __init__(self, **kwargs):
         super(PortGroup, self).__init__(kwargs)
@@ -499,6 +557,7 @@ class PortGroup(Group):
 
 
 class LinkGroup(Group):
+    """An unordered set of Links"""
 
     def __init__(self, **kwargs):
         super(LinkGroup, self).__init__(kwargs)
@@ -518,6 +577,12 @@ class LinkGroup(Group):
 
 
 class BidirectionalPort(Group):
+    """
+    A pair of unidirectional Ports.
+
+    A BidirectionalPort object represents a bidirectional physical or virtual
+    port.
+    """
 
     def __init__(self, **kwargs):
         super(BidirectionalPort, self).__init__(kwargs)
@@ -538,7 +603,11 @@ class BidirectionalPort(Group):
 
 
 class BidirectionalLink(Group):
+    """
+    A pair of unidirectional Links.
 
+    A BidirectionalLink object form a bidirectional physical or virtual link.
+    """
     def __init__(self, **kwargs):
         super(BidirectionalLink, self).__init__()
         self.has_link_links = []
@@ -558,7 +627,11 @@ class BidirectionalLink(Group):
 
 
 class Location(object):
+    """
+    A reference to a geographical location.
 
+    A Location object describes where a NetworkObject is.
+    """
     def __init__(self, **kwargs):
         self.__id = None
         self.__name = None
@@ -649,7 +722,12 @@ class Location(object):
 
 
 class Lifetime(object):
+    """
+    A time interval where a NetworkObject is active.
 
+    If an object has several Lifetimes associated with it, then its lifetime is
+    the union of all its Lifetimes time intervals.
+    """
     def __init__(self, **kwargs):
         self.__start = None
         self.__end = None
@@ -685,7 +763,12 @@ class Lifetime(object):
 
 
 class Label(object):
+    """
+    A value that describes a single data stream embedded in a larger one.
 
+    A Label can have one value for labeling its single data stream.
+    A VLAN number can be represented using a Label object, for example.
+    """
     def __init__(self, **kwargs):
         self.__labeltype = None
         self.__value = None
@@ -721,6 +804,7 @@ class Label(object):
 
 
 class LabelGroup(object):
+    """An unordered set of Labels."""
     def __init__(self, **kwargs):
         self._labeltype = ''
         self._values = ''
@@ -728,11 +812,17 @@ class LabelGroup(object):
 
 
 class OrderedList(object):
+    """An ordered list of NetworkObjects."""
     def __init__(self, **kwargs):
         self._kwargs = kwargs
 
 
 class ListItem(object):
+    """
+    A syntactical construct which may be used to create Ordered Lists.
+
+    Its exact usage depends of the specific syntax.
+    """
     def __init__(self, **kwargs):
         self._kwargs = kwargs
 
