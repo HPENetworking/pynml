@@ -39,13 +39,14 @@ class NetworkObject(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.existsDuringLifetimes = []
         self.isAliasNetworkObjects = []
         self.locatedAtLocation = None
         self.__id = None
         self.__name = None
         self.__version = None
+        self._kwargs = kwargs
 
     @property
     def id(self):
@@ -125,8 +126,8 @@ class NetworkObject(object):
 
 class Node(NetworkObject):
 
-    def __init__(self):
-        super(Node, self).__init__()
+    def __init__(self, **kwargs):
+        super(Node, self).__init__(kwargs)
         self.hasInboundPortPorts = []
         self.hasOutboundPortPorts = []
         self.hasServiceServices = []
@@ -170,6 +171,14 @@ class Node(NetworkObject):
 
 class Port(NetworkObject):
 
+    def __init__(self, **kwargs):
+        super(Port, self).__init__(kwargs)
+        self.hasLabelLabel = None
+        self.hasServiceServices = []
+        self.isSinkLinks = []
+        self.isSourceLinks = []
+        self.__encoding = None
+
     @property
     def encoding(self):
         return self.__encoding
@@ -177,14 +186,6 @@ class Port(NetworkObject):
     @encoding.setter
     def encoding(self, encoding):
         self.__encoding = encoding
-
-    def __init__(self):
-        super(Port, self).__init__()
-        self.hasLabelLabel = None
-        self.hasServiceServices = []
-        self.isSinkLinks = []
-        self.isSourceLinks = []
-        self.__encoding = None
 
     def hasLabel(self, label):
         self.hasLabelLabel = label
@@ -229,6 +230,13 @@ class Port(NetworkObject):
 
 class Link(NetworkObject):
 
+    def __init__(self, **kwargs):
+        super(Link, self).__init__(kwargs)
+        self.hasLabelLabels = None
+        self.isSerialCompoundLinkLinks = []
+        self.__encoding = None
+        self.__noReturnTraffic = False
+
     @property
     def encoding(self):
         return self.__encoding
@@ -244,13 +252,6 @@ class Link(NetworkObject):
     @noReturnTraffic.setter
     def noReturnTraffic(self, noReturnTraffic):
         self.__noReturnTraffic = noReturnTraffic
-
-    def __init__(self):
-        super(Link, self).__init__()
-        self.hasLabelLabels = None
-        self.isSerialCompoundLinkLinks = []
-        self.__encoding = None
-        self.__noReturnTraffic = False
 
     def hasLabel(self, label):
         self.hasLabelLabel = label
@@ -276,6 +277,14 @@ class Service(NetworkObject):
 
 class SwitchingService(Service):
 
+    def __init__(self, **kwargs):
+        super(SwitchingService, self).__init__(kwargs)
+        self.hasInboundPortPorts = []
+        self.hasOutboundPortPorts = []
+        self.providesLinkLinks = []
+        self.__encoding = None
+        self.__labelSwapping = False
+
     @property
     def encoding(self):
         return self.__encoding
@@ -291,14 +300,6 @@ class SwitchingService(Service):
     @labelSwapping.setter
     def labelSwapping(self, labelSwapping):
         self.__labelSwapping = labelSwapping
-
-    def __init__(self):
-        super(SwitchingService, self).__init__()
-        self.hasInboundPortPorts = []
-        self.hasOutboundPortPorts = []
-        self.providesLinkLinks = []
-        self.__encoding = None
-        self.__labelSwapping = False
 
     def hasInboundPort(self, port):
         self.hasInboundPortPorts.append(port)
@@ -332,6 +333,12 @@ class SwitchingService(Service):
 
 class AdaptationService(Service):
 
+    def __init__(self, **kwargs):
+        super(AdaptationService, self).__init__(kwargs)
+        self.adaptationFunction = None
+        self.canProvidePortPorts = []
+        self.providesPortPorts = []
+
     @property
     def adaptationFunction(self):
         return self.__adaptationFunction
@@ -339,12 +346,6 @@ class AdaptationService(Service):
     @adaptationFunction.setter
     def adaptationFunction(self, adaptationFunction):
         self.__adaptationFunction = adaptationFunction
-
-    def __init__(self):
-        super(AdaptationService, self).__init__()
-        self.adaptationFunction = None
-        self.canProvidePortPorts = []
-        self.providesPortPorts = []
 
     def canProvidePort(self, port):
         if port.__class__.__name__ not in ['Port', 'PortGroup']:
@@ -371,6 +372,12 @@ class AdaptationService(Service):
 
 class DeadaptationService(Service):
 
+    def __init__(self, **kwargs):
+        super(DeadaptationService, self).__init__(kwargs)
+        self.adaptationFunction = None
+        self.canProvidePortPorts = []
+        self.providesPortPorts = []
+
     @property
     def adaptationFunction(self):
         return self.__adaptationFunction
@@ -378,12 +385,6 @@ class DeadaptationService(Service):
     @adaptationFunction.setter
     def adaptationFunction(self, adaptationFunction):
         self.__adaptationFunction = adaptationFunction
-
-    def __init__(self):
-        super(DeadaptationService, self).__init__()
-        self.adaptationFunction = None
-        self.canProvidePortPorts = []
-        self.providesPortPorts = []
 
     def canProvidePort(self, port):
         self.canProvidePortPorts.append(port)
@@ -412,8 +413,8 @@ class Group(NetworkObject):
 
 class Topology(Group):
 
-    def __init__(self):
-        super(Topology, self).__init__()
+    def __init__(self, **kwargs):
+        super(Topology, self).__init__(kwargs)
         self.hasNodeNodes = []
         self.hasInboundPortPorts = []
         self.hasOutboundPortPorts = []
@@ -468,6 +469,14 @@ class Topology(Group):
 
 class PortGroup(Group):
 
+    def __init__(self, **kwargs):
+        super(PortGroup, self).__init__(kwargs)
+        self.hasLabelGroupGroup = None
+        self.hasPortPorts = []
+        self.isSinkLinkGroups = []
+        self.isSourceLinkGroups = []
+        self.__encoding = None
+
     @property
     def encoding(self):
         return self.__encoding
@@ -475,14 +484,6 @@ class PortGroup(Group):
     @encoding.setter
     def encoding(self, encoding):
         self.__encoding = encoding
-
-    def __init__(self):
-        super(PortGroup, self).__init__()
-        self.hasLabelGroupGroup = None
-        self.hasPortPorts = []
-        self.isSinkLinkGroups = []
-        self.isSourceLinkGroups = []
-        self.__encoding = None
 
     def hasLabelGroup(self, labelGroup):
         self.hasLabelGroupGroup = labelGroup
@@ -499,8 +500,8 @@ class PortGroup(Group):
 
 class LinkGroup(Group):
 
-    def __init__(self):
-        super(LinkGroup, self).__init__()
+    def __init__(self, **kwargs):
+        super(LinkGroup, self).__init__(kwargs)
         self.hasLabelGroupGroup = None
         self.hasLinkLinks = []
         self.isSerialCompoundLinkLinkGroups = []
@@ -518,6 +519,11 @@ class LinkGroup(Group):
 
 class BidirectionalPort(Group):
 
+    def __init__(self, **kwargs):
+        super(BidirectionalPort, self).__init__(kwargs)
+        self.hasPortPorts = []
+        self.__encoding = None
+
     @property
     def encoding(self):
         return self.__encoding
@@ -525,11 +531,6 @@ class BidirectionalPort(Group):
     @encoding.setter
     def encoding(self, encoding):
         self.__encoding = encoding
-
-    def __init__(self):
-        super(BidirectionalPort, self).__init__()
-        self.hasPortPorts = []
-        self.__encoding = None
 
     def hasPort(self, port0, port1):
         self.hasPortPorts.append(port0)
@@ -538,6 +539,11 @@ class BidirectionalPort(Group):
 
 class BidirectionalLink(Group):
 
+    def __init__(self, **kwargs):
+        super(BidirectionalLink, self).__init__()
+        self.hasLinkLinks = []
+        self.__encoding = None
+
     @property
     def encoding(self):
         return self.__encoding
@@ -546,17 +552,22 @@ class BidirectionalLink(Group):
     def encoding(self, encoding):
         self.__encoding = encoding
 
-    def __init__(self):
-        super(BidirectionalLink, self).__init__()
-        self.hasLinkLinks = []
-        self.__encoding = None
-
     def hasLink(self, link0, link1):
         self.hasLinkLinks.append(link0)
         self.hasLinkLinks.append(link1)
 
 
 class Location(object):
+
+    def __init__(self, **kwargs):
+        self.__id = None
+        self.__name = None
+        self.__long = None
+        self.__lat = None
+        self.__alt = None
+        self.__unlocode = None
+        self.__address = None
+        self._kwargs = kwargs
 
     @property
     def id(self):
@@ -614,15 +625,6 @@ class Location(object):
     def address(self, address):
         self.__address = address
 
-    def __init__(self):
-        self.__id = None
-        self.__name = None
-        self.__long = None
-        self.__lat = None
-        self.__alt = None
-        self.__unlocode = None
-        self.__address = None
-
     def getNML(self, parent=None):
         if parent is None:
             this = etree.Element(self.__class__.__name__)
@@ -648,6 +650,11 @@ class Location(object):
 
 class Lifetime(object):
 
+    def __init__(self, **kwargs):
+        self.__start = None
+        self.__end = None
+        self._kwargs = kwargs
+
     @property
     def start(self):
         return self.__start
@@ -664,10 +671,6 @@ class Lifetime(object):
     def end(self, end):
         self.__end = end
 
-    def __init__(self):
-        self.__start = None
-        self.__end = None
-
     def getNML(self, parent=None):
         if parent is None:
             this = etree.Element(self.__class__.__name__)
@@ -682,6 +685,11 @@ class Lifetime(object):
 
 
 class Label(object):
+
+    def __init__(self, **kwargs):
+        self.__labeltype = None
+        self.__value = None
+        self._kwargs = kwargs
 
     @property
     def labeltype(self):
@@ -699,10 +707,6 @@ class Label(object):
     def value(self, value):
         self.__value = value
 
-    def __init__(self):
-        self.__labeltype = None
-        self.__value = None
-
     def getNML(self, parent=None):
         if parent is None:
             this = etree.Element(self.__class__.__name__)
@@ -717,16 +721,20 @@ class Label(object):
 
 
 class LabelGroup(object):
-    labeltype = ''
-    values = ''
+    def __init__(self, **kwargs):
+        self._labeltype = ''
+        self._values = ''
+        self._kwargs = kwargs
 
 
 class OrderedList(object):
-    pass
+    def __init__(self, **kwargs):
+        self._kwargs = kwargs
 
 
 class ListItem(object):
-    pass
+    def __init__(self, **kwargs):
+        self._kwargs = kwargs
 
 
 __all__ = [
