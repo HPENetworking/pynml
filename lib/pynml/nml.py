@@ -48,19 +48,19 @@ class NetworkObject(object):
         self.exists_during_lifetimes = []
         self.is_alias_network_objects = []
         self.located_at_location = None
-        self._id = None
+        self._identification = None
         self._name = None
         self._version = None
         self._kwargs = kwargs
 
     @property
-    def id(self):
-        return self._id
+    def identification(self):
+        return self._identification
 
-    @id.setter
-    def id(self, id):
-        if is_valid_uri(id, require_scheme=True):
-            self._id = id
+    @identification.setter
+    def identification(self, identification):
+        if is_valid_uri(identification, require_scheme=True):
+            self._identification = identification
         else:
             raise IdError()
 
@@ -104,8 +104,8 @@ class NetworkObject(object):
             this = etree.SubElement(
                 parent, self.__class__.__name__, nsmap=NAMESPACES
             )
-        if self._id:
-            this.attrib['id'] = self._id
+        if self._identification:
+            this.attrib['id'] = self._identification
         if self._name:
             this.attrib['name'] = self._name
         if self._version:
@@ -633,22 +633,22 @@ class Location(object):
     A Location object describes where a NetworkObject is.
     """
     def __init__(self, **kwargs):
-        self._id = None
+        self._identification = None
         self._name = None
-        self._long = None
-        self._lat = None
-        self._alt = None
+        self._longitude = None
+        self._latitude = None
+        self._altitude = None
         self._unlocode = None
         self._address = None
         self._kwargs = kwargs
 
     @property
-    def id(self):
-        return self._id
+    def identification(self):
+        return self._identification
 
-    @id.setter
-    def id(self, id):
-        self._id = id
+    @identification.setter
+    def identification(self, identification):
+        self._identification = identification
 
     @property
     def name(self):
@@ -659,28 +659,28 @@ class Location(object):
         self._name = name
 
     @property
-    def long(self):
-        return self._long
+    def longitude(self):
+        return self._longitude
 
-    @long.setter
-    def long(self, long):
-        self._long = long
-
-    @property
-    def lat(self):
-        return self._lat
-
-    @lat.setter
-    def lat(self, lat):
-        self._lat = lat
+    @longitude.setter
+    def longtude(self, longitude):
+        self._longitude = longitude
 
     @property
-    def alt(self):
-        return self._alt
+    def latitude(self):
+        return self._latitude
 
-    @alt.setter
-    def alt(self, alt):
-        self._alt = alt
+    @latitude.setter
+    def latitude(self, latitude):
+        self._latitude = latitude
+
+    @property
+    def altitude(self):
+        return self._altitude
+
+    @altitude.setter
+    def alt(self, altitude):
+        self._altitude = altitude
 
     @property
     def unlocode(self):
@@ -703,16 +703,16 @@ class Location(object):
             this = etree.Element(self.__class__.__name__)
         else:
             this = etree.SubElement(parent, self.__class__.__name__)
-        if self.id:
-            this.attrib['id'] = self.id
+        if self.identification:
+            this.attrib['id'] = self.identification
         if self.name:
             this.attrib['name'] = self.name
-        if self.long:
-            this.attrib['long'] = self.long
-        if self.lat:
-            this.attrib['lat'] = self.lat
-        if self._alt:
-            this.attrib['alt'] = self.alt
+        if self.longitude:
+            this.attrib['long'] = self.longitude
+        if self.latitude:
+            this.attrib['lat'] = self.latitude
+        if self._altitude:
+            this.attrib['alt'] = self.altitude
         if self.unlocode:
             this.attrib['unlocode'] = self.unlocode
         if self._address:
