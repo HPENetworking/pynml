@@ -29,6 +29,12 @@ Development
 - `Project repository. <https://github.com/HPNetworking/pynml/>`_
 
 
+Future improvements
+===================
+
+- Validate entities deletion and perform recursive deletion of subentities.
+
+
 License
 =======
 
