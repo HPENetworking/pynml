@@ -65,6 +65,11 @@ class NetworkObject(object):
 
     @identification.setter
     def identification(self, identification):
+        """
+        Set id.
+
+        :param identification: The value for id.
+        """
         if is_valid_uri(identification, require_scheme=True):
             self._identification = identification
         else:
@@ -82,6 +87,12 @@ class NetworkObject(object):
 
     @name.setter
     def name(self, name):
+        """
+        Set name.
+
+        :param name: The value for the name attribute.
+        :type name: str
+        """
         self._name = name
 
     @property
@@ -95,6 +106,12 @@ class NetworkObject(object):
 
     @version.setter
     def version(self, version):
+        """
+        Set version.
+
+        :param version: The value for the version attribute.
+        :type version: str
+        """
         self._version = version
 
     def exists_during(self, lifetime):
@@ -224,6 +241,12 @@ class Port(NetworkObject):
 
     @encoding.setter
     def encoding(self, encoding):
+        """
+        Set encoding.
+
+        :param encoding: The value for the encoding attribute.
+        :type encoding: str
+        """
         self._encoding = encoding
 
     def has_label(self, label):
@@ -293,6 +316,12 @@ class Link(NetworkObject):
 
     @encoding.setter
     def encoding(self, encoding):
+        """
+        Set encoding.
+
+        :param encoding: The value for the encoding attribute.
+        :type encoding: str
+        """
         self._encoding = encoding
 
     def has_label(self, label):
@@ -350,6 +379,12 @@ class SwitchingService(Service):
 
     @encoding.setter
     def encoding(self, encoding):
+        """
+        Set encoding.
+
+        :param encoding: The value for the encoding attribute.
+        :type encoding: str
+        """
         self._encoding = encoding
 
     def has_inbound_port(self, port):
@@ -550,6 +585,12 @@ class PortGroup(Group):
 
     @encoding.setter
     def encoding(self, encoding):
+        """
+        Set encoding.
+
+        :param encoding: The value for the encoding attribute.
+        :type encoding: str
+        """
         self._encoding = encoding
 
     def has_label_group(self, label_group):
@@ -610,6 +651,12 @@ class BidirectionalPort(Group):
 
     @encoding.setter
     def encoding(self, encoding):
+        """
+        Set encoding.
+
+        :param encoding: The value for the encoding attribute.
+        :type encoding: str
+        """
         self._encoding = encoding
 
     def has_port(self, port0, port1):
@@ -640,6 +687,12 @@ class BidirectionalLink(Group):
 
     @encoding.setter
     def encoding(self, encoding):
+        """
+        Set encoding.
+
+        :param encoding: The value for the encoding attribute.
+        :type encoding: str
+        """
         self._encoding = encoding
 
     def has_link(self, link0, link1):
@@ -675,6 +728,11 @@ class Location(object):
 
     @identification.setter
     def identification(self, identification):
+        """
+        Set id.
+
+        :param identification: The value for id.
+        """
         self._identification = identification
 
     @property
@@ -689,6 +747,12 @@ class Location(object):
 
     @name.setter
     def name(self, name):
+        """
+        Set name.
+
+        :param name: The value for the name attribute.
+        :type name: str
+        """
         self._name = name
 
     def getNML(self, parent=None):
