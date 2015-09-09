@@ -23,6 +23,7 @@ from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
 from .nml import *  # noqa
+from .manager import *  # noqa
 
 __author__ = 'Hewlett Packard Enterprise Development LP'
 __email__ = 'asicapi@hp.com'
