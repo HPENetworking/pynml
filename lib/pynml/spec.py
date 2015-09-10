@@ -697,6 +697,60 @@ __all__ = [
 """  # noqa
 
 
+EXCEPTIONS_TEMPLATE = """\
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+\"""
+pynml exceptions module.
+\"""
+
+from __future__ import unicode_literals, absolute_import
+from __future__ import print_function, division
+
+
+class NMLException(Exception):
+    \"""
+    Base NML Exception class.
+    \"""
+    def __str__(self):
+        return ' '.join(self.__class__.__doc__.split())
+
+    def __repr__(self):
+        return repr(str(self))
+
+
+{% for exc, doc in exceptions.items() -%}
+class {{ exc }}(NMLException):
+    \"""
+    {{ doc|wordwrap(75)|indent(4) }}.
+    \"""
+
+
+{% endfor -%}
+__all__ = [
+{%- for exc in exceptions %}
+    '{{ exc }}'{% if not loop.last %},{% endif %}
+{%- endfor %}
+]
+
+"""  # noqa
+
+
 def filter_objectize(token):
     if token is None:
         return None
@@ -743,11 +797,11 @@ def build():
 
     # Build template environment
     def load_template(name):
-        if name == 'nml':
-            return NML_TEMPLATE
-        # if name == 'exceptions':
-        #     return EXCEPTIONS_TEMPLATE
-        raise Exception('Unknown template "{}"'.format(name))
+        templates = {
+            'nml': NML_TEMPLATE,
+            'exceptions': EXCEPTIONS_TEMPLATE
+        }
+        return templates[name]
 
     env = Environment(
         loader=FunctionLoader(load_template),
@@ -756,18 +810,20 @@ def build():
     for ftr in ['objectize', 'methodize', 'variablize', 'pluralize']:
         env.filters[ftr] = globals()['filter_' + ftr]
 
-    # Render template
-    template = env.get_template('nml')
-    rendered = template.render(
-        spec=NML_SPEC,
-        exceptions=exceptions
-    )
+    for tpl in ['nml', 'exceptions']:
 
-    # Write output
-    root = dirname(normpath(abspath(__file__)))
+        # Render template
+        template = env.get_template(tpl)
+        rendered = template.render(
+            spec=NML_SPEC,
+            exceptions=exceptions
+        )
 
-    with open(join(root, 'nnml.py'), 'w') as module:
-        module.write(rendered)
+        # Write output
+        root = dirname(normpath(abspath(__file__)))
+
+        with open(join(root, 'n{}.py'.format(tpl)), 'w') as module:
+            module.write(rendered)
 
 
 if __name__ == '__main__':
