@@ -494,23 +494,24 @@ def tree_element(self, this, parent):
 
 {% for cls in spec.classes -%}
 class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }}):
+    \"""
+    {{ cls.brief|wordwrap(75)|indent(4) }}.
+
+    {{ cls.doc|wordwrap(75)|indent(4) }}.
+
+    {% for attr in cls.attributes -%}
+    {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(71)|indent(9) }}
+    {% endfor -%}
+    \"""
     {%- if cls.abstract %}
     __metaclass__ = ABCMeta
+{##}
     {%- endif %}
 {##}
     {%- if cls.abstract %}
     @abstractmethod
     {%- endif %}
     def __init__(self{{ param_attrs(cls.attributes) }}, **kwargs):
-        \"""
-        {{ cls.brief|wordwrap(71)|indent(8) }}.
-
-        {{ cls.doc|wordwrap(71)|indent(8) }}.
-
-        {% for attr in cls.attributes -%}
-        {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(71)|indent(9) }}
-        {% endfor -%}
-        \"""
         {%- if cls.parent is not none %}
         super({{ cls.name|objectize }}, self).__init__(kwargs)
 {##}
@@ -822,7 +823,7 @@ def build():
         # Write output
         root = dirname(normpath(abspath(__file__)))
 
-        with open(join(root, 'n{}.py'.format(tpl)), 'w') as module:
+        with open(join(root, '{}.py'.format(tpl)), 'w') as module:
             module.write(rendered)
 
 

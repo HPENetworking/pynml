@@ -7,5 +7,5 @@ Internal Documentation Reference
 .. autosummary::
    :toctree: _reference
 
-   pynml
+   pynml.nml
    pynml.exceptions
