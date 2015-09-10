@@ -827,5 +827,8 @@ def build():
             module.write(rendered)
 
 
+__all__ = ['NML_SPEC']
+
+
 if __name__ == '__main__':
     build()
