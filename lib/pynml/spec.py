@@ -512,7 +512,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     {%- endif %}
     def __init__(self{{ param_attrs(cls.attributes) }}, **kwargs):
         {%- if cls.parent is not none %}
-        super({{ cls.name|objectize }}, self).__init__(kwargs)
+        super({{ cls.name|objectize }}, self).__init__(**kwargs)
 {##}
         {%- endif %}
         # Attributes
@@ -557,9 +557,9 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(71)|indent(9) }}
         \"""
         {%- if attr.validation is not none %}
-        if {{ attr.validation|format(attr.name) }}:
-            self._{{ attr.name }} = {{ attr.name }}
-        raise Attribute{{ attr.nml_attribute|objectize }}Error()
+        if not {{ attr.validation|format(attr.name) }}:
+            raise Attribute{{ attr.nml_attribute|objectize }}Error()
+        self._{{ attr.name }} = {{ attr.name }}
         {%- else %}
         self._{{ attr.name }} = {{ attr.name }}
         {%- endif %}
