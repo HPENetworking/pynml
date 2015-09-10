@@ -823,7 +823,7 @@ def build():
         # Write output
         root = dirname(normpath(abspath(__file__)))
 
-        with open(join(root, '{}.py'.format(tpl)), 'w') as module:
+        with open(join(root, 'n{}.py'.format(tpl)), 'w') as module:
             module.write(rendered)
 
 
