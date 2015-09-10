@@ -76,6 +76,9 @@ class NMLManager(object):
     def export_nml(self):
         pass
 
+    def export_graphviz(self):
+        pass
+
 
 __all__ = [
     'NMLManager'
