@@ -505,7 +505,6 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     \"""
     {%- if cls.abstract %}
     __metaclass__ = ABCMeta
-{##}
     {%- endif %}
 {##}
     {%- if cls.abstract %}
