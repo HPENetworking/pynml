@@ -95,9 +95,9 @@ class ExtendedNMLManager(NMLManager):
 
     def __init__(self, **kwargs):
         super(ExtendedNMLManager, self).__init__(**kwargs)
-        self.nodes = OrderedDict()
-        self.biport_node_map = OrderedDict()
-        self.bilink_biport_map = OrderedDict()
+        self._nodes = OrderedDict()
+        self._biport_node_map = OrderedDict()
+        self._bilink_biport_map = OrderedDict()
 
     def create_node(self, **kwargs):
         """
@@ -142,7 +142,7 @@ class ExtendedNMLManager(NMLManager):
         node.add_has_inbound_port(in_port)
         node.add_has_outbound_port(out_port)
 
-        self.biport_node_map[biport.identifier] = node
+        self._biport_node_map[biport.identifier] = node
         return biport
 
     def create_bilink(self, biport_a, biport_b, **kwargs):
@@ -177,7 +177,7 @@ class ExtendedNMLManager(NMLManager):
         biport_b._has_port_ports[0].add_is_sink(link_a_b)  # inbound port
         biport_b._has_port_ports[1].add_is_source(link_b_a)  # outbound port
 
-        self.bilink_biport_map[bilink.identifier] = (biport_a, biport_b)
+        self._bilink_biport_map[bilink.identifier] = (biport_a, biport_b)
         return bilink
 
     def nodes(self):
@@ -189,7 +189,7 @@ class ExtendedNMLManager(NMLManager):
 
         :return: An iterator to all nodes in the namespace.
         """
-        for node in self.nodes.values():
+        for node in self._nodes.values():
             yield node
 
     def biports(self):
@@ -222,9 +222,9 @@ class ExtendedNMLManager(NMLManager):
             :class:`BidirectionalLink`
          ).
         """
-        for bilink_id, (biport_a, biport_b) in self.bilink_biport_map.items():
-            node_a = self.biport_node_map[biport_a.identifier]
-            node_b = self.biport_node_map[biport_b.identifier]
+        for bilink_id, (biport_a, biport_b) in self._bilink_biport_map.items():
+            node_a = self._biport_node_map[biport_a.identifier]
+            node_b = self._biport_node_map[biport_b.identifier]
             yield (
                 (node_a, biport_a),
                 (node_b, biport_b),
