@@ -374,6 +374,42 @@ NML_SPEC = {
             'attributes': [
             ],
             'relations': [
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'hasNode',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: hasNode documentation'
+                },
+                {
+                    'name': 'hasInboundPort',
+                    'with': ['Port', 'Port Group'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: hasInboundPort documentation'
+                },
+                {
+                    'name': 'hasOutboundPort',
+                    'with': ['Port', 'Port Group'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: hasOutboundPort documentation'
+                },
+                {
+                    'name': 'hasService',
+                    'with': ['Switching Service'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: hasService documentation'
+                },
+                {
+                    'name': 'hasTopology',
+                    'with': ['Topology'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: hasTopology documentation'
+                }
             ]
         },
         {
