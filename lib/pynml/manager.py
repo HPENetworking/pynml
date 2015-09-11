@@ -40,8 +40,8 @@ class NMLManager(object):
         self.namespace = OrderedDict()
 
         self.nodes = OrderedDict()
-        self.biports = OrderedDict()
-        self.bilinks = OrderedDict()
+        self.biport_node_map = OrderedDict()
+        self.bilink_biport_map = OrderedDict()
 
         self.metadata = kwargs
 
@@ -101,7 +101,7 @@ class NMLManager(object):
         node.add_has_inbound_port(in_port)
         node.add_has_outbound_port(out_port)
 
-        self.biports[node.identifier] = biport
+        self.biport_node_map[biport.identifier] = node
         return biport
 
     def create_bilink(self, biport_a, biport_b, **kwargs):
@@ -136,7 +136,7 @@ class NMLManager(object):
         biport_b._has_port_ports[0].add_is_sink(link_a_b)  # inbound port
         biport_b._has_port_ports[1].add_is_source(link_b_a)  # outbound port
 
-        self.bilinks[(biport_a.identifier, biport_b.identifier)] = bilink
+        self.bilink_biport_map[bilink.identifier] = (biport_a, biport_b)
         return bilink
 
     def nodes(self):
@@ -162,8 +162,8 @@ class NMLManager(object):
         :return: An iterator to all biports in the namespace. The iterator is
          a tuple (:class:`Node`, :class:`BidirectionalPort`).
         """
-        for nodeid, biport in self.ports.items():
-            yield (self.nodes[nodeid], biport)
+        for biport_id, node in self.ports.items():
+            yield (node, self.namespace[biport_id])
 
     def bilinks(self):
         """
@@ -174,11 +174,21 @@ class NMLManager(object):
         namespace.
 
         :return: An iterator to all bilinks in the namespace. The iterator is
-         a tuple (:class:`Node`, :class:`BidirectionalPort`,
-         :class:`BidirectionalLink`).
+         a tuple of the form:
+         (
+            (:class:`Node` A, :class:`BidirectionalPort` A),
+            (:class:`Node` B, :class:`BidirectionalPort` B),
+            :class:`BidirectionalLink`
+         ).
         """
-        for (biport_aid, biport_bid), bilink in self.bilinks.items():
-            yield (self.biports[biport_aid], self.biports[biport_bid], bilink)
+        for bilink_id, (biport_a, biport_b) in self.bilink_biport_map.items():
+            node_a = self.biport_node_map[biport_a.identifier]
+            node_b = self.biport_node_map[biport_b.identifier]
+            yield (
+                (node_a, biport_a),
+                (node_b, biport_b),
+                self.namespace[bilink_id]
+            )
 
     def export_nml(self):
         """
