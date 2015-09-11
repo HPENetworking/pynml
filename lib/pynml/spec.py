@@ -497,6 +497,18 @@ NML_SPEC = {
             'attributes': [
             ],
             'relations': [
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'hasPort',
+                    'with': ['Port', 'Port Group'],
+                    'cardinality': '2',
+                    'doc': 'fixme: hasPort documentation'
+                }
             ]
         },
         {
