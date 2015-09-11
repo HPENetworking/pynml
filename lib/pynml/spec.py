@@ -531,8 +531,7 @@ NML_SPEC = {
                     'with': ['Link', 'Link Group'],
                     'cardinality': '2',
                     'doc': 'fixme: hasLink documentation'
-                },
-
+                }
             ]
         },
         {
@@ -542,6 +541,61 @@ NML_SPEC = {
             'doc': 'FIXME: Location documentation',
             'abstract': False,
             'attributes': [
+                {
+                    'name': 'longitude',
+                    'property': True,
+                    'nml_attribute': 'long',
+                    'semantic_type': 'WGS84',
+                    'type': 'str',
+                    'default': '\'FIXME: Provide default\'',
+                    'default_arg': 'None',
+                    'validation': None,
+                    'doc': 'Longitude in WGS84 and in decimal degrees.'
+                },
+                {
+                    'name': 'latitude',
+                    'property': True,
+                    'nml_attribute': 'lat',
+                    'semantic_type': 'WGS84',
+                    'type': 'str',
+                    'default': '\'FIXME: Provide default\'',
+                    'default_arg': 'None',
+                    'validation': None,
+                    'doc': 'Latitude in WGS84 and in decimal degrees.'
+                },
+                {
+                    'name': 'altitude',
+                    'property': True,
+                    'nml_attribute': 'alt',
+                    'semantic_type': 'WGS84',
+                    'type': 'str',
+                    'default': '\'FIXME: Provide default\'',
+                    'default_arg': 'None',
+                    'validation': None,
+                    'doc': 'Altitude in WGS84 and in decimal meters.'
+                },
+                {
+                    'name': 'unlocode',
+                    'property': True,
+                    'nml_attribute': 'unlocode',
+                    'semantic_type': 'UN/LOCODE',
+                    'type': 'str',
+                    'default': '\'FIXME: Provide default\'',
+                    'default_arg': 'None',
+                    'validation': None,
+                    'doc': 'UN/LOCODE location identifier.'
+                },
+                {
+                    'name': 'address',
+                    'property': True,
+                    'nml_attribute': 'address',
+                    'semantic_type': 'vCard ADR',
+                    'type': 'str',
+                    'default': '\'FIXME: Provide default\'',
+                    'default_arg': 'None',
+                    'validation': None,
+                    'doc': 'A vCard ADR property.'
+                }
             ],
             'relations': [
             ]
