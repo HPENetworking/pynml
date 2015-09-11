@@ -421,6 +421,36 @@ NML_SPEC = {
             'attributes': [
             ],
             'relations': [
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'hasLabelGroup',
+                    'with': ['Lifetime'],
+                    'cardinality': '1',
+                    'doc': 'FIXME: hasLabelGroup documentation'
+                },
+                {
+                    'name': 'hasPort',
+                    'with': ['Port', 'Port Group'],
+                    'cardinality': '+',
+                    'doc': 'fixme: hasPort documentation'
+                },
+                {
+                    'name': 'isSink',
+                    'with': ['LinkGroup'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: isSink documentation'
+                },
+                {
+                    'name': 'isSource',
+                    'with': ['LinkGroup'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: isSource documentation'
+                },
             ]
         },
         {
@@ -432,6 +462,30 @@ NML_SPEC = {
             'attributes': [
             ],
             'relations': [
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'hasLabelGroup',
+                    'with': ['Lifetime'],
+                    'cardinality': '1',
+                    'doc': 'FIXME: hasLabelGroup documentation'
+                },
+                {
+                    'name': 'hasLink',
+                    'with': ['Port', 'PortGroup'],
+                    'cardinality': '+',
+                    'doc': 'fixme: hasport documentation'
+                },
+                {
+                    'name': 'isSerialCompoundLink',
+                    'with': ['Port', 'Port Group'],
+                    'cardinality': '+',
+                    'doc': 'fixme: hasport documentation'
+                }
             ]
         },
         {
