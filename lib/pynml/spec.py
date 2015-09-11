@@ -520,6 +520,19 @@ NML_SPEC = {
             'attributes': [
             ],
             'relations': [
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'hasLink',
+                    'with': ['Link', 'Link Group'],
+                    'cardinality': '2',
+                    'doc': 'fixme: hasLink documentation'
+                },
+
             ]
         },
         {
