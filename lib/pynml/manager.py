@@ -38,11 +38,6 @@ class NMLManager(object):
 
     def __init__(self, **kwargs):
         self.namespace = OrderedDict()
-
-        self.nodes = OrderedDict()
-        self.biport_node_map = OrderedDict()
-        self.bilink_biport_map = OrderedDict()
-
         self.metadata = kwargs
 
     def register_object(self, obj):
@@ -57,6 +52,52 @@ class NMLManager(object):
                 'Object already in namespace {}'.format(obj.identifier)
             )
         self.namespace[obj.identifier] = obj
+
+    def export_nml(self):
+        """
+        Export current namespace as a NML XML format.
+
+        :rtype: :py:class:`xml.etree.ElementTree`
+        :return: The current NML namespace in NML XML format.
+        """
+        pass
+
+    def export_graphviz(self):
+        """
+        Export current namespace as a Graphviz graph.
+
+        :rtype: str
+        :return: The current NML namespace in Graphviz graph notation.
+        """
+        pass
+
+
+class ExtendedNMLManager(NMLManager):
+    """
+    Extended NMLManager object.
+
+    This object provides a additional helper interface that allow to easily
+    create common objects in a topology, their relations and iterate over them.
+    In particular, this object does the following assumptions that are not part
+    of the NML specification:
+
+    - A :class:`BidirectionalPort` is related to a single :class:`Node`.
+    - A :class:`BidirectionalLink` is related to a single
+      :class:`BidirectionalPort`.
+
+    If the above assumptions aren't true for your topologies please use the
+    standard :class:`NMLManager` or implement your own subclass.
+
+    The original proposed name for this class was
+    `NMLManagerWithCommonHelpersThatMakeSeveralAssumptions`, but it was too
+    long.
+    """
+
+    def __init__(self, **kwargs):
+        super(ExtendedNMLManager, self).__init__(**kwargs)
+        self.nodes = OrderedDict()
+        self.biport_node_map = OrderedDict()
+        self.bilink_biport_map = OrderedDict()
 
     def create_node(self, **kwargs):
         """
@@ -190,25 +231,8 @@ class NMLManager(object):
                 self.namespace[bilink_id]
             )
 
-    def export_nml(self):
-        """
-        Export current namespace as a NML XML format.
-
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The current NML namespace in NML XML format.
-        """
-        pass
-
-    def export_graphviz(self):
-        """
-        Export current namespace as a Graphviz graph.
-
-        :rtype: str
-        :return: The current NML namespace in Graphviz graph notation.
-        """
-        pass
-
 
 __all__ = [
-    'NMLManager'
+    'NMLManager',
+    'ExtendedNMLManager'
 ]
