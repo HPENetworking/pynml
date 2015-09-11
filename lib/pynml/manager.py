@@ -23,7 +23,10 @@ from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
 from collections import OrderedDict
+from xml.dom import minidom
+from xml.etree import ElementTree as etree  # noqa
 
+from .nml import NAMESPACES
 from .nml import Node, Port, BidirectionalPort, Link, BidirectionalLink
 
 
@@ -53,14 +56,25 @@ class NMLManager(object):
             )
         self.namespace[obj.identifier] = obj
 
-    def export_nml(self):
+    def export_nml(self, pretty=True):
         """
         Export current namespace as a NML XML format.
 
-        :rtype: :py:class:`xml.etree.ElementTree`
+        :param pretty: Pretty print the output XML.
+        :rtype: str
         :return: The current NML namespace in NML XML format.
         """
-        pass
+        root = etree.Element(
+            'namespace', nsmap=NAMESPACES
+        )
+        for obj_id, obj in self.namespace.items():
+            obj.as_nml(parent=root)
+
+        xml = etree.tostring(root, encoding='utf-8')
+        if pretty:
+            doc = minidom.parse(xml)
+            xml = doc.toprettyxml(indent='    ', encoding='utf-8')
+        return unicode(xml, 'utf-8')
 
     def export_graphviz(self):
         """
