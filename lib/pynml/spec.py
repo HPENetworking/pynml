@@ -44,6 +44,7 @@ NML_SPEC = {
             'attributes': [
                 {
                     'name': 'name',
+                    'property': True,
                     'nml_attribute': 'name',
                     'semantic_type': 'string',
                     'type': 'str',
@@ -60,6 +61,7 @@ NML_SPEC = {
                 },
                 {
                     'name': 'identifier',
+                    'property': True,
                     'nml_attribute': 'id',
                     'semantic_type': 'URI',
                     'type': 'str',
@@ -70,6 +72,7 @@ NML_SPEC = {
                 },
                 {
                     'name': 'version',
+                    'property': True,
                     'nml_attribute': 'version',
                     'semantic_type': 'timestamp',
                     'type': 'str',
@@ -146,6 +149,7 @@ NML_SPEC = {
             'attributes': [
                 {
                     'name': 'encoding',
+                    'property': True,
                     'nml_attribute': 'encoding',
                     'semantic_type': 'URI',
                     'type': 'str',
@@ -194,6 +198,7 @@ NML_SPEC = {
             'attributes': [
                 {
                     'name': 'encoding',
+                    'property': True,
                     'nml_attribute': 'encoding',
                     'semantic_type': 'URI',
                     'type': 'str',
@@ -235,6 +240,7 @@ NML_SPEC = {
             'attributes': [
                 {
                     'name': 'encoding',
+                    'property': True,
                     'nml_attribute': 'encoding',
                     'semantic_type': 'URI',
                     'type': 'str',
@@ -275,8 +281,37 @@ NML_SPEC = {
             'doc': 'FIXME: Service documentation',
             'abstract': False,
             'attributes': [
+                {
+                    'name': 'adaptation_function',
+                    'property': False,
+                    'nml_attribute': 'adaptationFunction',
+                    'semantic_type': None,
+                    'type': None,
+                    'default': None,
+                    'default_arg': None,
+                    'validation': None,
+                    'doc': 'Function for multiplexing'
+                }
             ],
             'relations': [
+                {
+                    'name': 'canProvidePort',
+                    'with': ['Port', 'PortGroup'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: canProvidePort documentation'
+                },
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'providesPort',
+                    'with': ['Port', 'PortGroup'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: providesPort documentation'
+                }
             ]
         },
         {
@@ -286,8 +321,37 @@ NML_SPEC = {
             'doc': 'FIXME: Service documentation',
             'abstract': False,
             'attributes': [
+                {
+                    'name': 'adaptation_function',
+                    'property': False,
+                    'nml_attribute': 'adaptationFunction',
+                    'semantic_type': None,
+                    'type': None,
+                    'default': None,
+                    'default_arg': None,
+                    'validation': None,
+                    'doc': 'Function for multiplexing'
+                }
             ],
             'relations': [
+                {
+                    'name': 'canProvidePort',
+                    'with': ['Port', 'PortGroup'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: canProvidePort documentation'
+                },
+                {
+                    'name': 'existsDuring',
+                    'with': ['Lifetime'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: existsDuring documentation'
+                },
+                {
+                    'name': 'providesPort',
+                    'with': ['Port', 'PortGroup'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: providesPort documentation'
+                }
             ]
         },
         {
@@ -295,7 +359,7 @@ NML_SPEC = {
             'parent': 'Network Object',
             'brief': 'FIXME: Group brief documentation',
             'doc': 'FIXME: Group documentation',
-            'abstract': False,
+            'abstract': True,
             'attributes': [
             ],
             'relations': [
@@ -517,9 +581,13 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- endif %}
         # Attributes
         {%- for attr in cls.attributes %}
+        {%- if attr.property %}
         if {{ attr.name }} is {{ attr.default_arg }}:
             {{ attr.name }} = {{ attr.default }}
         self.{{ attr.name }} = {{ attr.name }}
+        {%- else %}
+        self.{{ attr.name }} = {{ attr.name }}
+        {%- endif %}
 {##}
         {%- endfor %}
         # Relations
@@ -539,6 +607,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- endif %}
 {##}
     {%- for attr in cls.attributes %}
+    {%- if attr.property %}
     @property
     def {{ attr.name }}(self):
         \"""
@@ -564,6 +633,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         self._{{ attr.name }} = {{ attr.name }}
         {%- endif %}
 {##}
+    {%- endif %}
     {%- endfor %}
 
     {%- for rel in cls.relations %}
