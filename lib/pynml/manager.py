@@ -30,6 +30,28 @@ from .nml import NAMESPACES
 from .nml import Node, Port, BidirectionalPort, Link, BidirectionalLink
 
 
+GRAPHVIZ_TPL = """\
+graph G {{
+    // Style
+    graph [fontname="Verdana" fontsize=8]
+    node [fontname="Verdana" fontsize=7]
+    graph [nodesep=0.05 pad=0.0 margin=0.0 ranksep=0.25]
+    node [style=filled shape=box margin=0.05 width=0.25 height=0.25]
+
+    label="{namespace}"
+
+    // Nodes
+    {nodes}
+
+    // Ports
+    {ports}
+
+    // Links
+    {links}
+}}
+"""
+
+
 class NMLManager(object):
     """
     NML namespace manager.
@@ -247,6 +269,68 @@ class ExtendedNMLManager(NMLManager):
                 (node_b, biport_b),
                 self.namespace[bilink_id]
             )
+
+    def export_graphviz(self):
+        """
+        Graphiz export override. See :meth:`NMLManager.export_graphviz`.
+        """
+        # Get and index of all nodes
+        nodes_idx = list(self._nodes.values())
+
+        # Get an index of all biports
+        biports_per_node = OrderedDict()
+        for node, biport in self.biports():
+            if node.identifier not in biports_per_node:
+                biports_per_node[node.identifier] = []
+            biports_per_node[node.identifier].append(biport)
+
+        # Render
+        rdr_nodes = []
+        rdr_ports = []
+        rdr_links = []
+
+        # Render nodes and ports
+        for node_idx, node in enumerate(nodes_idx, 1):
+
+            # Render node
+            rdr_nodes.append('    subgraph clusterNode{} {{'.format(node_idx))
+            rdr_nodes.append('        label="{}"'.format(node.name))
+
+            # Render ports
+            if node.identifier in biports_per_node:
+                for port_idx, port in enumerate(
+                        biports_per_node[node.identifier], 1):
+                    rdr_nodes.append(
+                        '        n{}p{}'.format(node_idx, port_idx)
+                    )
+                    rdr_ports.append(
+                        '    n{0}p{1} [label="p{1}"]'.format(
+                            node_idx, port_idx
+                        )
+                    )
+
+            rdr_nodes.append('    }')
+            rdr_nodes.append('')
+
+        # Render links
+        for (node_a, biport_a), (node_b, biport_b), bilink in self.bilinks():
+            rdr_links.append(
+                'n{}p{} -- n{}p{}'.format(
+                    nodes_idx.index(node_a) + 1,
+                    biports_per_node[node_a.identifier].index(biport_a) + 1,
+                    nodes_idx.index(node_b) + 1,
+                    biports_per_node[node_b.identifier].index(biport_b) + 1,
+                )
+            )
+
+        # Render template
+        graph = GRAPHVIZ_TPL.format(
+            namespace=self.name,
+            nodes='\n    '.join(rdr_nodes),
+            ports='\n    '.join(rdr_ports),
+            links='\n    '.join(rdr_links)
+        )
+        return graph
 
 
 __all__ = [
