@@ -34,12 +34,14 @@ class NMLManager(object):
     """
     NML namespace manager.
 
+    :param str name: Name of this namespace.
     :var namespace: :py:class:`OrderedDict` with all NML objects registered.
      Use :meth:`register_object` to register new objects.
     :var metadata: Store all kwargs passed to the constructor.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, name='NML Namespace', **kwargs):
+        self.name = name
         self.namespace = OrderedDict()
         self.metadata = kwargs
 
@@ -125,6 +127,7 @@ class ExtendedNMLManager(NMLManager):
         """
         node = Node(**kwargs)
         self.register_object(node)
+        self._nodes[node.identifier] = node
         return node
 
     def create_biport(self, node, **kwargs):
@@ -217,7 +220,7 @@ class ExtendedNMLManager(NMLManager):
         :return: An iterator to all biports in the namespace. The iterator is
          a tuple (:class:`Node`, :class:`BidirectionalPort`).
         """
-        for biport_id, node in self.ports.items():
+        for biport_id, node in self._biport_node_map.items():
             yield (node, self.namespace[biport_id])
 
     def bilinks(self):
