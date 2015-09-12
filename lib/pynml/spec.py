@@ -549,7 +549,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None,
+                    'validation': None, # FIXME Add WGS84 validation
                     'doc': 'Longitude in WGS84 and in decimal degrees.'
                 },
                 {
@@ -560,7 +560,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None,
+                    'validation': None, # FIXME Add WGS84 validation
                     'doc': 'Latitude in WGS84 and in decimal degrees.'
                 },
                 {
@@ -571,7 +571,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None,
+                    'validation': None, # FIXME Add WGS84 validation
                     'doc': 'Altitude in WGS84 and in decimal meters.'
                 },
                 {
@@ -582,7 +582,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None,
+                    'validation': None, # FIXME Add UN/LOCODE validation
                     'doc': 'UN/LOCODE location identifier.'
                 },
                 {
@@ -593,7 +593,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None,
+                    'validation': None, # FIXME Add vCard ADR validation
                     'doc': 'A vCard ADR property.'
                 }
             ],
@@ -607,6 +607,40 @@ NML_SPEC = {
             'doc': 'FIXME: Lifetime documentation',
             'abstract': False,
             'attributes': [
+                {
+                    'name': 'start',
+                    'property': True,
+                    'nml_attribute': 'start',
+                    'semantic_type': 'timestamp',
+                    'type': 'str',
+                    'default': (
+                        'datetime.now().replace(microsecond=0).isoformat()'
+                    ),
+                    'default_arg': 'None',
+                    'validation': None,  # FIXME Add ISO 8601 validation
+                    'doc': (
+                        'Date and time formatted as ISO 8601 calendar date '
+                        'compact representation with UTC timezone '
+                        '(YYYYMMDDThhmmssZ)'
+                        )
+                },
+                {
+                    'name': 'end',
+                    'property': True,
+                    'nml_attribute': 'end',
+                    'semantic_type': 'timestamp',
+                    'type': 'str',
+                    'default': (
+                        'datetime.now().replace(microsecond=0).isoformat()'
+                    ),
+                    'default_arg': 'None',
+                    'validation': None,  # FIXME Add ISO 8601 validation
+                    'doc': (
+                        'Date and time formatted as ISO 8601 calendar date '
+                        'compact representation with UTC timezone '
+                        '(YYYYMMDDThhmmssZ)'
+                        )
+                }
             ],
             'relations': [
             ]
@@ -618,6 +652,28 @@ NML_SPEC = {
             'doc': 'FIXME: Label documentation',
             'abstract': False,
             'attributes': [
+                {
+                    'name': 'labeltype',
+                    'property': False,
+                    'nml_attribute': 'labeltype',
+                    'semantic_type': None,
+                    'type': None,
+                    'default': None,
+                    'default_arg': None,
+                    'validation': None,
+                    'doc': 'A technology-specific labelset'
+                },
+                {
+                    'name': 'value',
+                    'property': False,
+                    'nml_attribute': 'value',
+                    'semantic_type': None,
+                    'type': None,
+                    'default': None,
+                    'default_arg': None,
+                    'validation': None,
+                    'doc': 'A specific value taken from a labelset'
+                }
             ],
             'relations': [
             ]
@@ -629,6 +685,28 @@ NML_SPEC = {
             'doc': 'FIXME: Group documentation',
             'abstract': False,
             'attributes': [
+                {
+                    'name': 'labeltype',
+                    'property': False,
+                    'nml_attribute': 'labeltype',
+                    'semantic_type': None,
+                    'type': None,
+                    'default': None,
+                    'default_arg': None,
+                    'validation': None,
+                    'doc': 'A technology-specific labelset'
+                },
+                {
+                    'name': 'value',
+                    'property': False,
+                    'nml_attribute': 'value',
+                    'semantic_type': None,
+                    'type': None,
+                    'default': None,
+                    'default_arg': None,
+                    'validation': None,
+                    'doc': 'A specific value taken from a labelset'
+                }
             ],
             'relations': [
             ]
