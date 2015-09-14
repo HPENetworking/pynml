@@ -23,26 +23,48 @@ from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
 from collections import OrderedDict
+from xml.dom import minidom
+from xml.etree import ElementTree as etree  # noqa
 
+from .nml import NAMESPACES
 from .nml import Node, Port, BidirectionalPort, Link, BidirectionalLink
+
+
+GRAPHVIZ_TPL = """\
+graph G {{
+    // Style
+    graph [fontname="Verdana" fontsize=8]
+    node [fontname="Verdana" fontsize=7]
+    graph [nodesep=0.05 pad=0.0 margin=0.0 ranksep=0.25]
+    node [style=filled shape=box margin=0.05 width=0.25 height=0.25]
+
+    label="{namespace}"
+
+    // Nodes
+    {nodes}
+
+    // Ports
+    {ports}
+
+    // Links
+    {links}
+}}
+"""
 
 
 class NMLManager(object):
     """
     NML namespace manager.
 
+    :param str name: Name of this namespace.
     :var namespace: :py:class:`OrderedDict` with all NML objects registered.
      Use :meth:`register_object` to register new objects.
     :var metadata: Store all kwargs passed to the constructor.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, name='NML Namespace', **kwargs):
+        self.name = name
         self.namespace = OrderedDict()
-
-        self.nodes = OrderedDict()
-        self.biports = OrderedDict()
-        self.bilinks = OrderedDict()
-
         self.metadata = kwargs
 
     def register_object(self, obj):
@@ -58,6 +80,63 @@ class NMLManager(object):
             )
         self.namespace[obj.identifier] = obj
 
+    def export_nml(self, pretty=True):
+        """
+        Export current namespace as a NML XML format.
+
+        :param pretty: Pretty print the output XML.
+        :rtype: str
+        :return: The current NML namespace in NML XML format.
+        """
+        root = etree.Element(
+            'namespace', nsmap=NAMESPACES
+        )
+        for obj_id, obj in self.namespace.items():
+            obj.as_nml(parent=root)
+
+        xml = etree.tostring(root, encoding='utf-8')
+        if pretty:
+            doc = minidom.parse(xml)
+            xml = doc.toprettyxml(indent='    ', encoding='utf-8')
+        return unicode(xml, 'utf-8')
+
+    def export_graphviz(self):
+        """
+        Export current namespace as a Graphviz graph.
+
+        :rtype: str
+        :return: The current NML namespace in Graphviz graph notation.
+        """
+        pass
+
+
+class ExtendedNMLManager(NMLManager):
+    """
+    Extended NMLManager object.
+
+    This object provides a additional helper interface that allow to easily
+    create common objects in a topology, their relations and iterate over them.
+    In particular, this object does the following assumptions that are not part
+    of the NML specification:
+
+    - A :class:`BidirectionalPort` is related to a single :class:`Node`.
+    - A :class:`BidirectionalLink` is related to a single
+      :class:`BidirectionalPort`.
+
+    If the above assumptions aren't true for your topologies please use the
+    standard :class:`NMLManager` or implement your own subclass.
+
+    The original proposed name for this class was
+    `NMLManagerWithCommonHelpersThatMakeSeveralAssumptions`, but it was too
+    long.
+    """
+
+    def __init__(self, **kwargs):
+        super(ExtendedNMLManager, self).__init__(**kwargs)
+        self._nodes = OrderedDict()
+        self._biport_node_map = OrderedDict()
+        self._bilink_biport_map = OrderedDict()
+
     def create_node(self, **kwargs):
         """
         Helper to create and register a :class:`Node`.
@@ -70,6 +149,7 @@ class NMLManager(object):
         """
         node = Node(**kwargs)
         self.register_object(node)
+        self._nodes[node.identifier] = node
         return node
 
     def create_biport(self, node, **kwargs):
@@ -96,12 +176,12 @@ class NMLManager(object):
         self.register_object(out_port)
 
         # Relate objects
-        biport.set_has_port(in_port, out_port)
+        # biport.set_has_port(in_port, out_port)
 
         node.add_has_inbound_port(in_port)
         node.add_has_outbound_port(out_port)
 
-        self.biports[node.identifier] = biport
+        self._biport_node_map[biport.identifier] = node
         return biport
 
     def create_bilink(self, biport_a, biport_b, **kwargs):
@@ -128,15 +208,15 @@ class NMLManager(object):
         self.register_object(link_b_a)
 
         # Relate objects
-        bilink.set_has_link(link_a_b, link_b_a)
+        # bilink.set_has_link(link_a_b, link_b_a)
 
-        biport_a._has_port_ports[0].add_is_sink(link_b_a)  # inbound port
-        biport_a._has_port_ports[1].add_is_source(link_a_b)  # outbound port
+        # biport_a._has_port_ports[0].add_is_sink(link_b_a)  # inbound port
+        # biport_a._has_port_ports[1].add_is_source(link_a_b)  # outbound port
 
-        biport_b._has_port_ports[0].add_is_sink(link_a_b)  # inbound port
-        biport_b._has_port_ports[1].add_is_source(link_b_a)  # outbound port
+        # biport_b._has_port_ports[0].add_is_sink(link_a_b)  # inbound port
+        # biport_b._has_port_ports[1].add_is_source(link_b_a)  # outbound port
 
-        self.bilinks[(biport_a.identifier, biport_b.identifier)] = bilink
+        self._bilink_biport_map[bilink.identifier] = (biport_a, biport_b)
         return bilink
 
     def nodes(self):
@@ -148,7 +228,7 @@ class NMLManager(object):
 
         :return: An iterator to all nodes in the namespace.
         """
-        for node in self.nodes.values():
+        for node in self._nodes.values():
             yield node
 
     def biports(self):
@@ -162,8 +242,8 @@ class NMLManager(object):
         :return: An iterator to all biports in the namespace. The iterator is
          a tuple (:class:`Node`, :class:`BidirectionalPort`).
         """
-        for nodeid, biport in self.ports.items():
-            yield (self.nodes[nodeid], biport)
+        for biport_id, node in self._biport_node_map.items():
+            yield (node, self.namespace[biport_id])
 
     def bilinks(self):
         """
@@ -174,31 +254,86 @@ class NMLManager(object):
         namespace.
 
         :return: An iterator to all bilinks in the namespace. The iterator is
-         a tuple (:class:`Node`, :class:`BidirectionalPort`,
-         :class:`BidirectionalLink`).
+         a tuple of the form:
+         (
+            (:class:`Node` A, :class:`BidirectionalPort` A),
+            (:class:`Node` B, :class:`BidirectionalPort` B),
+            :class:`BidirectionalLink`
+         ).
         """
-        for (biport_aid, biport_bid), bilink in self.bilinks.items():
-            yield (self.biports[biport_aid], self.biports[biport_bid], bilink)
-
-    def export_nml(self):
-        """
-        Export current namespace as a NML XML format.
-
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The current NML namespace in NML XML format.
-        """
-        pass
+        for bilink_id, (biport_a, biport_b) in self._bilink_biport_map.items():
+            node_a = self._biport_node_map[biport_a.identifier]
+            node_b = self._biport_node_map[biport_b.identifier]
+            yield (
+                (node_a, biport_a),
+                (node_b, biport_b),
+                self.namespace[bilink_id]
+            )
 
     def export_graphviz(self):
         """
-        Export current namespace as a Graphviz graph.
-
-        :rtype: str
-        :return: The current NML namespace in Graphviz graph notation.
+        Graphiz export override. See :meth:`NMLManager.export_graphviz`.
         """
-        pass
+        # Get and index of all nodes
+        nodes_idx = list(self._nodes.values())
+
+        # Get an index of all biports
+        biports_per_node = OrderedDict()
+        for node, biport in self.biports():
+            if node.identifier not in biports_per_node:
+                biports_per_node[node.identifier] = []
+            biports_per_node[node.identifier].append(biport)
+
+        # Render
+        rdr_nodes = []
+        rdr_ports = []
+        rdr_links = []
+
+        # Render nodes and ports
+        for node_idx, node in enumerate(nodes_idx, 1):
+
+            # Render node
+            rdr_nodes.append('    subgraph clusterNode{} {{'.format(node_idx))
+            rdr_nodes.append('        label="{}"'.format(node.name))
+
+            # Render ports
+            if node.identifier in biports_per_node:
+                for port_idx, port in enumerate(
+                        biports_per_node[node.identifier], 1):
+                    rdr_nodes.append(
+                        '        n{}p{}'.format(node_idx, port_idx)
+                    )
+                    rdr_ports.append(
+                        '    n{0}p{1} [label="p{1}"]'.format(
+                            node_idx, port_idx
+                        )
+                    )
+
+            rdr_nodes.append('    }')
+            rdr_nodes.append('')
+
+        # Render links
+        for (node_a, biport_a), (node_b, biport_b), bilink in self.bilinks():
+            rdr_links.append(
+                'n{}p{} -- n{}p{}'.format(
+                    nodes_idx.index(node_a) + 1,
+                    biports_per_node[node_a.identifier].index(biport_a) + 1,
+                    nodes_idx.index(node_b) + 1,
+                    biports_per_node[node_b.identifier].index(biport_b) + 1,
+                )
+            )
+
+        # Render template
+        graph = GRAPHVIZ_TPL.format(
+            namespace=self.name,
+            nodes='\n    '.join(rdr_nodes),
+            ports='\n    '.join(rdr_ports),
+            links='\n    '.join(rdr_links)
+        )
+        return graph
 
 
 __all__ = [
-    'NMLManager'
+    'NMLManager',
+    'ExtendedNMLManager'
 ]
