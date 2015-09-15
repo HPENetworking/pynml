@@ -2874,6 +2874,8 @@ class Location(object):
     An instance of this class can be related to other objects that are to be
     represented as being present in the same place.
 
+    :param str name: Human readable string name.
+    :param str identifier: Persistent globally unique URI.
     :param str longitude: Longitude in WGS84 and in decimal degrees.
     :param str latitude: Latitude in WGS84 and in decimal degrees.
     :param str altitude: Altitude in WGS84 and in decimal meters.
@@ -2882,12 +2884,24 @@ class Location(object):
     """
 
     def __init__(
-            self, longitude=None, latitude=None, altitude=None, unlocode=None,
-            address=None, **kwargs):
+            self, name=None, identifier=None, longitude=None, latitude=None,
+            altitude=None, unlocode=None, address=None, **kwargs):
         self.attributes = []
         self.relations = OrderedDict()
 
         # Attributes
+        self.attributes.append('name')
+        if name is None:
+            name = '{}<{}>'.format(
+                self.__class__.__name__, str(id(self))
+            )
+        self.name = name
+
+        self.attributes.append('identifier')
+        if identifier is None:
+            identifier = str(id(self))
+        self.identifier = identifier
+
         self.attributes.append('longitude')
         if longitude is None:
             longitude = 'FIXME: Provide default'
@@ -2914,6 +2928,48 @@ class Location(object):
         self.address = address
 
         self.metadata = kwargs
+
+    @property
+    def name(self):
+        """
+        Get attribute name.
+
+        :return: Human readable string name.
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """
+        Set attribute name.
+
+        :param str name: Human readable string name.
+        """
+        if not name:
+            raise AttributeNameError()
+        self._name = name
+
+    @property
+    def identifier(self):
+        """
+        Get attribute identifier.
+
+        :return: Persistent globally unique URI.
+        :rtype: str
+        """
+        return self._identifier
+
+    @identifier.setter
+    def identifier(self, identifier):
+        """
+        Set attribute identifier.
+
+        :param str identifier: Persistent globally unique URI.
+        """
+        if not is_valid_uri(identifier):
+            raise AttributeIdError()
+        self._identifier = identifier
 
     @property
     def longitude(self):
@@ -3025,6 +3081,8 @@ class Location(object):
         this = tree_element(self, this, parent)
 
         # Attributes
+        this.attrib['name'] = self._name
+        this.attrib['id'] = self._identifier
         this.attrib['long'] = self._longitude
         this.attrib['lat'] = self._latitude
         this.attrib['alt'] = self._altitude

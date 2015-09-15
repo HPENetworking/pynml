@@ -602,6 +602,34 @@ NML_SPEC = {
             'abstract': False,
             'attributes': [
                 {
+                    'name': 'name',
+                    'property': True,
+                    'nml_attribute': 'name',
+                    'semantic_type': 'string',
+                    'type': 'str',
+                    'default': (
+                        '\'{}<{}>\'.format(\n'
+                        '                '
+                        'self.__class__.__name__, str(id(self))\n'
+                        '            '
+                        ')'
+                    ),
+                    'default_arg': 'None',
+                    'validation': '%s',
+                    'doc': 'Human readable string name'
+                },
+                {
+                    'name': 'identifier',
+                    'property': True,
+                    'nml_attribute': 'id',
+                    'semantic_type': 'URI',
+                    'type': 'str',
+                    'default': 'str(id(self))',
+                    'default_arg': 'None',
+                    'validation': 'is_valid_uri(%s)',
+                    'doc': 'Persistent globally unique URI'
+                },
+                {
                     'name': 'longitude',
                     'property': True,
                     'nml_attribute': 'long',
