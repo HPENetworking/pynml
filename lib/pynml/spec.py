@@ -485,7 +485,7 @@ NML_SPEC = {
                     'name': 'hasPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'fixme: hasPort documentation'
+                    'doc': 'FIXME: hasPort documentation'
                 },
                 {
                     'name': 'isSink',
@@ -526,13 +526,13 @@ NML_SPEC = {
                     'name': 'hasLink',
                     'with': ['Port', 'PortGroup'],
                     'cardinality': '+',
-                    'doc': 'fixme: hasport documentation'
+                    'doc': 'FIXME: hasport documentation'
                 },
                 {
                     'name': 'isSerialCompoundLink',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'fixme: hasport documentation'
+                    'doc': 'FIXME: hasport documentation'
                 }
             ]
         },
@@ -559,7 +559,7 @@ NML_SPEC = {
                     'name': 'hasPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '2',
-                    'doc': 'fixme: hasPort documentation'
+                    'doc': 'FIXME: hasPort documentation'
                 }
             ]
         },
@@ -586,7 +586,7 @@ NML_SPEC = {
                     'name': 'hasLink',
                     'with': ['Link', 'Link Group'],
                     'cardinality': '2',
-                    'doc': 'fixme: hasLink documentation'
+                    'doc': 'FIXME: hasLink documentation'
                 }
             ]
         },
