@@ -177,7 +177,7 @@ class NetworkObject(object):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -209,7 +209,7 @@ class NetworkObject(object):
         """
         Check `isAlias` relation with given `network_object` object.
 
-        FIXME: Document isAlias relation..
+        FIXME: Document isAlias relation.
 
         :param network_object: Object to validate relation `isAlias` with.
         :type network_object: NetworkObject
@@ -241,7 +241,7 @@ class NetworkObject(object):
         """
         Check `locatedAt` relation with given `location` object.
 
-        FIXME: Document locatedAt relation..
+        FIXME: Document locatedAt relation.
 
         :param location: Object to validate relation `locatedAt` with.
         :type location: Location
@@ -340,7 +340,7 @@ class Node(NetworkObject):
         """
         Check `hasInboundPort` relation with given `port` object.
 
-        FIXME: Document hasInboundPort relation..
+        FIXME: Document hasInboundPort relation.
 
         :param port: Object to validate relation `hasInboundPort` with.
         :type port: Port or PortGroup
@@ -374,7 +374,7 @@ class Node(NetworkObject):
         """
         Check `hasOutboundPort` relation with given `port` object.
 
-        FIXME: Document hasOutboundPort relation..
+        FIXME: Document hasOutboundPort relation.
 
         :param port: Object to validate relation `hasOutboundPort` with.
         :type port: Port or PortGroup
@@ -408,7 +408,7 @@ class Node(NetworkObject):
         """
         Check `hasService` relation with given `switching_service` object.
 
-        FIXME: Document hasService relation..
+        FIXME: Document hasService relation.
 
         :param switching_service: Object to validate relation `hasService`
          with.
@@ -442,7 +442,7 @@ class Node(NetworkObject):
         """
         Check `implementedBy` relation with given `node` object.
 
-        FIXME: Document implementedBy relation..
+        FIXME: Document implementedBy relation.
 
         :param node: Object to validate relation `implementedBy` with.
         :type node: Node
@@ -569,7 +569,7 @@ class Port(NetworkObject):
         """
         Check `hasLabel` relation with given `label` object.
 
-        FIXME: Document hasLabel relation..
+        FIXME: Document hasLabel relation.
 
         :param label: Object to validate relation `hasLabel` with.
         :type label: Label
@@ -602,7 +602,7 @@ class Port(NetworkObject):
         """
         Check `hasService` relation with given `adaptation_service` object.
 
-        FIXME: Document hasService relation..
+        FIXME: Document hasService relation.
 
         :param adaptation_service: Object to validate relation `hasService`
          with.
@@ -638,7 +638,7 @@ class Port(NetworkObject):
         """
         Check `isSink` relation with given `link` object.
 
-        FIXME: Document isSink relation..
+        FIXME: Document isSink relation.
 
         :param link: Object to validate relation `isSink` with.
         :type link: Link
@@ -670,7 +670,7 @@ class Port(NetworkObject):
         """
         Check `isSource` relation with given `link` object.
 
-        FIXME: Document isSource relation..
+        FIXME: Document isSource relation.
 
         :param link: Object to validate relation `isSource` with.
         :type link: Link
@@ -795,7 +795,7 @@ class Link(NetworkObject):
         """
         Check `hasLabel` relation with given `label` object.
 
-        FIXME: Document hasLabel relation..
+        FIXME: Document hasLabel relation.
 
         :param label: Object to validate relation `hasLabel` with.
         :type label: Label
@@ -933,7 +933,7 @@ class SwitchingService(Service):
         """
         Check `hasInboundPort` relation with given `port` object.
 
-        FIXME: Document hasInboundPort relation..
+        FIXME: Document hasInboundPort relation.
 
         :param port: Object to validate relation `hasInboundPort` with.
         :type port: Port or PortGroup
@@ -967,7 +967,7 @@ class SwitchingService(Service):
         """
         Check `hasOutboundPort` relation with given `port` object.
 
-        FIXME: Document hasOutboundPort relation..
+        FIXME: Document hasOutboundPort relation.
 
         :param port: Object to validate relation `hasOutboundPort` with.
         :type port: Port or PortGroup
@@ -1001,7 +1001,7 @@ class SwitchingService(Service):
         """
         Check `providesLink` relation with given `link` object.
 
-        FIXME: Document providesLink relation..
+        FIXME: Document providesLink relation.
 
         :param link: Object to validate relation `providesLink` with.
         :type link: Link or LinkGroup
@@ -1100,7 +1100,7 @@ class AdaptationService(Service):
         """
         Check `canProvidePort` relation with given `port` object.
 
-        FIXME: Document canProvidePort relation..
+        FIXME: Document canProvidePort relation.
 
         :param port: Object to validate relation `canProvidePort` with.
         :type port: Port or PortGroup
@@ -1134,7 +1134,7 @@ class AdaptationService(Service):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -1166,7 +1166,7 @@ class AdaptationService(Service):
         """
         Check `providesPort` relation with given `port` object.
 
-        FIXME: Document providesPort relation..
+        FIXME: Document providesPort relation.
 
         :param port: Object to validate relation `providesPort` with.
         :type port: Port or PortGroup
@@ -1265,7 +1265,7 @@ class DeAdaptationService(Service):
         """
         Check `canProvidePort` relation with given `port` object.
 
-        FIXME: Document canProvidePort relation..
+        FIXME: Document canProvidePort relation.
 
         :param port: Object to validate relation `canProvidePort` with.
         :type port: Port or PortGroup
@@ -1299,7 +1299,7 @@ class DeAdaptationService(Service):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -1331,7 +1331,7 @@ class DeAdaptationService(Service):
         """
         Check `providesPort` relation with given `port` object.
 
-        FIXME: Document providesPort relation..
+        FIXME: Document providesPort relation.
 
         :param port: Object to validate relation `providesPort` with.
         :type port: Port or PortGroup
@@ -1459,7 +1459,7 @@ class Topology(Group):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -1491,7 +1491,7 @@ class Topology(Group):
         """
         Check `hasNode` relation with given `lifetime` object.
 
-        FIXME: Document hasNode relation..
+        FIXME: Document hasNode relation.
 
         :param lifetime: Object to validate relation `hasNode` with.
         :type lifetime: Lifetime
@@ -1523,7 +1523,7 @@ class Topology(Group):
         """
         Check `hasInboundPort` relation with given `port` object.
 
-        FIXME: Document hasInboundPort relation..
+        FIXME: Document hasInboundPort relation.
 
         :param port: Object to validate relation `hasInboundPort` with.
         :type port: Port or PortGroup
@@ -1557,7 +1557,7 @@ class Topology(Group):
         """
         Check `hasOutboundPort` relation with given `port` object.
 
-        FIXME: Document hasOutboundPort relation..
+        FIXME: Document hasOutboundPort relation.
 
         :param port: Object to validate relation `hasOutboundPort` with.
         :type port: Port or PortGroup
@@ -1591,7 +1591,7 @@ class Topology(Group):
         """
         Check `hasService` relation with given `switching_service` object.
 
-        FIXME: Document hasService relation..
+        FIXME: Document hasService relation.
 
         :param switching_service: Object to validate relation `hasService`
          with.
@@ -1625,7 +1625,7 @@ class Topology(Group):
         """
         Check `hasTopology` relation with given `topology` object.
 
-        FIXME: Document hasTopology relation..
+        FIXME: Document hasTopology relation.
 
         :param topology: Object to validate relation `hasTopology` with.
         :type topology: Topology
@@ -1739,7 +1739,7 @@ class PortGroup(Group):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -1771,7 +1771,7 @@ class PortGroup(Group):
         """
         Check `hasLabelGroup` relation with given `lifetime` object.
 
-        FIXME: Document hasLabelGroup relation..
+        FIXME: Document hasLabelGroup relation.
 
         :param lifetime: Object to validate relation `hasLabelGroup` with.
         :type lifetime: Lifetime
@@ -1804,7 +1804,7 @@ class PortGroup(Group):
         """
         Check `hasPort` relation with given `port` object.
 
-        FIXME: Document hasPort relation..
+        FIXME: Document hasPort relation.
 
         :param port: Object to validate relation `hasPort` with.
         :type port: Port or PortGroup
@@ -1838,7 +1838,7 @@ class PortGroup(Group):
         """
         Check `isSink` relation with given `link_group` object.
 
-        FIXME: Document isSink relation..
+        FIXME: Document isSink relation.
 
         :param link_group: Object to validate relation `isSink` with.
         :type link_group: LinkGroup
@@ -1870,7 +1870,7 @@ class PortGroup(Group):
         """
         Check `isSource` relation with given `link_group` object.
 
-        FIXME: Document isSource relation..
+        FIXME: Document isSource relation.
 
         :param link_group: Object to validate relation `isSource` with.
         :type link_group: LinkGroup
@@ -1975,7 +1975,7 @@ class LinkGroup(Group):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -2007,7 +2007,7 @@ class LinkGroup(Group):
         """
         Check `hasLabelGroup` relation with given `lifetime` object.
 
-        FIXME: Document hasLabelGroup relation..
+        FIXME: Document hasLabelGroup relation.
 
         :param lifetime: Object to validate relation `hasLabelGroup` with.
         :type lifetime: Lifetime
@@ -2040,7 +2040,7 @@ class LinkGroup(Group):
         """
         Check `hasLink` relation with given `port` object.
 
-        FIXME: Document hasLink relation..
+        FIXME: Document hasLink relation.
 
         :param port: Object to validate relation `hasLink` with.
         :type port: Port or PortGroup
@@ -2074,7 +2074,7 @@ class LinkGroup(Group):
         """
         Check `isSerialCompoundLink` relation with given `port` object.
 
-        FIXME: Document isSerialCompoundLink relation..
+        FIXME: Document isSerialCompoundLink relation.
 
         :param port: Object to validate relation `isSerialCompoundLink` with.
         :type port: Port or PortGroup
@@ -2174,7 +2174,7 @@ class BidirectionalPort(Group):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -2206,7 +2206,7 @@ class BidirectionalPort(Group):
         """
         Check `hasPort` relation with given `port` object.
 
-        FIXME: Document hasPort relation..
+        FIXME: Document hasPort relation.
 
         :param port: Object to validate relation `hasPort` with.
         :type port: Port or PortGroup
@@ -2293,7 +2293,7 @@ class BidirectionalLink(Group):
         """
         Check `existsDuring` relation with given `lifetime` object.
 
-        FIXME: Document existsDuring relation..
+        FIXME: Document existsDuring relation.
 
         :param lifetime: Object to validate relation `existsDuring` with.
         :type lifetime: Lifetime
@@ -2325,7 +2325,7 @@ class BidirectionalLink(Group):
         """
         Check `hasLink` relation with given `link` object.
 
-        FIXME: Document hasLink relation..
+        FIXME: Document hasLink relation.
 
         :param link: Object to validate relation `hasLink` with.
         :type link: Link or LinkGroup
