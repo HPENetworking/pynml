@@ -401,7 +401,7 @@ NML_SPEC = {
             'parent': 'Network Object',
             'brief': 'A collection of objects',
             'doc': (
-                'Any object can be part of a Group, even another Group'
+                'Any object can be part of a Group, even another Group. '
                 'An object can be part of multiple Groups'
             ),
             'abstract': True,
@@ -883,7 +883,9 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     {{ cls.brief|wordwrap(75)|indent(4) }}.
 
     {{ cls.doc|wordwrap(75)|indent(4) }}.
-
+    {%- if cls.attributes %}
+{##}
+    {%- endif %}
     {% for attr in cls.attributes -%}
     {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(75)|indent(5) }}
     {% endfor -%}
