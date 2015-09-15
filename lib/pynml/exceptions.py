@@ -28,168 +28,170 @@ class NMLException(Exception):
     Base NML Exception class.
     """
     def __str__(self):
-        return self.__class__.__doc__.strip().replace('\n', ' ')
+        return ' '.join(self.__class__.__doc__.split())
 
     def __repr__(self):
         return repr(str(self))
 
 
-class VersionError(NMLException):
+class RelationExistsDuringError(NMLException):
     """
-    Version should be used only for objects of the Topology class.
-    """
-
-
-class CanProvidePortError(NMLException):
-    """
-    A Service canProvidePort relation must relate it with an object of type
-    Port or PortGroup.
+    A existsDuring relation must relate with objects of type Lifetime.
     """
 
 
-class ExistsDuringError(NMLException):
+class RelationIsAliasError(NMLException):
     """
-    A NetworkObject existsDuring relation must relate it with an object of
-    type Lifetime.
-    """
-
-
-class HasInboundPortError(NMLException):
-    """
-    A NetworkObject hasInboundPort relation must relate it with an object of
-    type Port or PortGroup.
+    A isAlias relation must relate with objects of type NetworkObject.
     """
 
 
-class HasLabelError(NMLException):
+class RelationLocatedAtError(NMLException):
     """
-    A Link hasLabel relation must relate it with an object of type Label or
-    Label.
-    """
-
-
-class HasLabelGroupError(NMLException):
-    """
-    A LinkGroup hasLabelGroup relation must relate it with an object of type
-    LabelGroup or LabelGroup.
+    A locatedAt relation must relate with objects of type Location.
     """
 
 
-class HasLinkError(NMLException):
+class RelationHasInboundPortError(NMLException):
     """
-    A Group hasLink relation must relate it with an object of type Link or
-    LinkGroup.
-    """
-
-
-class HasNodeError(NMLException):
-    """
-    A NetworkObject hasNode relation must relate it with an object of type
-    Node.
-    """
-
-
-class HasOutboundPortError(NMLException):
-    """
-    A NetworkObject hasOutboundPort relation must relate it with an object of
-    type Port or PortGroup.
-    """
-
-
-class HasPortError(NMLException):
-    """
-    A Group hasPort relation must relate it with an object of type Port or
+    A hasInboundPort relation must relate with objects of type Port or
     PortGroup.
     """
 
 
-class HasServiceError(NMLException):
+class RelationHasOutboundPortError(NMLException):
     """
-    A NetworkObject hasService relation must relate it with an object of type
-    Service.
-    """
-
-
-class HasTopologyError(NMLException):
-    """
-    A NetworkObject hasTopology relation must relate it with an object of type
-    Topology.
+    A hasOutboundPort relation must relate with objects of type Port or
+    PortGroup.
     """
 
 
-class ImplementedByError(NMLException):
+class RelationHasServiceError(NMLException):
     """
-    A NetworkObject implementedBy relation must relate it with an object of
-    type NetworkObject.
-    """
-
-
-class IsAliasError(NMLException):
-    """
-    A isAlias relation must relate an object with one of the same type.
+    A hasService relation must relate with objects of type SwitchingService.
     """
 
 
-class IsSinkError(NMLException):
+class RelationImplementedByError(NMLException):
     """
-    A NetworkObject isSink relation must relate it with an object of type Link
-    or LinkGroup.
-    """
-
-
-class IsSourceError(NMLException):
-    """
-    A NetworkObject isSource relation must relate it with an object of type
-    Link or LinkGroup.
+    A implementedBy relation must relate with objects of type Node.
     """
 
 
-class LocatedAtError(NMLException):
+class RelationHasLabelError(NMLException):
     """
-    A NetworkObject locatedAt relation must relate it with an object of type
-    Location.
-    """
-
-
-class ProvidesLinkError(NMLException):
-    """
-    A Service providesLink relation must relate it with an object of type Link
-    or LinkGroup.
+    A hasLabel relation must relate with objects of type Label.
     """
 
 
-class ProvidesPortError(NMLException):
+class RelationIsSinkError(NMLException):
     """
-    A Service providesPort relation must relate it with an object of type Port
-    or PortGroup.
+    A isSink relation must relate with objects of type LinkGroup.
     """
 
 
-class IdError(NMLException):
+class RelationIsSourceError(NMLException):
     """
-    Id must be a valid URI.
+    A isSource relation must relate with objects of type LinkGroup.
+    """
+
+
+class RelationProvidesLinkError(NMLException):
+    """
+    A providesLink relation must relate with objects of type Link or LinkGroup.
+    """
+
+
+class RelationCanProvidePortError(NMLException):
+    """
+    A canProvidePort relation must relate with objects of type Port or
+    PortGroup.
+    """
+
+
+class RelationProvidesPortError(NMLException):
+    """
+    A providesPort relation must relate with objects of type Port or PortGroup.
+    """
+
+
+class RelationHasNodeError(NMLException):
+    """
+    A hasNode relation must relate with objects of type Lifetime.
+    """
+
+
+class RelationHasTopologyError(NMLException):
+    """
+    A hasTopology relation must relate with objects of type Topology.
+    """
+
+
+class RelationHasLabelGroupError(NMLException):
+    """
+    A hasLabelGroup relation must relate with objects of type Lifetime.
+    """
+
+
+class RelationHasPortError(NMLException):
+    """
+    A hasPort relation must relate with objects of type Port or PortGroup.
+    """
+
+
+class RelationHasLinkError(NMLException):
+    """
+    A hasLink relation must relate with objects of type Link or LinkGroup.
+    """
+
+
+class RelationIsSerialCompoundLinkError(NMLException):
+    """
+    A isSerialCompoundLink relation must relate with objects of type Port or
+    PortGroup.
+    """
+
+
+class AttributeNameError(NMLException):
+    """
+    Attribute `name` must be a human readable string name.
+    """
+
+
+class AttributeIdError(NMLException):
+    """
+    Attribute `identifier` must be a persistent globally unique URI.
+    """
+
+
+class AttributeEncodingError(NMLException):
+    """
+    Attribute `encoding` must be a format of the data streaming through the
+    service as an URI.
     """
 
 
 __all__ = [
-    'VersionError',
-    'CanProvidePortError',
-    'ExistsDuringError',
-    'HasInboundPortError',
-    'HasLabelError',
-    'HasLabelGroupError',
-    'HasLinkError',
-    'HasNodeError',
-    'HasOutboundPortError',
-    'HasPortError',
-    'HasServiceError',
-    'HasTopologyError',
-    'ImplementedByError',
-    'IsAliasError',
-    'IsSinkError',
-    'IsSourceError',
-    'LocatedAtError',
-    'ProvidesLinkError',
-    'ProvidesPortError',
-    'IdError'
+    'RelationExistsDuringError',
+    'RelationIsAliasError',
+    'RelationLocatedAtError',
+    'RelationHasInboundPortError',
+    'RelationHasOutboundPortError',
+    'RelationHasServiceError',
+    'RelationImplementedByError',
+    'RelationHasLabelError',
+    'RelationIsSinkError',
+    'RelationIsSourceError',
+    'RelationProvidesLinkError',
+    'RelationCanProvidePortError',
+    'RelationProvidesPortError',
+    'RelationHasNodeError',
+    'RelationHasTopologyError',
+    'RelationHasLabelGroupError',
+    'RelationHasPortError',
+    'RelationHasLinkError',
+    'RelationIsSerialCompoundLinkError',
+    'AttributeNameError',
+    'AttributeIdError',
+    'AttributeEncodingError'
 ]
