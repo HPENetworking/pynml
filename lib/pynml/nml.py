@@ -91,24 +91,33 @@ class NetworkObject(object):
     @abstractmethod
     def __init__(
             self, name=None, identifier=None, version=None, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
+        self.attributes.append('name')
         if name is None:
             name = '{}<{}>'.format(
                 self.__class__.__name__, str(id(self))
             )
         self.name = name
 
+        self.attributes.append('identifier')
         if identifier is None:
             identifier = str(id(self))
         self.identifier = identifier
 
+        self.attributes.append('version')
         if version is None:
             version = datetime.now().replace(microsecond=0).isoformat()
         self.version = version
 
         # Relations
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('isAlias')
         self._is_alias_network_objects = OrderedDict()
+        self.attributes.append('locatedAt')
         self._located_at_locations = (None, )
 
         self.metadata = kwargs
@@ -359,9 +368,13 @@ class Node(NetworkObject):
 
         # Attributes
         # Relations
+        self.attributes.append('hasInboundPort')
         self._has_inbound_port_ports = OrderedDict()
+        self.attributes.append('hasOutboundPort')
         self._has_outbound_port_ports = OrderedDict()
+        self.attributes.append('hasService')
         self._has_service_switching_services = OrderedDict()
+        self.attributes.append('implementedBy')
         self._implemented_by_nodes = OrderedDict()
 
     def has_inbound_port(self, port):
@@ -599,14 +612,19 @@ class Port(NetworkObject):
         super(Port, self).__init__(**kwargs)
 
         # Attributes
+        self.attributes.append('encoding')
         if encoding is None:
             encoding = 'FIXME: Provide default'
         self.encoding = encoding
 
         # Relations
+        self.attributes.append('hasLabel')
         self._has_label_labels = (None, )
+        self.attributes.append('hasService')
         self._has_service_adaptation_services = OrderedDict()
+        self.attributes.append('isSink')
         self._is_sink_links = OrderedDict()
+        self.attributes.append('isSource')
         self._is_source_links = OrderedDict()
 
     @property
@@ -864,11 +882,13 @@ class Link(NetworkObject):
         super(Link, self).__init__(**kwargs)
 
         # Attributes
+        self.attributes.append('encoding')
         if encoding is None:
             encoding = 'FIXME: Provide default'
         self.encoding = encoding
 
         # Relations
+        self.attributes.append('hasLabel')
         self._has_label_labels = (None, )
 
     @property
@@ -1009,13 +1029,17 @@ class SwitchingService(Service):
         super(SwitchingService, self).__init__(**kwargs)
 
         # Attributes
+        self.attributes.append('encoding')
         if encoding is None:
             encoding = 'FIXME: Provide default'
         self.encoding = encoding
 
         # Relations
+        self.attributes.append('hasInboundPort')
         self._has_inbound_port_ports = OrderedDict()
+        self.attributes.append('hasOutboundPort')
         self._has_outbound_port_ports = OrderedDict()
+        self.attributes.append('providesLink')
         self._provides_link_links = OrderedDict()
 
     @property
@@ -1229,11 +1253,15 @@ class AdaptationService(Service):
         super(AdaptationService, self).__init__(**kwargs)
 
         # Attributes
+        self.attributes.append('adaptation_function')
         self.adaptation_function = adaptation_function
 
         # Relations
+        self.attributes.append('canProvidePort')
         self._can_provide_port_ports = OrderedDict()
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('providesPort')
         self._provides_port_ports = OrderedDict()
 
     def can_provide_port(self, port):
@@ -1422,11 +1450,15 @@ class DeAdaptationService(Service):
         super(DeAdaptationService, self).__init__(**kwargs)
 
         # Attributes
+        self.attributes.append('adaptation_function')
         self.adaptation_function = adaptation_function
 
         # Relations
+        self.attributes.append('canProvidePort')
         self._can_provide_port_ports = OrderedDict()
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('providesPort')
         self._provides_port_ports = OrderedDict()
 
     def can_provide_port(self, port):
@@ -1644,11 +1676,17 @@ class Topology(Group):
 
         # Attributes
         # Relations
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('hasNode')
         self._has_node_lifetimes = OrderedDict()
+        self.attributes.append('hasInboundPort')
         self._has_inbound_port_ports = OrderedDict()
+        self.attributes.append('hasOutboundPort')
         self._has_outbound_port_ports = OrderedDict()
+        self.attributes.append('hasService')
         self._has_service_switching_services = OrderedDict()
+        self.attributes.append('hasTopology')
         self._has_topology_topologies = OrderedDict()
 
     def exists_during(self, lifetime):
@@ -1981,10 +2019,15 @@ class PortGroup(Group):
 
         # Attributes
         # Relations
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('hasLabelGroup')
         self._has_label_group_lifetimes = (None, )
+        self.attributes.append('hasPort')
         self._has_port_ports = OrderedDict()
+        self.attributes.append('isSink')
         self._is_sink_link_groups = OrderedDict()
+        self.attributes.append('isSource')
         self._is_source_link_groups = OrderedDict()
 
     def exists_during(self, lifetime):
@@ -2263,9 +2306,13 @@ class LinkGroup(Group):
 
         # Attributes
         # Relations
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('hasLabelGroup')
         self._has_label_group_lifetimes = (None, )
+        self.attributes.append('hasLink')
         self._has_link_ports = OrderedDict()
+        self.attributes.append('isSerialCompoundLink')
         self._is_serial_compound_link_ports = OrderedDict()
 
     def exists_during(self, lifetime):
@@ -2501,7 +2548,9 @@ class BidirectionalPort(Group):
 
         # Attributes
         # Relations
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('hasPort')
         self._has_port_ports = (None, None, )
 
     def exists_during(self, lifetime):
@@ -2638,7 +2687,9 @@ class BidirectionalLink(Group):
 
         # Attributes
         # Relations
+        self.attributes.append('existsDuring')
         self._exists_during_lifetimes = OrderedDict()
+        self.attributes.append('hasLink')
         self._has_link_links = (None, None, )
 
     def exists_during(self, lifetime):
@@ -2777,23 +2828,31 @@ class Location(object):
     def __init__(
             self, longitude=None, latitude=None, altitude=None, unlocode=None,
             address=None, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
+        self.attributes.append('longitude')
         if longitude is None:
             longitude = 'FIXME: Provide default'
         self.longitude = longitude
 
+        self.attributes.append('latitude')
         if latitude is None:
             latitude = 'FIXME: Provide default'
         self.latitude = latitude
 
+        self.attributes.append('altitude')
         if altitude is None:
             altitude = 'FIXME: Provide default'
         self.altitude = altitude
 
+        self.attributes.append('unlocode')
         if unlocode is None:
             unlocode = 'FIXME: Provide default'
         self.unlocode = unlocode
 
+        self.attributes.append('address')
         if address is None:
             address = 'FIXME: Provide default'
         self.address = address
@@ -2937,11 +2996,16 @@ class Lifetime(object):
 
     def __init__(
             self, start=None, end=None, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
+        self.attributes.append('start')
         if start is None:
             start = datetime.now().replace(microsecond=0).isoformat()
         self.start = start
 
+        self.attributes.append('end')
         if end is None:
             end = datetime.now().replace(microsecond=0).isoformat()
         self.end = end
@@ -3027,9 +3091,14 @@ class Label(object):
 
     def __init__(
             self, labeltype=None, value=None, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
+        self.attributes.append('labeltype')
         self.labeltype = labeltype
 
+        self.attributes.append('value')
         self.value = value
 
         # Relations
@@ -3070,9 +3139,14 @@ class LabelGroup(object):
 
     def __init__(
             self, labeltype=None, value=None, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
+        self.attributes.append('labeltype')
         self.labeltype = labeltype
 
+        self.attributes.append('value')
         self.value = value
 
         # Relations
@@ -3111,6 +3185,9 @@ class OrderedList(object):
 
     def __init__(
             self, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
         # Relations
 
@@ -3145,6 +3222,9 @@ class ListItem(object):
 
     def __init__(
             self, **kwargs):
+        self.attributes = []
+        self.relations = []
+
         # Attributes
         # Relations
 

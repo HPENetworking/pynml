@@ -902,10 +902,14 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
             {{ 'self%s, **kwargs):'|format(param_attrs(cls.attributes))|wordwrap(67)|indent(12) }}
         {%- if cls.parent is not none %}
         super({{ cls.name|objectize }}, self).__init__(**kwargs)
-{##}
+        {%- else %}
+        self.attributes = []
+        self.relations = []
         {%- endif %}
+
         # Attributes
         {%- for attr in cls.attributes %}
+        self.attributes.append('{{ attr.name }}')
         {%- if attr.property %}
         if {{ attr.name }} is {{ attr.default_arg }}:
             {{ attr.name }} = {{ attr.default }}
@@ -917,6 +921,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- endfor %}
         # Relations
         {%- for rel in cls.relations %}
+        self.attributes.append('{{ rel.name }}')
         {%- set relation_collection =  rel.name|variablize + '_' + rel.with.0|pluralize|variablize %}
         self._{{ relation_collection }} = {##}
         {%- if rel.cardinality == '+' -%}
