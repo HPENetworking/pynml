@@ -1017,10 +1017,12 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         :type {{ argument }}: {{ rel.with|map('objectize')|join(' or ') }}
         {%- endif %}
         \"""
-        if {{ argument }}.__class__ not in ({{ rel.with|map('objectize')|join(', ') }}, ):
-            raise Relation{{ rel.name|objectize }}Error()
-
         arg_tuple = ({{ arguments }}, )
+
+        for arg in arg_tuple:
+            if arg.__class__ not in ({{ rel.with|map('objectize')|join(', ') }}, ):
+                raise Relation{{ rel.name|objectize }}Error()
+
         {%- if rel.cardinality|int > 1 %}
         if len(set(arg_tuple)) != len(arg_tuple):
             raise Exception('Non unique objects')  # FIXME
