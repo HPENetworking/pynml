@@ -235,15 +235,16 @@ class ExtendedNMLManager(NMLManager):
     In particular, this object does the following assumptions that are not part
     of the NML specification:
 
-    - A :class:`BidirectionalPort` is related to a single :class:`Node`.
-    - A :class:`BidirectionalLink` is related to a single
-      :class:`BidirectionalPort`.
+    - A :class:`pynml.nml.BidirectionalPort` is related to a single
+      :class:`pynml.nml.Node`.
+    - A :class:`pynml.nml.BidirectionalLink` is related to a single
+      :class:`pynml.nml.BidirectionalPort`.
 
     If the above assumptions aren't true for your topologies please use the
     standard :class:`NMLManager` or implement your own subclass.
 
     The original proposed name for this class was
-    `NMLManagerWithCommonHelpersThatMakeSeveralAssumptions`, but it was too
+    ``NMLManagerWithCommonHelpersThatMakeSeveralAssumptions``, but it was too
     long.
     """
 
@@ -255,13 +256,14 @@ class ExtendedNMLManager(NMLManager):
 
     def create_node(self, **kwargs):
         """
-        Helper to create and register a :class:`Node`.
+        Helper to create and register a :class:`pynml.nml.Node`.
 
-        All keyword arguments are passed as is to the :class:`Node`
+        All keyword arguments are passed as is to the :class:`pynml.nml.Node`
         constructor.
 
-        :rtype: :class:`Node`
-        :return: A new :class:`Node` already registered into the namespace.
+        :rtype: :class:`pynml.nml.Node`
+        :return: A new :class:`pynml.nml.Node` already registered into the
+         namespace.
         """
         node = Node(**kwargs)
         self.register_object(node)
@@ -270,16 +272,17 @@ class ExtendedNMLManager(NMLManager):
 
     def create_biport(self, node, **kwargs):
         """
-        Helper to create and register a :class:`BidirectionalPort`.
+        Helper to create and register a :class:`pynml.nml.BidirectionalPort`.
 
         All keyword arguments are passed as is to the
-        :class:`BidirectionalPort` constructor. This helper also creates all
-        intermediate directed inbound and outbound subports and relates them
-        to the node. The `node` argument is related to those subports too.
+        :class:`pynml.nml.BidirectionalPort` constructor. This helper also
+        creates all intermediate directed inbound and outbound subports and
+        relates them to the node. The `node` argument is related to those
+        subports too.
 
-        :rtype: :class:`BidirectionalPort`
-        :return: A new :class:`BidirectionalPort` already registered into the
-         namespace and with subports already related.
+        :rtype: :class:`pynml.nml.BidirectionalPort`
+        :return: A new :class:`pynml.nml.BidirectionalPort` already registered
+         into the namespace and with subports already related.
         """
         # Create objects
         biport = BidirectionalPort(**kwargs)
@@ -302,16 +305,16 @@ class ExtendedNMLManager(NMLManager):
 
     def create_bilink(self, biport_a, biport_b, **kwargs):
         """
-        Helper to create and register a :class:`BidirectionalLink`.
+        Helper to create and register a :class:`pynml.nml.BidirectionalLink`.
 
         All keyword arguments are passed as is to the
-        :class:`BidirectionalLink` constructor. This helper also creates all
-        intermediate directed sink and source sublinks and relates them
-        to the inbound and outbound subports.
+        :class:`pynml.nml.BidirectionalLink` constructor. This helper also
+        creates all intermediate directed sink and source sublinks and relates
+        them to the inbound and outbound subports.
 
-        :rtype: :class:`BidirectionalLink`
-        :return: A new :class:`BidirectionalLink` already registered into the
-         namespace and with sublinks already related.
+        :rtype: :class:`pynml.nml.BidirectionalLink`
+        :return: A new :class:`pynml.nml.BidirectionalLink` already registered
+         into the namespace and with sublinks already related.
         """
         # Create objects
         bilink = BidirectionalLink(**kwargs)
@@ -337,7 +340,7 @@ class ExtendedNMLManager(NMLManager):
 
     def nodes(self):
         """
-        Iterate over all registered :class:`Node` s in the namespace.
+        Iterate over all registered :class:`pynml.nml.Node` s in the namespace.
 
         This iterates the nodes in the order as they were added into the
         namespace.
@@ -349,31 +352,32 @@ class ExtendedNMLManager(NMLManager):
 
     def biports(self):
         """
-        Iterate over all registered :class:`BidirectionalPort` s in the
-        namespace.
+        Iterate over all registered :class:`pynml.nml.BidirectionalPort` s in
+        the namespace.
 
         This iterates the biports in the order as they were added into the
         namespace.
 
         :return: An iterator to all biports in the namespace. The iterator is
-         a tuple (:class:`Node`, :class:`BidirectionalPort`).
+         a tuple
+         (:class:`pynml.nml.Node`, :class:`pynml.nml.BidirectionalPort`).
         """
         for biport_id, node in self._biport_node_map.items():
             yield (node, self.namespace[biport_id])
 
     def bilinks(self):
         """
-        Iterate over all registered :class:`BidirectionalLink` s in the
-        namespace.
+        Iterate over all registered :class:`pynml.nml.BidirectionalLink` s in
+        the namespace.
 
         This iterates the bilinks in the order as they were added into the
         namespace.
 
         :return: An iterator to all bilinks in the namespace. The iterator is
          a tuple of the form:
-         ((:class:`Node` A, :class:`BidirectionalPort` A),
-         (:class:`Node` B, :class:`BidirectionalPort` B),
-         :class:`BidirectionalLink`).
+         ((:class:`pynml.nml.Node` A, :class:`pynml.nml.BidirectionalPort` A),
+         (:class:`pynml.nml.Node` B, :class:`pynml.nml.BidirectionalPort` B),
+         :class:`pynml.nml.BidirectionalLink`).
         """
         for bilink_id, (biport_a, biport_b) in self._bilink_biport_map.items():
             node_a = self._biport_node_map[biport_a.identifier]
