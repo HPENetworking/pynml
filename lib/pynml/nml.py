@@ -22,6 +22,7 @@ pynml main module.
 from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
+from copy import copy
 from datetime import datetime
 from collections import OrderedDict
 from abc import ABCMeta, abstractmethod
@@ -205,6 +206,15 @@ class NetworkObject(object):
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
 
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
+
     def is_alias(self, network_object):
         """
         Check `isAlias` relation with given `network_object` object.
@@ -236,6 +246,15 @@ class NetworkObject(object):
 
         self._is_alias_network_objects[network_object.identifier] = \
             network_object
+
+    def get_is_alias(self):
+        """
+        Get all objects related with this object with relation `isAlias`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._is_alias_network_objects)
 
     def located_at(self, location):
         """
@@ -269,6 +288,15 @@ class NetworkObject(object):
                 raise RelationLocatedAtError()
 
         self._located_at_locations = arg_tuple
+
+    def get_located_at(self):
+        """
+        Get all objects related with this object with relation `locatedAt`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._located_at_locations)
 
     @abstractmethod
     def as_nml(self, this=None, parent=None):
@@ -370,6 +398,16 @@ class Node(NetworkObject):
         self._has_inbound_port_ports[port.identifier] = \
             port
 
+    def get_has_inbound_port(self):
+        """
+        Get all objects related with this object with relation
+        `hasInboundPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_inbound_port_ports)
+
     def has_outbound_port(self, port):
         """
         Check `hasOutboundPort` relation with given `port` object.
@@ -403,6 +441,16 @@ class Node(NetworkObject):
 
         self._has_outbound_port_ports[port.identifier] = \
             port
+
+    def get_has_outbound_port(self):
+        """
+        Get all objects related with this object with relation
+        `hasOutboundPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_outbound_port_ports)
 
     def has_service(self, switching_service):
         """
@@ -438,6 +486,15 @@ class Node(NetworkObject):
         self._has_service_switching_services[switching_service.identifier] = \
             switching_service
 
+    def get_has_service(self):
+        """
+        Get all objects related with this object with relation `hasService`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_service_switching_services)
+
     def implemented_by(self, node):
         """
         Check `implementedBy` relation with given `node` object.
@@ -469,6 +526,15 @@ class Node(NetworkObject):
 
         self._implemented_by_nodes[node.identifier] = \
             node
+
+    def get_implemented_by(self):
+        """
+        Get all objects related with this object with relation `implementedBy`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._implemented_by_nodes)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -598,6 +664,15 @@ class Port(NetworkObject):
 
         self._has_label_labels = arg_tuple
 
+    def get_has_label(self):
+        """
+        Get all objects related with this object with relation `hasLabel`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_label_labels)
+
     def has_service(self, adaptation_service):
         """
         Check `hasService` relation with given `adaptation_service` object.
@@ -634,6 +709,15 @@ class Port(NetworkObject):
         self._has_service_adaptation_services[adaptation_service.identifier] = \
             adaptation_service
 
+    def get_has_service(self):
+        """
+        Get all objects related with this object with relation `hasService`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_service_adaptation_services)
+
     def is_sink(self, link):
         """
         Check `isSink` relation with given `link` object.
@@ -666,6 +750,15 @@ class Port(NetworkObject):
         self._is_sink_links[link.identifier] = \
             link
 
+    def get_is_sink(self):
+        """
+        Get all objects related with this object with relation `isSink`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._is_sink_links)
+
     def is_source(self, link):
         """
         Check `isSource` relation with given `link` object.
@@ -697,6 +790,15 @@ class Port(NetworkObject):
 
         self._is_source_links[link.identifier] = \
             link
+
+    def get_is_source(self):
+        """
+        Get all objects related with this object with relation `isSource`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._is_source_links)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -823,6 +925,15 @@ class Link(NetworkObject):
                 raise RelationHasLabelError()
 
         self._has_label_labels = arg_tuple
+
+    def get_has_label(self):
+        """
+        Get all objects related with this object with relation `hasLabel`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_label_labels)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -963,6 +1074,16 @@ class SwitchingService(Service):
         self._has_inbound_port_ports[port.identifier] = \
             port
 
+    def get_has_inbound_port(self):
+        """
+        Get all objects related with this object with relation
+        `hasInboundPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_inbound_port_ports)
+
     def has_outbound_port(self, port):
         """
         Check `hasOutboundPort` relation with given `port` object.
@@ -997,6 +1118,16 @@ class SwitchingService(Service):
         self._has_outbound_port_ports[port.identifier] = \
             port
 
+    def get_has_outbound_port(self):
+        """
+        Get all objects related with this object with relation
+        `hasOutboundPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_outbound_port_ports)
+
     def provides_link(self, link):
         """
         Check `providesLink` relation with given `link` object.
@@ -1030,6 +1161,15 @@ class SwitchingService(Service):
 
         self._provides_link_links[link.identifier] = \
             link
+
+    def get_provides_link(self):
+        """
+        Get all objects related with this object with relation `providesLink`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._provides_link_links)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -1130,6 +1270,16 @@ class AdaptationService(Service):
         self._can_provide_port_ports[port.identifier] = \
             port
 
+    def get_can_provide_port(self):
+        """
+        Get all objects related with this object with relation
+        `canProvidePort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._can_provide_port_ports)
+
     def exists_during(self, lifetime):
         """
         Check `existsDuring` relation with given `lifetime` object.
@@ -1161,6 +1311,15 @@ class AdaptationService(Service):
 
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
+
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
 
     def provides_port(self, port):
         """
@@ -1195,6 +1354,15 @@ class AdaptationService(Service):
 
         self._provides_port_ports[port.identifier] = \
             port
+
+    def get_provides_port(self):
+        """
+        Get all objects related with this object with relation `providesPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._provides_port_ports)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -1295,6 +1463,16 @@ class DeAdaptationService(Service):
         self._can_provide_port_ports[port.identifier] = \
             port
 
+    def get_can_provide_port(self):
+        """
+        Get all objects related with this object with relation
+        `canProvidePort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._can_provide_port_ports)
+
     def exists_during(self, lifetime):
         """
         Check `existsDuring` relation with given `lifetime` object.
@@ -1326,6 +1504,15 @@ class DeAdaptationService(Service):
 
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
+
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
 
     def provides_port(self, port):
         """
@@ -1360,6 +1547,15 @@ class DeAdaptationService(Service):
 
         self._provides_port_ports[port.identifier] = \
             port
+
+    def get_provides_port(self):
+        """
+        Get all objects related with this object with relation `providesPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._provides_port_ports)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -1487,6 +1683,15 @@ class Topology(Group):
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
 
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
+
     def has_node(self, lifetime):
         """
         Check `hasNode` relation with given `lifetime` object.
@@ -1518,6 +1723,15 @@ class Topology(Group):
 
         self._has_node_lifetimes[lifetime.identifier] = \
             lifetime
+
+    def get_has_node(self):
+        """
+        Get all objects related with this object with relation `hasNode`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_node_lifetimes)
 
     def has_inbound_port(self, port):
         """
@@ -1553,6 +1767,16 @@ class Topology(Group):
         self._has_inbound_port_ports[port.identifier] = \
             port
 
+    def get_has_inbound_port(self):
+        """
+        Get all objects related with this object with relation
+        `hasInboundPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_inbound_port_ports)
+
     def has_outbound_port(self, port):
         """
         Check `hasOutboundPort` relation with given `port` object.
@@ -1586,6 +1810,16 @@ class Topology(Group):
 
         self._has_outbound_port_ports[port.identifier] = \
             port
+
+    def get_has_outbound_port(self):
+        """
+        Get all objects related with this object with relation
+        `hasOutboundPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_outbound_port_ports)
 
     def has_service(self, switching_service):
         """
@@ -1621,6 +1855,15 @@ class Topology(Group):
         self._has_service_switching_services[switching_service.identifier] = \
             switching_service
 
+    def get_has_service(self):
+        """
+        Get all objects related with this object with relation `hasService`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_service_switching_services)
+
     def has_topology(self, topology):
         """
         Check `hasTopology` relation with given `topology` object.
@@ -1652,6 +1895,15 @@ class Topology(Group):
 
         self._has_topology_topologies[topology.identifier] = \
             topology
+
+    def get_has_topology(self):
+        """
+        Get all objects related with this object with relation `hasTopology`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_topology_topologies)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -1767,6 +2019,15 @@ class PortGroup(Group):
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
 
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
+
     def has_label_group(self, lifetime):
         """
         Check `hasLabelGroup` relation with given `lifetime` object.
@@ -1799,6 +2060,15 @@ class PortGroup(Group):
                 raise RelationHasLabelGroupError()
 
         self._has_label_group_lifetimes = arg_tuple
+
+    def get_has_label_group(self):
+        """
+        Get all objects related with this object with relation `hasLabelGroup`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_label_group_lifetimes)
 
     def has_port(self, port):
         """
@@ -1834,6 +2104,15 @@ class PortGroup(Group):
         self._has_port_ports[port.identifier] = \
             port
 
+    def get_has_port(self):
+        """
+        Get all objects related with this object with relation `hasPort`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_port_ports)
+
     def is_sink(self, link_group):
         """
         Check `isSink` relation with given `link_group` object.
@@ -1866,6 +2145,15 @@ class PortGroup(Group):
         self._is_sink_link_groups[link_group.identifier] = \
             link_group
 
+    def get_is_sink(self):
+        """
+        Get all objects related with this object with relation `isSink`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._is_sink_link_groups)
+
     def is_source(self, link_group):
         """
         Check `isSource` relation with given `link_group` object.
@@ -1897,6 +2185,15 @@ class PortGroup(Group):
 
         self._is_source_link_groups[link_group.identifier] = \
             link_group
+
+    def get_is_source(self):
+        """
+        Get all objects related with this object with relation `isSource`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._is_source_link_groups)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -2003,6 +2300,15 @@ class LinkGroup(Group):
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
 
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
+
     def has_label_group(self, lifetime):
         """
         Check `hasLabelGroup` relation with given `lifetime` object.
@@ -2035,6 +2341,15 @@ class LinkGroup(Group):
                 raise RelationHasLabelGroupError()
 
         self._has_label_group_lifetimes = arg_tuple
+
+    def get_has_label_group(self):
+        """
+        Get all objects related with this object with relation `hasLabelGroup`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_label_group_lifetimes)
 
     def has_link(self, port):
         """
@@ -2070,6 +2385,15 @@ class LinkGroup(Group):
         self._has_link_ports[port.identifier] = \
             port
 
+    def get_has_link(self):
+        """
+        Get all objects related with this object with relation `hasLink`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_link_ports)
+
     def is_serial_compound_link(self, port):
         """
         Check `isSerialCompoundLink` relation with given `port` object.
@@ -2104,6 +2428,16 @@ class LinkGroup(Group):
 
         self._is_serial_compound_link_ports[port.identifier] = \
             port
+
+    def get_is_serial_compound_link(self):
+        """
+        Get all objects related with this object with relation
+        `isSerialCompoundLink`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._is_serial_compound_link_ports)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -2202,6 +2536,15 @@ class BidirectionalPort(Group):
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
 
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
+
     def has_port(self, port):
         """
         Check `hasPort` relation with given `port` object.
@@ -2239,6 +2582,15 @@ class BidirectionalPort(Group):
             raise Exception('Non unique objects')  # FIXME
 
         self._has_port_ports = arg_tuple
+
+    def get_has_port(self):
+        """
+        Get all objects related with this object with relation `hasPort`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_port_ports)
 
     def as_nml(self, this=None, parent=None):
         """
@@ -2321,6 +2673,15 @@ class BidirectionalLink(Group):
         self._exists_during_lifetimes[lifetime.identifier] = \
             lifetime
 
+    def get_exists_during(self):
+        """
+        Get all objects related with this object with relation `existsDuring`.
+
+        :rtype: OrderedDict
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._exists_during_lifetimes)
+
     def has_link(self, link):
         """
         Check `hasLink` relation with given `link` object.
@@ -2358,6 +2719,15 @@ class BidirectionalLink(Group):
             raise Exception('Non unique objects')  # FIXME
 
         self._has_link_links = arg_tuple
+
+    def get_has_link(self):
+        """
+        Get all objects related with this object with relation `hasLink`.
+
+        :rtype: set
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_link_links)
 
     def as_nml(self, this=None, parent=None):
         """

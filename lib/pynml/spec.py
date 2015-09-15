@@ -843,6 +843,7 @@ pynml main module.
 from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
+from copy import copy
 from datetime import datetime
 from collections import OrderedDict
 from abc import ABCMeta, abstractmethod
@@ -1033,6 +1034,15 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
 
         self._{{ relation_collection }} = arg_tuple
     {%- endif %}
+{##}
+    def get_{{ rel.name|methodize }}(self):
+        \"""
+        {{ 'Get all objects related with this object with relation `%s`.'|format(rel.name)|wordwrap(71)|indent(8) }}
+
+        :rtype: {% if rel.cardinality == '+' %}OrderedDict{% else %}set{% endif %}
+        :return: A copy of the collection of objects related with this object.
+        \"""
+        return copy(self._{{ relation_collection }})
 {##}
     {%- endfor %}
 
