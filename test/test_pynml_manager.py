@@ -24,10 +24,9 @@ See http://pythontesting.net/framework/pytest/pytest-introduction/#fixtures
 from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
-from os.path import join
+from os.path import join, isfile
 from shutil import rmtree
 from tempfile import mkdtemp
-from subprocess import check_call
 from distutils.spawn import find_executable
 
 import pytest  # noqa
@@ -60,18 +59,16 @@ def test_graphviz():
     sw1p1_sw2p1 = mgr.create_bilink(sw1p1, sw2p1)  # noqa
     sw1p2_sw2p2 = mgr.create_bilink(sw1p2, sw2p2)  # noqa
 
-    # Render graphviz and write output
-    graph = mgr.export_graphviz()
-
+    # Plot graphviz file
     tmpdir = mkdtemp(prefix='pynml_test_')
-    srcfile = join(tmpdir, 'graph.dot')
-    outfile = join(tmpdir, 'graph.png')
+    srcfile = join(tmpdir, 'graph.gv')
+    plotfile = join(tmpdir, 'graph.svg')
+    print('Ploting graphviz file to {} ...'.format(plotfile))
+    mgr.save_graphviz(plotfile, keep_gv=True)
 
-    print('Saving graphviz file to {} ...'.format(srcfile))
-    print(graph)
-    with open(srcfile, 'w') as fd:
-        fd.write(graph)
+    # Check files were created
+    assert isfile(plotfile)
+    assert isfile(srcfile)
 
-    check_call([dot_exec, '-Tpng', srcfile, '-o', outfile])
-
+    # Clean-up
     rmtree(tmpdir)

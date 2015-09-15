@@ -22,12 +22,20 @@ topology manager module.
 from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
+from logging import getLogger
+from os import makedirs, remove
+from os.path import dirname, abspath, splitext, isdir
 from collections import OrderedDict
 from xml.dom import minidom
 from xml.etree import ElementTree as etree  # noqa
+from subprocess import check_call, Popen, PIPE
+from distutils.spawn import find_executable
 
 from .nml import NAMESPACES
 from .nml import Node, Port, BidirectionalPort, Link, BidirectionalLink
+
+
+log = getLogger(__name__)
 
 
 GRAPHVIZ_TPL = """\
@@ -108,6 +116,77 @@ class NMLManager(object):
         :return: The current NML namespace in Graphviz graph notation.
         """
         pass
+
+    def save_graphviz(self, path, keep_gv=False):
+        """
+        Plot this namespace using Graphviz.
+
+        To use this function the following must be considered:
+
+        - The path must be a path to a filename in the format expected, for
+          example, if a `.svg` file is expected the `path` must end with a
+          `.svg`. If no format is provided an exception is raised.
+        - The output file will be overriden. If case of permissions or IO error
+          and exception is raised.
+        - This function will call the `dot` binary by itself if found
+          (using py:func:`distutils.spawn.find_executable`); if not, and
+          exception is raised.
+        - If the output parent directories does not exists this function will
+          try to create them using py:func:`os.makedirs`.
+
+        :param str path: Path to save the rendered graphviz file.
+        :param bool keep_gv: Keep the `.gv` file with the source of the graph.
+         This file will live in the same directory of the output file with the
+         same name but with the `.gv`.
+        :rtype: tuple
+        :return: Path to `.gv` file is `keep_gv` is True, else `None`.
+        """
+        # Find dot executable
+        dot_exec = find_executable('dot')
+        if dot_exec is None:
+            raise Exception('Missing Graphviz "dot" executable')
+
+        # Create parent directories
+        path = abspath(path)
+        parent = dirname(path)
+        if not isdir(parent):
+            makedirs(parent)
+
+        # Determine and cache supported formats
+        if not hasattr(self, '_graphviz_formats_cache'):
+            self._graphviz_formats_cache = []
+            proc = Popen([dot_exec, '-T?'], stdout=PIPE, stderr=PIPE)
+            stdout, stderr = proc.communicate()
+            self._graphviz_formats_cache = \
+                sorted(stderr.strip().split(':')[-1].split())
+
+        # Determine plot format
+        root, ext = splitext(path)
+        format = ext[1:] if ext else ''
+        if format not in self._graphviz_formats_cache:
+            raise Exception(
+                'Unsupported format "{}". '
+                'Supported formats are: {}'.format(
+                    format, ', '.join(self._graphviz_formats_cache)
+                )
+            )
+
+        # Export namespace
+        graph = self.export_graphviz()
+        source = root + '.gv'
+        with open(source, 'w') as fd:
+            fd.write(graph)
+
+        # Plot graph
+        check_call([
+            dot_exec, '-T{}'.format(format), source, '-o', path
+        ])
+
+        if keep_gv:
+            return source
+
+        remove(source)
+        return None
 
 
 class ExtendedNMLManager(NMLManager):
