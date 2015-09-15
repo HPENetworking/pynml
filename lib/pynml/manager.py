@@ -176,7 +176,7 @@ class ExtendedNMLManager(NMLManager):
         self.register_object(out_port)
 
         # Relate objects
-        # biport.set_has_port(in_port, out_port)
+        biport.set_has_port(in_port, out_port)
 
         node.add_has_inbound_port(in_port)
         node.add_has_outbound_port(out_port)
@@ -208,13 +208,13 @@ class ExtendedNMLManager(NMLManager):
         self.register_object(link_b_a)
 
         # Relate objects
-        # bilink.set_has_link(link_a_b, link_b_a)
+        bilink.set_has_link(link_a_b, link_b_a)
 
-        # biport_a._has_port_ports[0].add_is_sink(link_b_a)  # inbound port
-        # biport_a._has_port_ports[1].add_is_source(link_a_b)  # outbound port
+        biport_a._has_port_ports[0].add_is_sink(link_b_a)  # inbound port
+        biport_a._has_port_ports[1].add_is_source(link_a_b)  # outbound port
 
-        # biport_b._has_port_ports[0].add_is_sink(link_a_b)  # inbound port
-        # biport_b._has_port_ports[1].add_is_source(link_b_a)  # outbound port
+        biport_b._has_port_ports[0].add_is_sink(link_a_b)  # inbound port
+        biport_b._has_port_ports[1].add_is_source(link_b_a)  # outbound port
 
         self._bilink_biport_map[bilink.identifier] = (biport_a, biport_b)
         return bilink
