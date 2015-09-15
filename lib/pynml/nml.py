@@ -92,7 +92,7 @@ class NetworkObject(object):
     def __init__(
             self, name=None, identifier=None, version=None, **kwargs):
         self.attributes = []
-        self.relations = []
+        self.relations = OrderedDict()
 
         # Attributes
         self.attributes.append('name')
@@ -113,11 +113,16 @@ class NetworkObject(object):
         self.version = version
 
         # Relations
-        self.attributes.append('existsDuring')
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('isAlias')
+
+        self.relations['isAlias'] = \
+            self.get_is_alias
         self._is_alias_network_objects = OrderedDict()
-        self.attributes.append('locatedAt')
+
+        self.relations['locatedAt'] = \
+            self.get_located_at
         self._located_at_locations = (None, )
 
         self.metadata = kwargs
@@ -366,15 +371,21 @@ class Node(NetworkObject):
             self, **kwargs):
         super(Node, self).__init__(**kwargs)
 
-        # Attributes
         # Relations
-        self.attributes.append('hasInboundPort')
+        self.relations['hasInboundPort'] = \
+            self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
-        self.attributes.append('hasOutboundPort')
+
+        self.relations['hasOutboundPort'] = \
+            self.get_has_outbound_port
         self._has_outbound_port_ports = OrderedDict()
-        self.attributes.append('hasService')
+
+        self.relations['hasService'] = \
+            self.get_has_service
         self._has_service_switching_services = OrderedDict()
-        self.attributes.append('implementedBy')
+
+        self.relations['implementedBy'] = \
+            self.get_implemented_by
         self._implemented_by_nodes = OrderedDict()
 
     def has_inbound_port(self, port):
@@ -618,13 +629,20 @@ class Port(NetworkObject):
         self.encoding = encoding
 
         # Relations
-        self.attributes.append('hasLabel')
+        self.relations['hasLabel'] = \
+            self.get_has_label
         self._has_label_labels = (None, )
-        self.attributes.append('hasService')
+
+        self.relations['hasService'] = \
+            self.get_has_service
         self._has_service_adaptation_services = OrderedDict()
-        self.attributes.append('isSink')
+
+        self.relations['isSink'] = \
+            self.get_is_sink
         self._is_sink_links = OrderedDict()
-        self.attributes.append('isSource')
+
+        self.relations['isSource'] = \
+            self.get_is_source
         self._is_source_links = OrderedDict()
 
     @property
@@ -888,7 +906,8 @@ class Link(NetworkObject):
         self.encoding = encoding
 
         # Relations
-        self.attributes.append('hasLabel')
+        self.relations['hasLabel'] = \
+            self.get_has_label
         self._has_label_labels = (None, )
 
     @property
@@ -992,9 +1011,6 @@ class Service(NetworkObject):
             self, **kwargs):
         super(Service, self).__init__(**kwargs)
 
-        # Attributes
-        # Relations
-
     @abstractmethod
     def as_nml(self, this=None, parent=None):
         """
@@ -1035,11 +1051,16 @@ class SwitchingService(Service):
         self.encoding = encoding
 
         # Relations
-        self.attributes.append('hasInboundPort')
+        self.relations['hasInboundPort'] = \
+            self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
-        self.attributes.append('hasOutboundPort')
+
+        self.relations['hasOutboundPort'] = \
+            self.get_has_outbound_port
         self._has_outbound_port_ports = OrderedDict()
-        self.attributes.append('providesLink')
+
+        self.relations['providesLink'] = \
+            self.get_provides_link
         self._provides_link_links = OrderedDict()
 
     @property
@@ -1257,11 +1278,16 @@ class AdaptationService(Service):
         self.adaptation_function = adaptation_function
 
         # Relations
-        self.attributes.append('canProvidePort')
+        self.relations['canProvidePort'] = \
+            self.get_can_provide_port
         self._can_provide_port_ports = OrderedDict()
-        self.attributes.append('existsDuring')
+
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('providesPort')
+
+        self.relations['providesPort'] = \
+            self.get_provides_port
         self._provides_port_ports = OrderedDict()
 
     def can_provide_port(self, port):
@@ -1454,11 +1480,16 @@ class DeAdaptationService(Service):
         self.adaptation_function = adaptation_function
 
         # Relations
-        self.attributes.append('canProvidePort')
+        self.relations['canProvidePort'] = \
+            self.get_can_provide_port
         self._can_provide_port_ports = OrderedDict()
-        self.attributes.append('existsDuring')
+
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('providesPort')
+
+        self.relations['providesPort'] = \
+            self.get_provides_port
         self._provides_port_ports = OrderedDict()
 
     def can_provide_port(self, port):
@@ -1643,9 +1674,6 @@ class Group(NetworkObject):
             self, **kwargs):
         super(Group, self).__init__(**kwargs)
 
-        # Attributes
-        # Relations
-
     @abstractmethod
     def as_nml(self, this=None, parent=None):
         """
@@ -1674,19 +1702,29 @@ class Topology(Group):
             self, **kwargs):
         super(Topology, self).__init__(**kwargs)
 
-        # Attributes
         # Relations
-        self.attributes.append('existsDuring')
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('hasNode')
+
+        self.relations['hasNode'] = \
+            self.get_has_node
         self._has_node_lifetimes = OrderedDict()
-        self.attributes.append('hasInboundPort')
+
+        self.relations['hasInboundPort'] = \
+            self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
-        self.attributes.append('hasOutboundPort')
+
+        self.relations['hasOutboundPort'] = \
+            self.get_has_outbound_port
         self._has_outbound_port_ports = OrderedDict()
-        self.attributes.append('hasService')
+
+        self.relations['hasService'] = \
+            self.get_has_service
         self._has_service_switching_services = OrderedDict()
-        self.attributes.append('hasTopology')
+
+        self.relations['hasTopology'] = \
+            self.get_has_topology
         self._has_topology_topologies = OrderedDict()
 
     def exists_during(self, lifetime):
@@ -2017,17 +2055,25 @@ class PortGroup(Group):
             self, **kwargs):
         super(PortGroup, self).__init__(**kwargs)
 
-        # Attributes
         # Relations
-        self.attributes.append('existsDuring')
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('hasLabelGroup')
+
+        self.relations['hasLabelGroup'] = \
+            self.get_has_label_group
         self._has_label_group_lifetimes = (None, )
-        self.attributes.append('hasPort')
+
+        self.relations['hasPort'] = \
+            self.get_has_port
         self._has_port_ports = OrderedDict()
-        self.attributes.append('isSink')
+
+        self.relations['isSink'] = \
+            self.get_is_sink
         self._is_sink_link_groups = OrderedDict()
-        self.attributes.append('isSource')
+
+        self.relations['isSource'] = \
+            self.get_is_source
         self._is_source_link_groups = OrderedDict()
 
     def exists_during(self, lifetime):
@@ -2304,15 +2350,21 @@ class LinkGroup(Group):
             self, **kwargs):
         super(LinkGroup, self).__init__(**kwargs)
 
-        # Attributes
         # Relations
-        self.attributes.append('existsDuring')
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('hasLabelGroup')
+
+        self.relations['hasLabelGroup'] = \
+            self.get_has_label_group
         self._has_label_group_lifetimes = (None, )
-        self.attributes.append('hasLink')
+
+        self.relations['hasLink'] = \
+            self.get_has_link
         self._has_link_ports = OrderedDict()
-        self.attributes.append('isSerialCompoundLink')
+
+        self.relations['isSerialCompoundLink'] = \
+            self.get_is_serial_compound_link
         self._is_serial_compound_link_ports = OrderedDict()
 
     def exists_during(self, lifetime):
@@ -2546,11 +2598,13 @@ class BidirectionalPort(Group):
             self, **kwargs):
         super(BidirectionalPort, self).__init__(**kwargs)
 
-        # Attributes
         # Relations
-        self.attributes.append('existsDuring')
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('hasPort')
+
+        self.relations['hasPort'] = \
+            self.get_has_port
         self._has_port_ports = (None, None, )
 
     def exists_during(self, lifetime):
@@ -2685,11 +2739,13 @@ class BidirectionalLink(Group):
             self, **kwargs):
         super(BidirectionalLink, self).__init__(**kwargs)
 
-        # Attributes
         # Relations
-        self.attributes.append('existsDuring')
+        self.relations['existsDuring'] = \
+            self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-        self.attributes.append('hasLink')
+
+        self.relations['hasLink'] = \
+            self.get_has_link
         self._has_link_links = (None, None, )
 
     def exists_during(self, lifetime):
@@ -2829,7 +2885,7 @@ class Location(object):
             self, longitude=None, latitude=None, altitude=None, unlocode=None,
             address=None, **kwargs):
         self.attributes = []
-        self.relations = []
+        self.relations = OrderedDict()
 
         # Attributes
         self.attributes.append('longitude')
@@ -2856,8 +2912,6 @@ class Location(object):
         if address is None:
             address = 'FIXME: Provide default'
         self.address = address
-
-        # Relations
 
         self.metadata = kwargs
 
@@ -2997,7 +3051,7 @@ class Lifetime(object):
     def __init__(
             self, start=None, end=None, **kwargs):
         self.attributes = []
-        self.relations = []
+        self.relations = OrderedDict()
 
         # Attributes
         self.attributes.append('start')
@@ -3009,8 +3063,6 @@ class Lifetime(object):
         if end is None:
             end = datetime.now().replace(microsecond=0).isoformat()
         self.end = end
-
-        # Relations
 
         self.metadata = kwargs
 
@@ -3092,7 +3144,7 @@ class Label(object):
     def __init__(
             self, labeltype=None, value=None, **kwargs):
         self.attributes = []
-        self.relations = []
+        self.relations = OrderedDict()
 
         # Attributes
         self.attributes.append('labeltype')
@@ -3100,8 +3152,6 @@ class Label(object):
 
         self.attributes.append('value')
         self.value = value
-
-        # Relations
 
         self.metadata = kwargs
 
@@ -3140,7 +3190,7 @@ class LabelGroup(object):
     def __init__(
             self, labeltype=None, value=None, **kwargs):
         self.attributes = []
-        self.relations = []
+        self.relations = OrderedDict()
 
         # Attributes
         self.attributes.append('labeltype')
@@ -3148,8 +3198,6 @@ class LabelGroup(object):
 
         self.attributes.append('value')
         self.value = value
-
-        # Relations
 
         self.metadata = kwargs
 
@@ -3186,10 +3234,7 @@ class OrderedList(object):
     def __init__(
             self, **kwargs):
         self.attributes = []
-        self.relations = []
-
-        # Attributes
-        # Relations
+        self.relations = OrderedDict()
 
         self.metadata = kwargs
 
@@ -3223,10 +3268,7 @@ class ListItem(object):
     def __init__(
             self, **kwargs):
         self.attributes = []
-        self.relations = []
-
-        # Attributes
-        # Relations
+        self.relations = OrderedDict()
 
         self.metadata = kwargs
 

@@ -904,10 +904,12 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         super({{ cls.name|objectize }}, self).__init__(**kwargs)
         {%- else %}
         self.attributes = []
-        self.relations = []
+        self.relations = OrderedDict()
         {%- endif %}
-
+{##}
+        {%- if cls.attributes %}
         # Attributes
+        {%- endif -%}
         {%- for attr in cls.attributes %}
         self.attributes.append('{{ attr.name }}')
         {%- if attr.property %}
@@ -919,9 +921,12 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- endif %}
 {##}
         {%- endfor %}
+        {%- if cls.relations %}
         # Relations
+        {%- endif -%}
         {%- for rel in cls.relations %}
-        self.attributes.append('{{ rel.name }}')
+        self.relations['{{ rel.name }}'] = \\
+            self.get_{{ rel.name|methodize }}
         {%- set relation_collection =  rel.name|variablize + '_' + rel.with.0|pluralize|variablize %}
         self._{{ relation_collection }} = {##}
         {%- if rel.cardinality == '+' -%}
@@ -929,13 +934,12 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- else -%}
         ({{ 'None, ' * rel.cardinality|int }})
         {%- endif %}
+{##}
         {%- endfor %}
-
         {%- if cls.parent is none %}
-{##}
         self.metadata = kwargs
-        {%- endif %}
 {##}
+        {%- endif %}
     {%- for attr in cls.attributes %}
     {%- if attr.property %}
     @property
