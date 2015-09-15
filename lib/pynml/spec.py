@@ -42,7 +42,7 @@ NML_SPEC = {
             'doc': (
                 'No NetworkObject instances can be created because '
                 'this class is abstract'
-                ,
+            ),
             'abstract': True,
             'attributes': [
                 {
@@ -115,7 +115,7 @@ NML_SPEC = {
             'doc': (
                 'Physical or virtual devices can be represented '
                 'by instances of this class.'
-                ),
+            ),
             'abstract': False,
             'attributes': [
             ],
@@ -205,7 +205,7 @@ NML_SPEC = {
             'doc': (
                 'Sources and sinks have specified isSource or isSink '
                 'relations with the Link instance but not vice versa.'
-                ),
+            ),
             'abstract': False,
             'attributes': [
                 {
@@ -464,7 +464,7 @@ NML_SPEC = {
             'name': 'Port Group',
             'parent': 'Group',
             'brief': 'A unordered set of Ports.',
-            'doc': None,
+            'doc': 'FIXME: Document PortGroup',
             'abstract': False,
             'attributes': [
             ],
@@ -505,7 +505,7 @@ NML_SPEC = {
             'name': 'Link Group',
             'parent': 'Group',
             'brief': 'A unordered set of Links.',
-            'doc': None,
+            'doc': 'FIXME: Document LinkGroup',
             'abstract': False,
             'attributes': [
             ],
@@ -609,7 +609,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None, # FIXME Add WGS84 validation
+                    'validation': None,  # FIXME Add WGS84 validation
                     'doc': 'Longitude in WGS84 and in decimal degrees.'
                 },
                 {
@@ -620,7 +620,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None, # FIXME Add WGS84 validation
+                    'validation': None,  # FIXME Add WGS84 validation
                     'doc': 'Latitude in WGS84 and in decimal degrees.'
                 },
                 {
@@ -631,7 +631,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None, # FIXME Add WGS84 validation
+                    'validation': None,  # FIXME Add WGS84 validation
                     'doc': 'Altitude in WGS84 and in decimal meters.'
                 },
                 {
@@ -642,7 +642,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None, # FIXME Add UN/LOCODE validation
+                    'validation': None,  # FIXME Add UN/LOCODE validation
                     'doc': 'UN/LOCODE location identifier.'
                 },
                 {
@@ -653,7 +653,7 @@ NML_SPEC = {
                     'type': 'str',
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
-                    'validation': None, # FIXME Add vCard ADR validation
+                    'validation': None,  # FIXME Add vCard ADR validation
                     'doc': 'A vCard ADR property.'
                 }
             ],
@@ -686,7 +686,7 @@ NML_SPEC = {
                         'Date and time formatted as ISO 8601 calendar date '
                         'compact representation with UTC timezone '
                         '(YYYYMMDDThhmmssZ)'
-                        )
+                    )
                 },
                 {
                     'name': 'end',
@@ -703,7 +703,7 @@ NML_SPEC = {
                         'Date and time formatted as ISO 8601 calendar date '
                         'compact representation with UTC timezone '
                         '(YYYYMMDDThhmmssZ)'
-                        )
+                    )
                 }
             ],
             'relations': [
@@ -750,7 +750,7 @@ NML_SPEC = {
             'name': 'Label Group',
             'parent': None,
             'brief': 'A unordered set of Labels.',
-            'doc': None,
+            'doc': 'FIXME: Document LabelGroup',
             'abstract': False,
             'attributes': [
                 {
@@ -885,7 +885,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     {{ cls.doc|wordwrap(75)|indent(4) }}.
 
     {% for attr in cls.attributes -%}
-    {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(71)|indent(9) }}
+    {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(75)|indent(5) }}
     {% endfor -%}
     \"""
     {%- if cls.abstract %}
