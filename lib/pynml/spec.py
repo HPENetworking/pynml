@@ -92,19 +92,19 @@ NML_SPEC = {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'isAlias',
                     'with': ['Network Object'],
                     'cardinality': '+',
-                    'doc': 'FIXME: isAlias documentation'
+                    'doc': 'FIXME: Document isAlias relation.'
                 },
                 {
                     'name': 'locatedAt',
                     'with': ['Location'],
                     'cardinality': '1',
-                    'doc': 'FIXME: locatedAt documentation'
+                    'doc': 'FIXME: Document locatedAt relation.'
                 },
             ]
         },
@@ -124,25 +124,25 @@ NML_SPEC = {
                     'name': 'hasInboundPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasInboundPort documentation'
+                    'doc': 'FIXME: Document hasInboundPort relation.'
                 },
                 {
                     'name': 'hasOutboundPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasOutboundPort documentation'
+                    'doc': 'FIXME: Document hasOutboundPort relation.'
                 },
                 {
                     'name': 'hasService',
                     'with': ['Switching Service'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasService documentation'
+                    'doc': 'FIXME: Document hasService relation.'
                 },
                 {
                     'name': 'implementedBy',
                     'with': ['Node'],
                     'cardinality': '+',
-                    'doc': 'FIXME: implementedBy documentation'
+                    'doc': 'FIXME: Document implementedBy relation.'
                 },
             ]
         },
@@ -176,25 +176,25 @@ NML_SPEC = {
                     'name': 'hasLabel',
                     'with': ['Label'],
                     'cardinality': '1',
-                    'doc': 'FIXME: hasLabel documentation'
+                    'doc': 'FIXME: Document hasLabel relation.'
                 },
                 {
                     'name': 'hasService',
                     'with': ['Adaptation Service', 'De-adaptation Service'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasService documentation'
+                    'doc': 'FIXME: Document hasService relation.'
                 },
                 {
                     'name': 'isSink',
                     'with': ['Link'],
                     'cardinality': '+',
-                    'doc': 'FIXME: isSink documentation'
+                    'doc': 'FIXME: Document isSink relation.'
                 },
                 {
                     'name': 'isSource',
                     'with': ['Link'],
                     'cardinality': '+',
-                    'doc': 'FIXME: isSource documentation'
+                    'doc': 'FIXME: Document isSource relation.'
                 },
             ]
         },
@@ -228,7 +228,7 @@ NML_SPEC = {
                     'name': 'hasLabel',
                     'with': ['Label'],
                     'cardinality': '1',
-                    'doc': 'FIXME: hasLabel documentation'
+                    'doc': 'FIXME: Document hasLabel relation.'
                 },
             ]
         },
@@ -282,19 +282,19 @@ NML_SPEC = {
                     'name': 'hasInboundPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasInboundPort documentation'
+                    'doc': 'FIXME: Document hasInboundPort relation.'
                 },
                 {
                     'name': 'hasOutboundPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasOutboundPort documentation'
+                    'doc': 'FIXME: Document hasOutboundPort relation.'
                 },
                 {
                     'name': 'providesLink',
                     'with': ['Link', 'Link Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: providesLink documentation'
+                    'doc': 'FIXME: Document providesLink relation.'
                 },
             ]
         },
@@ -329,21 +329,21 @@ NML_SPEC = {
             'relations': [
                 {
                     'name': 'canProvidePort',
-                    'with': ['Port', 'PortGroup'],
+                    'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: canProvidePort documentation'
+                    'doc': 'FIXME: Document canProvidePort relation.'
                 },
                 {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'providesPort',
-                    'with': ['Port', 'PortGroup'],
+                    'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: providesPort documentation'
+                    'doc': 'FIXME: Document providesPort relation.'
                 }
             ]
         },
@@ -378,21 +378,21 @@ NML_SPEC = {
             'relations': [
                 {
                     'name': 'canProvidePort',
-                    'with': ['Port', 'PortGroup'],
+                    'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: canProvidePort documentation'
+                    'doc': 'FIXME: Document canProvidePort relation.'
                 },
                 {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'providesPort',
-                    'with': ['Port', 'PortGroup'],
+                    'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: providesPort documentation'
+                    'doc': 'FIXME: Document providesPort relation.'
                 }
             ]
         },
@@ -426,37 +426,37 @@ NML_SPEC = {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'hasNode',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasNode documentation'
+                    'doc': 'FIXME: Document hasNode relation.'
                 },
                 {
                     'name': 'hasInboundPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasInboundPort documentation'
+                    'doc': 'FIXME: Document hasInboundPort relation.'
                 },
                 {
                     'name': 'hasOutboundPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasOutboundPort documentation'
+                    'doc': 'FIXME: Document hasOutboundPort relation.'
                 },
                 {
                     'name': 'hasService',
                     'with': ['Switching Service'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasService documentation'
+                    'doc': 'FIXME: Document hasService relation.'
                 },
                 {
                     'name': 'hasTopology',
                     'with': ['Topology'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasTopology documentation'
+                    'doc': 'FIXME: Document hasTopology relation.'
                 }
             ]
         },
@@ -473,31 +473,31 @@ NML_SPEC = {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'hasLabelGroup',
                     'with': ['Lifetime'],
                     'cardinality': '1',
-                    'doc': 'FIXME: hasLabelGroup documentation'
+                    'doc': 'FIXME: Document hasLabelGroup relation.'
                 },
                 {
                     'name': 'hasPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasPort documentation'
+                    'doc': 'FIXME: Document hasPort relation.'
                 },
                 {
                     'name': 'isSink',
-                    'with': ['LinkGroup'],
+                    'with': ['Link Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: isSink documentation'
+                    'doc': 'FIXME: Document isSink relation.'
                 },
                 {
                     'name': 'isSource',
-                    'with': ['LinkGroup'],
+                    'with': ['Link Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: isSource documentation'
+                    'doc': 'FIXME: Document isSource relation.'
                 },
             ]
         },
@@ -514,25 +514,25 @@ NML_SPEC = {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'hasLabelGroup',
                     'with': ['Lifetime'],
                     'cardinality': '1',
-                    'doc': 'FIXME: hasLabelGroup documentation'
+                    'doc': 'FIXME: Document hasLabelGroup relation.'
                 },
                 {
                     'name': 'hasLink',
-                    'with': ['Port', 'PortGroup'],
+                    'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasport documentation'
+                    'doc': 'FIXME: Document hasLink relation.'
                 },
                 {
                     'name': 'isSerialCompoundLink',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '+',
-                    'doc': 'FIXME: hasport documentation'
+                    'doc': 'FIXME: Document isSerialCompoundLink relation.'
                 }
             ]
         },
@@ -553,13 +553,13 @@ NML_SPEC = {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'hasPort',
                     'with': ['Port', 'Port Group'],
                     'cardinality': '2',
-                    'doc': 'FIXME: hasPort documentation'
+                    'doc': 'FIXME: Document hasPort relation.'
                 }
             ]
         },
@@ -580,13 +580,13 @@ NML_SPEC = {
                     'name': 'existsDuring',
                     'with': ['Lifetime'],
                     'cardinality': '+',
-                    'doc': 'FIXME: existsDuring documentation'
+                    'doc': 'FIXME: Document existsDuring relation.'
                 },
                 {
                     'name': 'hasLink',
                     'with': ['Link', 'Link Group'],
                     'cardinality': '2',
-                    'doc': 'FIXME: hasLink documentation'
+                    'doc': 'FIXME: Document hasLink relation.'
                 }
             ]
         },
@@ -1182,14 +1182,29 @@ def build():
             exc_name = 'Relation{}Error'.format(
                 filter_objectize(rel['name'])
             )
-            exceptions[exc_name] = rel['doc']
+            exc_doc = (
+                'A {} relation must relate with objects of type {}'.format(
+                    rel['name'],
+                    ' or '.join(
+                        filter_objectize(w) for w in rel['with']
+                    )
+                )
+            )
+            exceptions[exc_name] = exc_doc
+
+    def lower_first(string):
+        return string[:1].lower() + string[1:] if string else ''
+
     for cls in NML_SPEC['classes']:
         for attr in cls['attributes']:
             if attr['validation'] is not None:
                 exc_name = 'Attribute{}Error'.format(
                     filter_objectize(attr['nml_attribute'])
                 )
-                exceptions[exc_name] = attr['doc']
+                exceptions[exc_name] = 'Attribute `{}` must be a {}'.format(
+                    attr['name'],
+                    lower_first(attr['doc'])
+                )
 
     # Build template environment
     def load_template(name):
@@ -1218,7 +1233,7 @@ def build():
         # Write output
         root = dirname(normpath(abspath(__file__)))
 
-        with open(join(root, 'n{}.py'.format(tpl)), 'w') as module:
+        with open(join(root, '{}.py'.format(tpl)), 'w') as module:
             module.write(rendered)
 
 
