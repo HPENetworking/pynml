@@ -39,10 +39,11 @@ log = getLogger(__name__)
 
 
 GRAPHVIZ_TPL = """\
-graph G {{
+{directed}graph G {{
     // Style
     graph [fontname="Verdana" fontsize=8]
     node [fontname="Verdana" fontsize=7]
+    edge [fontname="Verdana" fontsize=7]
     graph [nodesep=0.05 pad=0.0 margin=0.0 ranksep=0.25]
     node [style=filled shape=box margin=0.05 width=0.25 height=0.25]
 
@@ -115,7 +116,41 @@ class NMLManager(object):
         :rtype: str
         :return: The current NML namespace in Graphviz graph notation.
         """
-        pass
+        rdr_nodes = []
+        rdr_links = []
+
+        # Gather nodes and relations
+        for obj_id, obj in self.namespace.items():
+            rdr_nodes.append('{} [label="{}"]'.format(obj_id, obj.name))
+
+            for relation_name, related_objs in obj.relations.items():
+
+                # Handle iteration over dictionaries and tuples
+                collection = related_objs()
+                if hasattr(collection, 'values'):
+                    collection = collection.values()
+
+                for related_obj in collection:
+
+                    # Ignore non-setup relations
+                    if related_obj is None:
+                        continue
+
+                    rdr_links.append(
+                        '{} -> {} [label="{}"]'.format(
+                            obj_id, related_obj.identifier, relation_name
+                        )
+                    )
+
+        # Render template
+        graph = GRAPHVIZ_TPL.format(
+            directed='di',
+            namespace=self.name,
+            nodes='\n    '.join(rdr_nodes),
+            ports='',
+            links='\n    '.join(rdr_links)
+        )
+        return graph
 
     def save_graphviz(self, path, keep_gv=False):
         """
@@ -181,6 +216,8 @@ class NMLManager(object):
         check_call([
             dot_exec, '-T{}'.format(format), source, '-o', path
         ])
+
+        log.info('Saved graphviz file {}'.format(source))
 
         if keep_gv:
             return source
@@ -404,6 +441,7 @@ class ExtendedNMLManager(NMLManager):
 
         # Render template
         graph = GRAPHVIZ_TPL.format(
+            directed='',
             namespace=self.name,
             nodes='\n    '.join(rdr_nodes),
             ports='\n    '.join(rdr_ports),

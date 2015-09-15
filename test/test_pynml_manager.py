@@ -31,18 +31,15 @@ from distutils.spawn import find_executable
 
 import pytest  # noqa
 
-from pynml.manager import ExtendedNMLManager
+from pynml.manager import NMLManager, ExtendedNMLManager
 
 
-def test_graphviz():
+def common_mgr():
     """
-    Check that the graphviz export work.
-    """
-    # Skip if dot is missing
-    dot_exec = find_executable('dot')
-    if dot_exec is None:
-        pytest.skip('Missing Graphviz "dot" executable')
+    Create a base topology.
 
+    This uses the ExtendedNMLManager for it's helpers.
+    """
     # Create base topology
     mgr = ExtendedNMLManager(name='Graphviz Namespace')
 
@@ -58,6 +55,51 @@ def test_graphviz():
 
     sw1p1_sw2p1 = mgr.create_bilink(sw1p1, sw2p1)  # noqa
     sw1p2_sw2p2 = mgr.create_bilink(sw1p2, sw2p2)  # noqa
+
+    return mgr
+
+
+def test_graphviz():
+    """
+    Check that the graphviz export work.
+    """
+    # Skip if dot is missing
+    dot_exec = find_executable('dot')
+    if dot_exec is None:
+        pytest.skip('Missing Graphviz "dot" executable')
+
+    # Create base topology
+    cmgr = common_mgr()
+    mgr = NMLManager()
+    # FIXME: Don't be lazy
+    mgr.namespace = cmgr.namespace  # Hack, because I'm lazy
+
+    # Plot graphviz file
+    tmpdir = mkdtemp(prefix='pynml_test_')
+    srcfile = join(tmpdir, 'graph.gv')
+    plotfile = join(tmpdir, 'graph.svg')
+    print('Ploting graphviz file to {} ...'.format(plotfile))
+    mgr.save_graphviz(plotfile, keep_gv=True)
+
+    # Check files were created
+    assert isfile(plotfile)
+    assert isfile(srcfile)
+
+    # Clean-up
+    rmtree(tmpdir)
+
+
+def test_graphviz_extended():
+    """
+    Check that the graphviz export work.
+    """
+    # Skip if dot is missing
+    dot_exec = find_executable('dot')
+    if dot_exec is None:
+        pytest.skip('Missing Graphviz "dot" executable')
+
+    # Create base topology
+    mgr = common_mgr()
 
     # Plot graphviz file
     tmpdir = mkdtemp(prefix='pynml_test_')
