@@ -114,7 +114,7 @@ NML_SPEC = {
             'brief': 'A Node object represents a device in a network',
             'doc': (
                 'Physical or virtual devices can be represented '
-                'by instances of this class.'
+                'by instances of this class'
             ),
             'abstract': False,
             'attributes': [
@@ -149,10 +149,10 @@ NML_SPEC = {
         {
             'name': 'Port',
             'parent': 'Network Object',
-            'brief': 'Endpoint of an unidirectional connection.',
+            'brief': 'Endpoint of an unidirectional connection',
             'doc': (
                 'Can represent physical or virtual ports. Needs a proper '
-                'linking instance to connect to other ports.'
+                'linking instance to connect to other ports'
             ),
             'abstract': False,
             'attributes': [
@@ -201,10 +201,10 @@ NML_SPEC = {
         {
             'name': 'Link',
             'parent': 'Network Object',
-            'brief': 'Connects a source object with a sink one.',
+            'brief': 'Connects a source object with a sink one',
             'doc': (
                 'Sources and sinks have specified isSource or isSink '
-                'relations with the Link instance but not vice versa.'
+                'relations with the Link instance but not vice versa'
             ),
             'abstract': False,
             'attributes': [
@@ -251,14 +251,14 @@ NML_SPEC = {
             'parent': 'Service',
             'brief': (
                 'Shows that the network can create new links between '
-                'certain ports.'
+                'certain ports'
             ),
             'doc': (
                 'An instance of this class shows that the network is capable '
                 'of creating new Links or LinkGroups between its inbound and '
                 'outbound ports. These Links or LinkGroups are identified by '
                 'being related to the SwitchingService instance with a '
-                'providesLink relation.'
+                'providesLink relation'
             ),
             'abstract': False,
             'attributes': [
@@ -303,14 +303,14 @@ NML_SPEC = {
             'parent': 'Service',
             'brief': (
                 'Shows that the network can embed data from one or more '
-                'Ports or PortGroups into other Ports or PortGroups.'
+                'Ports or PortGroups into other Ports or PortGroups'
             ),
             'doc': (
                 'An instance of this class shows that data from one or more '
                 'Ports can be embedded in the data encoding of other Port or '
                 'Ports. This class has an adaptationFunction attribute that '
                 'should describe the kind of embedding that is used by the '
-                'AdaptationService instance.'
+                'AdaptationService instance'
             ),
             'abstract': False,
             'attributes': [
@@ -352,14 +352,14 @@ NML_SPEC = {
             'parent': 'Service',
             'brief': (
                 'Shows that the network can extract data from one or more '
-                'Ports or PortGroups encoding.'
+                'Ports or PortGroups encoding'
             ),
             'doc': (
                 'An instance of this class shows that data from one or more '
                 'Ports can be extracted from the data encoding of other Port '
                 'or Ports. This class has an adaptationFunction attribute '
                 'that should describe the kind of extraction that is used by '
-                'the DeadaptationService instance.'
+                'the DeadaptationService instance'
             ),
             'abstract': False,
             'attributes': [
@@ -399,10 +399,10 @@ NML_SPEC = {
         {
             'name': 'Group',
             'parent': 'Network Object',
-            'brief': 'A collection of objects.',
+            'brief': 'A collection of objects',
             'doc': (
-                'Any object can be part of a Group, even another Group.'
-                'An object can be part of multiple Groups.'
+                'Any object can be part of a Group, even another Group'
+                'An object can be part of multiple Groups'
             ),
             'abstract': True,
             'attributes': [
@@ -413,10 +413,10 @@ NML_SPEC = {
         {
             'name': 'Topology',
             'parent': 'Group',
-            'brief': 'A set of connected or connectable Network objects.',
+            'brief': 'A set of connected or connectable Network objects',
             'doc': (
                 'One or more Link or LinkGroup objects can provide the '
-                'connection between the Topology Network Objects.'
+                'connection between the Topology Network Objects'
             ),
             'abstract': False,
             'attributes': [
@@ -463,7 +463,7 @@ NML_SPEC = {
         {
             'name': 'Port Group',
             'parent': 'Group',
-            'brief': 'A unordered set of Ports.',
+            'brief': 'A unordered set of Ports',
             'doc': 'FIXME: Document PortGroup',
             'abstract': False,
             'attributes': [
@@ -504,7 +504,7 @@ NML_SPEC = {
         {
             'name': 'Link Group',
             'parent': 'Group',
-            'brief': 'A unordered set of Links.',
+            'brief': 'A unordered set of Links',
             'doc': 'FIXME: Document LinkGroup',
             'abstract': False,
             'attributes': [
@@ -539,11 +539,11 @@ NML_SPEC = {
         {
             'name': 'Bidirectional Port',
             'parent': 'Group',
-            'brief': 'A group of two unidirectional Ports or PortGroups.',
+            'brief': 'A group of two unidirectional Ports or PortGroups',
             'doc': (
                 'The purpose of this class is to provide a convenient '
                 'representation of a bidirectional Port. This is needed '
-                'because NML is a unidirectional specification.'
+                'because NML is a unidirectional specification'
             ),
             'abstract': False,
             'attributes': [
@@ -566,11 +566,11 @@ NML_SPEC = {
         {
             'name': 'Bidirectional Link',
             'parent': 'Group',
-            'brief': 'A group of two unidirectional Links or LinkGroups.',
+            'brief': 'A group of two unidirectional Links or LinkGroups',
             'doc': (
                 'The purpose of this class is to provide a convenient '
                 'representation of a bidirectional Link. This is needed '
-                'because NML is a unidirectional specification.'
+                'because NML is a unidirectional specification'
             ),
             'abstract': False,
             'attributes': [
@@ -593,11 +593,11 @@ NML_SPEC = {
         {
             'name': 'Location',
             'parent': None,
-            'brief': 'Describes where the object is physically located.',
+            'brief': 'Describes where the object is physically located',
             'doc': (
                 'An instance of this class can be related to other objects '
                 'that are to be represented as being present in the same '
-                'place.'
+                'place'
             ),
             'abstract': False,
             'attributes': [
@@ -610,7 +610,7 @@ NML_SPEC = {
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add WGS84 validation
-                    'doc': 'Longitude in WGS84 and in decimal degrees.'
+                    'doc': 'Longitude in WGS84 and in decimal degrees'
                 },
                 {
                     'name': 'latitude',
@@ -621,7 +621,7 @@ NML_SPEC = {
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add WGS84 validation
-                    'doc': 'Latitude in WGS84 and in decimal degrees.'
+                    'doc': 'Latitude in WGS84 and in decimal degrees'
                 },
                 {
                     'name': 'altitude',
@@ -632,7 +632,7 @@ NML_SPEC = {
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add WGS84 validation
-                    'doc': 'Altitude in WGS84 and in decimal meters.'
+                    'doc': 'Altitude in WGS84 and in decimal meters'
                 },
                 {
                     'name': 'unlocode',
@@ -643,7 +643,7 @@ NML_SPEC = {
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add UN/LOCODE validation
-                    'doc': 'UN/LOCODE location identifier.'
+                    'doc': 'UN/LOCODE location identifier'
                 },
                 {
                     'name': 'address',
@@ -654,7 +654,7 @@ NML_SPEC = {
                     'default': '\'FIXME: Provide default\'',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add vCard ADR validation
-                    'doc': 'A vCard ADR property.'
+                    'doc': 'A vCard ADR property'
                 }
             ],
             'relations': [
@@ -663,11 +663,11 @@ NML_SPEC = {
         {
             'name': 'Lifetime',
             'parent': None,
-            'brief': 'A time interval where the object is active.',
+            'brief': 'A time interval where the object is active',
             'doc': (
                 'An object can have multiple Lifetimes, if so, it will be '
                 'active in a time interval equivalent to the union of all '
-                'its Lifetimes time intervals.'
+                'its Lifetimes time intervals'
             ),
             'abstract': False,
             'attributes': [
@@ -712,11 +712,11 @@ NML_SPEC = {
         {
             'name': 'Label',
             'parent': None,
-            'brief': 'A value that specifies a single data stream among many.',
+            'brief': 'A value that specifies a single data stream among many',
             'doc': (
                 'A Label is technology-specific, so a Label used to identify '
                 'a VLAN would be different from a Label used to identify a '
-                'wavelength.'
+                'wavelength'
             ),
             'abstract': False,
             'attributes': [
@@ -749,7 +749,7 @@ NML_SPEC = {
         {
             'name': 'Label Group',
             'parent': None,
-            'brief': 'A unordered set of Labels.',
+            'brief': 'A unordered set of Labels',
             'doc': 'FIXME: Document LabelGroup',
             'abstract': False,
             'attributes': [
@@ -782,10 +782,10 @@ NML_SPEC = {
         {
             'name': 'Ordered List',
             'parent': None,
-            'brief': 'An ordered list of Network Objects.',
+            'brief': 'An ordered list of Network Objects',
             'doc': (
                 'Instances of this class are used to describe a path in the '
-                'network along with the isSerialCompoundLink relation.'
+                'network along with the isSerialCompoundLink relation'
             ),
             'abstract': False,
             'attributes': [
@@ -796,10 +796,10 @@ NML_SPEC = {
         {
             'name': 'List Item',
             'parent': None,
-            'brief': 'An element of an OrderedList.',
+            'brief': 'An element of an OrderedList',
             'doc': (
                 'Is a syntax-dependent object used to represent elements in '
-                'an OrderedList.'
+                'an OrderedList'
             ),
             'abstract': False,
             'attributes': [
