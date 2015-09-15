@@ -895,7 +895,8 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     {%- if cls.abstract %}
     @abstractmethod
     {%- endif %}
-    def __init__(self{{ param_attrs(cls.attributes) }}, **kwargs):
+    def __init__(
+            {{ 'self%s, **kwargs):'|format(param_attrs(cls.attributes))|wordwrap(67)|indent(12) }}
         {%- if cls.parent is not none %}
         super({{ cls.name|objectize }}, self).__init__(**kwargs)
 {##}
