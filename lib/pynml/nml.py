@@ -224,7 +224,7 @@ class NetworkObject(object):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -265,7 +265,7 @@ class NetworkObject(object):
         """
         Get all objects related with this object with relation `isAlias`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._is_alias_network_objects)
@@ -427,7 +427,7 @@ class Node(NetworkObject):
         Get all objects related with this object with relation
         `hasInboundPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_inbound_port_ports)
@@ -471,7 +471,7 @@ class Node(NetworkObject):
         Get all objects related with this object with relation
         `hasOutboundPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_outbound_port_ports)
@@ -514,7 +514,7 @@ class Node(NetworkObject):
         """
         Get all objects related with this object with relation `hasService`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_service_switching_services)
@@ -555,7 +555,7 @@ class Node(NetworkObject):
         """
         Get all objects related with this object with relation `implementedBy`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._implemented_by_nodes)
@@ -749,7 +749,7 @@ class Port(NetworkObject):
         """
         Get all objects related with this object with relation `hasService`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_service_adaptation_services)
@@ -790,7 +790,7 @@ class Port(NetworkObject):
         """
         Get all objects related with this object with relation `isSink`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._is_sink_links)
@@ -831,7 +831,7 @@ class Port(NetworkObject):
         """
         Get all objects related with this object with relation `isSource`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._is_source_links)
@@ -1124,7 +1124,7 @@ class SwitchingService(Service):
         Get all objects related with this object with relation
         `hasInboundPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_inbound_port_ports)
@@ -1168,7 +1168,7 @@ class SwitchingService(Service):
         Get all objects related with this object with relation
         `hasOutboundPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_outbound_port_ports)
@@ -1211,7 +1211,7 @@ class SwitchingService(Service):
         """
         Get all objects related with this object with relation `providesLink`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._provides_link_links)
@@ -1329,7 +1329,7 @@ class AdaptationService(Service):
         Get all objects related with this object with relation
         `canProvidePort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._can_provide_port_ports)
@@ -1370,7 +1370,7 @@ class AdaptationService(Service):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -1413,7 +1413,7 @@ class AdaptationService(Service):
         """
         Get all objects related with this object with relation `providesPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._provides_port_ports)
@@ -1531,7 +1531,7 @@ class DeAdaptationService(Service):
         Get all objects related with this object with relation
         `canProvidePort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._can_provide_port_ports)
@@ -1572,7 +1572,7 @@ class DeAdaptationService(Service):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -1615,7 +1615,7 @@ class DeAdaptationService(Service):
         """
         Get all objects related with this object with relation `providesPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._provides_port_ports)
@@ -1763,7 +1763,7 @@ class Topology(Group):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -1804,7 +1804,7 @@ class Topology(Group):
         """
         Get all objects related with this object with relation `hasNode`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_node_lifetimes)
@@ -1848,7 +1848,7 @@ class Topology(Group):
         Get all objects related with this object with relation
         `hasInboundPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_inbound_port_ports)
@@ -1892,7 +1892,7 @@ class Topology(Group):
         Get all objects related with this object with relation
         `hasOutboundPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_outbound_port_ports)
@@ -1935,7 +1935,7 @@ class Topology(Group):
         """
         Get all objects related with this object with relation `hasService`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_service_switching_services)
@@ -1976,7 +1976,7 @@ class Topology(Group):
         """
         Get all objects related with this object with relation `hasTopology`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_topology_topologies)
@@ -2112,7 +2112,7 @@ class PortGroup(Group):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -2197,7 +2197,7 @@ class PortGroup(Group):
         """
         Get all objects related with this object with relation `hasPort`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_port_ports)
@@ -2238,7 +2238,7 @@ class PortGroup(Group):
         """
         Get all objects related with this object with relation `isSink`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._is_sink_link_groups)
@@ -2279,7 +2279,7 @@ class PortGroup(Group):
         """
         Get all objects related with this object with relation `isSource`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._is_source_link_groups)
@@ -2403,7 +2403,7 @@ class LinkGroup(Group):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -2488,7 +2488,7 @@ class LinkGroup(Group):
         """
         Get all objects related with this object with relation `hasLink`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_link_ports)
@@ -2533,7 +2533,7 @@ class LinkGroup(Group):
         Get all objects related with this object with relation
         `isSerialCompoundLink`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._is_serial_compound_link_ports)
@@ -2643,7 +2643,7 @@ class BidirectionalPort(Group):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)
@@ -2784,7 +2784,7 @@ class BidirectionalLink(Group):
         """
         Get all objects related with this object with relation `existsDuring`.
 
-        :rtype: OrderedDict
+        :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._exists_during_lifetimes)

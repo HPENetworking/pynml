@@ -8,4 +8,5 @@ Internal Documentation Reference
    :toctree: _reference
 
    pynml.nml
+   pynml.manager
    pynml.exceptions

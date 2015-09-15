@@ -337,7 +337,7 @@ class ExtendedNMLManager(NMLManager):
 
     def nodes(self):
         """
-        Iterate over all registered :class:`Node`s in the namespace.
+        Iterate over all registered :class:`Node` s in the namespace.
 
         This iterates the nodes in the order as they were added into the
         namespace.
@@ -349,7 +349,7 @@ class ExtendedNMLManager(NMLManager):
 
     def biports(self):
         """
-        Iterate over all registered :class:`BidirectionalPort`s in the
+        Iterate over all registered :class:`BidirectionalPort` s in the
         namespace.
 
         This iterates the biports in the order as they were added into the
@@ -363,7 +363,7 @@ class ExtendedNMLManager(NMLManager):
 
     def bilinks(self):
         """
-        Iterate over all registered :class:`BidirectionalLink`s in the
+        Iterate over all registered :class:`BidirectionalLink` s in the
         namespace.
 
         This iterates the bilinks in the order as they were added into the
@@ -371,11 +371,9 @@ class ExtendedNMLManager(NMLManager):
 
         :return: An iterator to all bilinks in the namespace. The iterator is
          a tuple of the form:
-         (
-            (:class:`Node` A, :class:`BidirectionalPort` A),
-            (:class:`Node` B, :class:`BidirectionalPort` B),
-            :class:`BidirectionalLink`
-         ).
+         ((:class:`Node` A, :class:`BidirectionalPort` A),
+         (:class:`Node` B, :class:`BidirectionalPort` B),
+         :class:`BidirectionalLink`).
         """
         for bilink_id, (biport_a, biport_b) in self._bilink_biport_map.items():
             node_a = self._biport_node_map[biport_a.identifier]

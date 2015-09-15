@@ -1076,7 +1076,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         \"""
         {{ 'Get all objects related with this object with relation `%s`.'|format(rel.name)|wordwrap(71)|indent(8) }}
 
-        :rtype: {% if rel.cardinality == '+' %}OrderedDict{% else %}set{% endif %}
+        :rtype: {% if rel.cardinality == '+' %}:py:class:`OrderedDict`{% else %}set{% endif %}
         :return: A copy of the collection of objects related with this object.
         \"""
         return copy(self._{{ relation_collection }})
