@@ -879,6 +879,7 @@ from collections import OrderedDict
 from abc import ABCMeta, abstractmethod
 from xml.etree import ElementTree as etree  # noqa
 
+from six import add_metaclass
 from rfc3986 import is_valid_uri
 
 from .exceptions import (
@@ -897,6 +898,7 @@ for xmlns, uri in NAMESPACES.items():
 unset = type(b'Unset', (object,), {})()
 
 
+@add_metaclass(ABCMeta)
 class NMLObject(object):
     \"""
     Base object for every NML object.
@@ -904,7 +906,6 @@ class NMLObject(object):
     This object is not part of the specification, it is just 'Pure Fabrication'
     (see GRASP) of refactored functionality of all objects.
     \"""
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, **kwargs):
@@ -998,6 +999,9 @@ class NMLObject(object):
 
 
 {% for cls in spec.classes -%}
+{%- if cls.abstract -%}
+@add_metaclass(ABCMeta)
+{% endif -%}
 class {{ cls.name|objectize }}({{ cls.parent|objectize|default('NMLObject', True) }}):
     \"""
     {{ cls.brief|wordwrap(75)|indent(4) }}.
@@ -1010,9 +1014,6 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('NMLObject', True
     {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(75)|indent(5) }}
     {% endfor -%}
     \"""
-    {%- if cls.abstract %}
-    __metaclass__ = ABCMeta
-    {%- endif %}
 {##}
     {%- if cls.abstract %}
     @abstractmethod

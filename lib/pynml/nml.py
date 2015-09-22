@@ -28,6 +28,7 @@ from collections import OrderedDict
 from abc import ABCMeta, abstractmethod
 from xml.etree import ElementTree as etree  # noqa
 
+from six import add_metaclass
 from rfc3986 import is_valid_uri
 
 from .exceptions import (
@@ -65,6 +66,7 @@ for xmlns, uri in NAMESPACES.items():
 unset = type(b'Unset', (object,), {})()
 
 
+@add_metaclass(ABCMeta)
 class NMLObject(object):
     """
     Base object for every NML object.
@@ -72,7 +74,6 @@ class NMLObject(object):
     This object is not part of the specification, it is just 'Pure Fabrication'
     (see GRASP) of refactored functionality of all objects.
     """
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, **kwargs):
@@ -165,6 +166,7 @@ class NMLObject(object):
         return this
 
 
+@add_metaclass(ABCMeta)
 class NetworkObject(NMLObject):
     """
     The basic class from other instances inherit from.
@@ -175,7 +177,6 @@ class NetworkObject(NMLObject):
     :param str identifier: Persistent globally unique URI.
     :param str version: Time stamp formatted as ISO 8601.
     """
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(
@@ -916,13 +917,13 @@ class Link(NetworkObject):
         return copy(self._has_label_labels)
 
 
+@add_metaclass(ABCMeta)
 class Service(NetworkObject):
     """
     Base class for services that a network may provide.
 
     No Service instances can be created because this class is abstract.
     """
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(
@@ -1443,6 +1444,7 @@ class DeAdaptationService(Service):
         return copy(self._provides_port_ports)
 
 
+@add_metaclass(ABCMeta)
 class Group(NetworkObject):
     """
     A collection of objects.
@@ -1450,7 +1452,6 @@ class Group(NetworkObject):
     Any object can be part of a Group, even another Group. An object can be
     part of multiple Groups.
     """
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(
