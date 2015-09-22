@@ -117,7 +117,7 @@ class RelationProvidesPortError(NMLException):
 
 class RelationHasNodeError(NMLException):
     """
-    A hasNode relation must relate with objects of type Lifetime.
+    A hasNode relation must relate with objects of type Node.
     """
 
 

@@ -1476,7 +1476,7 @@ class Topology(Group):
         self._exists_during_lifetimes = OrderedDict()
         self.relations['hasNode'] = \
             self.get_has_node
-        self._has_node_lifetimes = OrderedDict()
+        self._has_node_nodes = OrderedDict()
         self.relations['hasInboundPort'] = \
             self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
@@ -1531,37 +1531,37 @@ class Topology(Group):
         """
         return copy(self._exists_during_lifetimes)
 
-    def has_node(self, lifetime):
+    def has_node(self, node):
         """
-        Check `hasNode` relation with given `lifetime` object.
+        Check `hasNode` relation with given `node` object.
 
         FIXME: Document hasNode relation.
 
-        :param lifetime: Object to validate relation `hasNode` with.
-        :type lifetime: Lifetime
-        :return: True if `lifetime` is related to `self` with `hasNode`.
+        :param node: Object to validate relation `hasNode` with.
+        :type node: Node
+        :return: True if `node` is related to `self` with `hasNode`.
         :rtype: bool
         """
-        if lifetime.__class__ not in (
-                Lifetime, ):
+        if node.__class__ not in (
+                Node, ):
             raise RelationHasNodeError()
 
-        return lifetime.identifier in \
-            self._has_node_lifetimes
+        return node.identifier in \
+            self._has_node_nodes
 
-    def add_has_node(self, lifetime):
+    def add_has_node(self, node):
         """
-        Add given `lifetime` to this object `hasNode` relations.
+        Add given `node` to this object `hasNode` relations.
 
-        :param lifetime: Object to add to the `hasNode` relation.
-        :type lifetime: Lifetime
+        :param node: Object to add to the `hasNode` relation.
+        :type node: Node
         """
-        if lifetime.__class__ not in (
-                Lifetime, ):
+        if node.__class__ not in (
+                Node, ):
             raise RelationHasNodeError()
 
-        self._has_node_lifetimes[lifetime.identifier] = \
-            lifetime
+        self._has_node_nodes[node.identifier] = \
+            node
 
     def get_has_node(self):
         """
@@ -1570,7 +1570,7 @@ class Topology(Group):
         :rtype: :py:class:`OrderedDict`
         :return: A copy of the collection of objects related with this object.
         """
-        return copy(self._has_node_lifetimes)
+        return copy(self._has_node_nodes)
 
     def has_inbound_port(self, port):
         """

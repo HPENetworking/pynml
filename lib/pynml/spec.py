@@ -430,7 +430,7 @@ NML_SPEC = {
                 },
                 {
                     'name': 'hasNode',
-                    'with': ['Lifetime'],
+                    'with': ['Node'],
                     'cardinality': '+',
                     'doc': 'FIXME: Document hasNode relation'
                 },
