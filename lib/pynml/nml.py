@@ -56,7 +56,13 @@ from .exceptions import (
 )
 
 
+# Register XML namespaces
 NAMESPACES = {'nml': 'http://schemas.ogf.org/nml/2013/05/base'}
+for xmlns, uri in NAMESPACES.items():
+    etree.register_namespace(xmlns, uri)
+
+# Special unique variable for unset values
+unset = type(b'Unset', (object,), {})()
 
 
 class NMLObject(object):
@@ -104,14 +110,11 @@ class NMLObject(object):
         multi-node tree.
         """
         if this is None:
+            name = 'nml:' + self.__class__.__name__
             if parent is None:
-                this = etree.Element(
-                    self.__class__.__name__, nsmap=NAMESPACES
-                )
+                this = etree.Element(name)
             else:
-                this = etree.SubElement(
-                    parent, self.__class__.__name__, nsmap=NAMESPACES
-                )
+                this = etree.SubElement(parent, name)
         return this
 
     def as_nml(self, this=None, parent=None):
@@ -129,19 +132,35 @@ class NMLObject(object):
         this = self._tree_element(this, parent)
 
         # Attributes
-        for attr in self.attributes:
-            this.attrib[attr] = getattr(self, attr)
+        for attr_name in self.attributes:
+            attr = getattr(self, attr_name)
+            if attr is not unset:
+                this.attrib[attr_name] = attr
 
         # Relations
-        for relname, relgetter in self.relations:
-            relation = etree.SubElement(this, 'Relation')
-            relation.attrib['type'] = relname
+        for relname, relgetter in self.relations.items():
 
-            for associated in relgetter():
-                reference = etree.SubElement(
-                    relation, associated.__class__.__name__
+            # Composition elements are tuples
+            # Aggregation elements are OrderedDict
+            associated = relgetter()
+            if isinstance(associated, OrderedDict):
+                associated = associated.values()
+
+            # Ignore empty relations
+            if not associated or not all(associated):
+                continue
+
+            # Create subelement
+            relation = etree.SubElement(
+                this, 'Relation',
+                type='{}#{}'.format(NAMESPACES['nml'], relname)
+            )
+
+            for associated in associated:
+                etree.SubElement(
+                    relation, associated.__class__.__name__,
+                    id=associated.identifier
                 )
-                reference.attrib['id'] = associated.identifier
 
         return this
 
@@ -167,7 +186,7 @@ class NetworkObject(NMLObject):
 
         self.attributes.append('name')
         if name is None:
-            name = '{}<{}>'.format(
+            name = '{}({})'.format(
                 self.__class__.__name__, str(id(self))
             )
         self.name = name
@@ -210,7 +229,7 @@ class NetworkObject(NMLObject):
 
         :param str name: Human readable string name.
         """
-        if not name:
+        if name is not unset and not name:
             raise AttributeNameError()
         self._name = name
 
@@ -231,7 +250,7 @@ class NetworkObject(NMLObject):
 
         :param str identifier: Persistent globally unique URI.
         """
-        if not is_valid_uri(identifier):
+        if identifier is not unset and not is_valid_uri(identifier):
             raise AttributeIdError()
         self._identifier = identifier
 
@@ -596,7 +615,7 @@ class Port(NetworkObject):
 
         self.attributes.append('encoding')
         if encoding is None:
-            encoding = 'FIXME: Provide default'
+            encoding = unset
         self.encoding = encoding
 
         # Relations
@@ -631,7 +650,7 @@ class Port(NetworkObject):
         :param str encoding: Format of the data streaming through the port as
          an URI.
         """
-        if not is_valid_uri(encoding):
+        if encoding is not unset and not is_valid_uri(encoding):
             raise AttributeEncodingError()
         self._encoding = encoding
 
@@ -824,7 +843,7 @@ class Link(NetworkObject):
 
         self.attributes.append('encoding')
         if encoding is None:
-            encoding = 'FIXME: Provide default'
+            encoding = unset
         self.encoding = encoding
 
         # Relations
@@ -850,7 +869,7 @@ class Link(NetworkObject):
         :param str encoding: Format of the data streaming through the link as
          an URI.
         """
-        if not is_valid_uri(encoding):
+        if encoding is not unset and not is_valid_uri(encoding):
             raise AttributeEncodingError()
         self._encoding = encoding
 
@@ -932,7 +951,7 @@ class SwitchingService(Service):
 
         self.attributes.append('encoding')
         if encoding is None:
-            encoding = 'FIXME: Provide default'
+            encoding = unset
         self.encoding = encoding
 
         # Relations
@@ -964,7 +983,7 @@ class SwitchingService(Service):
         :param str encoding: Format of the data streaming through the service
          as an URI.
         """
-        if not is_valid_uri(encoding):
+        if encoding is not unset and not is_valid_uri(encoding):
             raise AttributeEncodingError()
         self._encoding = encoding
 
@@ -2417,27 +2436,27 @@ class Location(NMLObject):
 
         self.attributes.append('longitude')
         if longitude is None:
-            longitude = 'FIXME: Provide default'
+            longitude = unset
         self.longitude = longitude
 
         self.attributes.append('latitude')
         if latitude is None:
-            latitude = 'FIXME: Provide default'
+            latitude = unset
         self.latitude = latitude
 
         self.attributes.append('altitude')
         if altitude is None:
-            altitude = 'FIXME: Provide default'
+            altitude = unset
         self.altitude = altitude
 
         self.attributes.append('unlocode')
         if unlocode is None:
-            unlocode = 'FIXME: Provide default'
+            unlocode = unset
         self.unlocode = unlocode
 
         self.attributes.append('address')
         if address is None:
-            address = 'FIXME: Provide default'
+            address = unset
         self.address = address
 
     @property
@@ -2457,7 +2476,7 @@ class Location(NMLObject):
 
         :param str name: Human readable string name.
         """
-        if not name:
+        if name is not unset and not name:
             raise AttributeNameError()
         self._name = name
 
@@ -2478,7 +2497,7 @@ class Location(NMLObject):
 
         :param str identifier: Persistent globally unique URI.
         """
-        if not is_valid_uri(identifier):
+        if identifier is not unset and not is_valid_uri(identifier):
             raise AttributeIdError()
         self._identifier = identifier
 
