@@ -895,7 +895,7 @@ for xmlns, uri in NAMESPACES.items():
     etree.register_namespace(xmlns, uri)
 
 # Special unique variable for unset values
-unset = type(b'Unset', (object,), {})()
+unset = type(str('Unset'), (object,), {})()
 
 
 @add_metaclass(ABCMeta)

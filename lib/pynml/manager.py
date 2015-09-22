@@ -108,7 +108,8 @@ class NMLManager(object):
 
         xml = etree.tostring(root, encoding='utf-8')
         if pretty:
-            doc = minidom.parse(StringIO(xml))
+            infile = StringIO(text_type(xml, 'utf-8'))
+            doc = minidom.parse(infile)
             xml = doc.toprettyxml(indent='    ', encoding='utf-8')
         return text_type(xml, 'utf-8')
 
