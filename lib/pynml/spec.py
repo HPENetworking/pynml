@@ -891,25 +891,95 @@ from .exceptions import (
 NAMESPACES = {'nml': 'http://schemas.ogf.org/nml/2013/05/base'}
 
 
-def tree_element(self, this, parent):
+class NMLObject(object):
     \"""
-    Helper function to identify an XML node to modify in a inheritance and
-    multi-node tree.
+    Base object for every NML object.
+
+    This object is not part of the specification, it is just 'Pure Fabrication'
+    (see GRASP) of refactored functionality of all objects.
     \"""
-    if this is None:
-        if parent is None:
-            this = etree.Element(
-                self.__class__.__name__, nsmap=NAMESPACES
-            )
-        else:
-            this = etree.SubElement(
-                parent, self.__class__.__name__, nsmap=NAMESPACES
-            )
-    return this
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self, **kwargs):
+        self.attributes = []
+        self.relations = OrderedDict()
+        self.metadata = kwargs
+
+    def _describe_object(self):
+        \"""
+        Describe and pretty-print the NML object.
+
+        :rtype: str
+        :return: A pretty-printed string with attributes and metadata.
+        \"""
+        name = self.__class__.__name__
+        attributes = [
+            (attr, getattr(self, attr))
+            for attr in self.attributes + ['metadata']
+            if hasattr(self, attr)
+        ]
+        formatted_attributes = ', '.join([
+            '{}={}'.format(attr, repr(value)) for attr, value in attributes
+        ])
+        return '{}({})'.format(name, formatted_attributes)
+
+    def __repr__(self):
+        return self._describe_object()
+
+    def __str__(self):
+        return self._describe_object()
+
+    def _tree_element(self, this, parent):
+        \"""
+        Helper function to identify an XML node to modify in a inheritance and
+        multi-node tree.
+        \"""
+        if this is None:
+            if parent is None:
+                this = etree.Element(
+                    self.__class__.__name__, nsmap=NAMESPACES
+                )
+            else:
+                this = etree.SubElement(
+                    parent, self.__class__.__name__, nsmap=NAMESPACES
+                )
+        return this
+
+    def as_nml(self, this=None, parent=None):
+        \"""
+        Build NML representation of this node.
+
+        :param this: Node to modify. If `None`, a new node is created.
+        :type this: :py:class:`xml.etree.ElementTree`
+        :param parent: Parent node to hook to. If `None`, a root node is
+         created.
+        :type parent: :py:class:`xml.etree.ElementTree`
+        :rtype: :py:class:`xml.etree.ElementTree`
+        :return: The NML representation of this node.
+        \"""
+        this = self._tree_element(this, parent)
+
+        # Attributes
+        for attr in self.attributes:
+            this.attrib[attr] = getattr(self, attr)
+
+        # Relations
+        for relname, relgetter in self.relations:
+            relation = etree.SubElement(this, 'Relation')
+            relation.attrib['type'] = relname
+
+            for associated in relgetter():
+                reference = etree.SubElement(
+                    relation, associated.__class__.__name__
+                )
+                reference.attrib['id'] = associated.identifier
+
+        return this
 
 
 {% for cls in spec.classes -%}
-class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }}):
+class {{ cls.name|objectize }}({{ cls.parent|objectize|default('NMLObject', True) }}):
     \"""
     {{ cls.brief|wordwrap(75)|indent(4) }}.
 
@@ -930,17 +1000,13 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     {%- endif %}
     def __init__(
             {{ 'self%s, **kwargs):'|format(param_attrs(cls.attributes))|wordwrap(67)|indent(12) }}
-        {%- if cls.parent is not none %}
         super({{ cls.name|objectize }}, self).__init__(**kwargs)
-        {%- else %}
-        self.attributes = []
-        self.relations = OrderedDict()
-        {%- endif %}
-{##}
         {%- if cls.attributes %}
+
         # Attributes
         {%- endif -%}
         {%- for attr in cls.attributes %}
+
         self.attributes.append('{{ attr.name }}')
         {%- if attr.property %}
         if {{ attr.name }} is {{ attr.default_arg }}:
@@ -949,9 +1015,9 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- else %}
         self.{{ attr.name }} = {{ attr.name }}
         {%- endif %}
-{##}
         {%- endfor %}
         {%- if cls.relations %}
+{##}
         # Relations
         {%- endif -%}
         {%- for rel in cls.relations %}
@@ -964,14 +1030,10 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- else -%}
         ({{ 'None, ' * rel.cardinality|int }})
         {%- endif %}
-{##}
         {%- endfor %}
-        {%- if cls.parent is none %}
-        self.metadata = kwargs
-{##}
-        {%- endif %}
     {%- for attr in cls.attributes %}
     {%- if attr.property %}
+
     @property
     def {{ attr.name }}(self):
         \"""
@@ -996,13 +1058,12 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         {%- else %}
         self._{{ attr.name }} = {{ attr.name }}
         {%- endif %}
-{##}
-    {%- endif %}
-    {%- endfor %}
-
+    {%- endif -%}
+    {%- endfor -%}
     {%- for rel in cls.relations %}
     {%- set argument = rel.with.0|variablize %}
     {%- set relation_collection =  rel.name|variablize + '_' + rel.with.0|pluralize|variablize %}
+
     def {{ rel.name|methodize }}(self, {{ argument }}):
         \"""
         {{ 'Check `%s` relation with given `%s` object.'|format(rel.name, argument)|wordwrap(71)|indent(8) }}
@@ -1023,8 +1084,8 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         return {{ argument }}
         {%- if rel.cardinality == '+' %}.identifier{% endif %} in \\
             self._{{ relation_collection }}
-{##}
     {%- if rel.cardinality == '+' %}
+
     def add_{{ rel.name|variablize }}(self, {{ argument }}):
         \"""
         Add given `{{ argument }}` to this object `{{ rel.name }}` relations.
@@ -1046,6 +1107,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
     {%- else %}
     {%- set arguments = argument %}
     {%- endif %}
+
     def set_{{ rel.name|variablize }}(self, {{ arguments }}):
         \"""
         Set the `{{ rel.name }}` relation to given objects.
@@ -1082,54 +1144,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('object', True) }
         :return: A copy of the collection of objects related with this object.
         \"""
         return copy(self._{{ relation_collection }})
-{##}
     {%- endfor %}
-
-    {%- if cls.abstract %}
-    @abstractmethod
-    {%- endif %}
-    def as_nml(self, this=None, parent=None):
-        \"""
-        {%- if cls.parent is none %}
-        Build NML representation of this node.
-
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        {%- else %}
-        See :meth:`{{ cls.parent|objectize }}.as_nml`.
-        {%- endif %}
-        \"""
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        {%- for attr in cls.attributes %}
-        this.attrib['{{ attr.nml_attribute}}'] = self._{{ attr.name }}
-        {%- endfor %}
-
-        # Relations
-        {%- for rel in cls.relations %}
-        {%- set iterator = rel.with.0|variablize %}
-        {%- set collection = rel.with.0|pluralize|variablize %}
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = '{{ rel.name }}'
-        for {{ iterator }} in self._{{ collection }}:
-            reference = etree.SubElement(
-                relation, {{ iterator }}.__class__.__name__
-            )
-            reference.attrib['id'] = {{ iterator }}.identifier
-{##}
-        {%- endfor %}
-        {%- if cls.parent is not none %}
-        # Parent attributes and relations
-        super({{ cls.name|objectize }}, self).as_nml(this, parent)
-{##}
-        {%- endif %}
-        return this
 
 
 {% endfor -%}
