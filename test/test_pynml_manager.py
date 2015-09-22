@@ -59,6 +59,17 @@ def common_mgr():
     return mgr
 
 
+def test_xml_nml():
+    """
+    Check that the NML XML export work.
+    """
+    # Create base topology
+    mgr = common_mgr()
+
+    # Export NML
+    assert mgr.export_nml(pretty=True)
+
+
 def test_graphviz():
     """
     Check that the graphviz export work.

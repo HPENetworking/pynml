@@ -52,7 +52,7 @@ NML_SPEC = {
                     'semantic_type': 'string',
                     'type': 'str',
                     'default': (
-                        '\'{}<{}>\'.format(\n'
+                        '\'{}({})\'.format(\n'
                         '                '
                         'self.__class__.__name__, str(id(self))\n'
                         '            '
@@ -162,7 +162,7 @@ NML_SPEC = {
                     'nml_attribute': 'encoding',
                     'semantic_type': 'URI',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': 'is_valid_uri(%s)',
                     'doc': (
@@ -214,7 +214,7 @@ NML_SPEC = {
                     'nml_attribute': 'encoding',
                     'semantic_type': 'URI',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': 'is_valid_uri(%s)',
                     'doc': (
@@ -268,7 +268,7 @@ NML_SPEC = {
                     'nml_attribute': 'encoding',
                     'semantic_type': 'URI',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': 'is_valid_uri(%s)',
                     'doc': (
@@ -635,7 +635,7 @@ NML_SPEC = {
                     'nml_attribute': 'long',
                     'semantic_type': 'WGS84',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add WGS84 validation
                     'doc': 'Longitude in WGS84 and in decimal degrees'
@@ -646,7 +646,7 @@ NML_SPEC = {
                     'nml_attribute': 'lat',
                     'semantic_type': 'WGS84',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add WGS84 validation
                     'doc': 'Latitude in WGS84 and in decimal degrees'
@@ -657,7 +657,7 @@ NML_SPEC = {
                     'nml_attribute': 'alt',
                     'semantic_type': 'WGS84',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add WGS84 validation
                     'doc': 'Altitude in WGS84 and in decimal meters'
@@ -668,7 +668,7 @@ NML_SPEC = {
                     'nml_attribute': 'unlocode',
                     'semantic_type': 'UN/LOCODE',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add UN/LOCODE validation
                     'doc': 'UN/LOCODE location identifier'
@@ -679,7 +679,7 @@ NML_SPEC = {
                     'nml_attribute': 'address',
                     'semantic_type': 'vCard ADR',
                     'type': 'str',
-                    'default': '\'FIXME: Provide default\'',
+                    'default': 'unset',
                     'default_arg': 'None',
                     'validation': None,  # FIXME Add vCard ADR validation
                     'doc': 'A vCard ADR property'
@@ -888,7 +888,13 @@ from .exceptions import (
 )
 
 
+# Register XML namespaces
 NAMESPACES = {'nml': 'http://schemas.ogf.org/nml/2013/05/base'}
+for xmlns, uri in NAMESPACES.items():
+    etree.register_namespace(xmlns, uri)
+
+# Special unique variable for unset values
+unset = type(b'Unset', (object,), {})()
 
 
 class NMLObject(object):
@@ -936,14 +942,11 @@ class NMLObject(object):
         multi-node tree.
         \"""
         if this is None:
+            name = 'nml:' + self.__class__.__name__
             if parent is None:
-                this = etree.Element(
-                    self.__class__.__name__, nsmap=NAMESPACES
-                )
+                this = etree.Element(name)
             else:
-                this = etree.SubElement(
-                    parent, self.__class__.__name__, nsmap=NAMESPACES
-                )
+                this = etree.SubElement(parent, name)
         return this
 
     def as_nml(self, this=None, parent=None):
@@ -961,19 +964,35 @@ class NMLObject(object):
         this = self._tree_element(this, parent)
 
         # Attributes
-        for attr in self.attributes:
-            this.attrib[attr] = getattr(self, attr)
+        for attr_name in self.attributes:
+            attr = getattr(self, attr_name)
+            if attr is not unset:
+                this.attrib[attr_name] = attr
 
         # Relations
-        for relname, relgetter in self.relations:
-            relation = etree.SubElement(this, 'Relation')
-            relation.attrib['type'] = relname
+        for relname, relgetter in self.relations.items():
 
-            for associated in relgetter():
-                reference = etree.SubElement(
-                    relation, associated.__class__.__name__
+            # Composition elements are tuples
+            # Aggregation elements are OrderedDict
+            associated = relgetter()
+            if isinstance(associated, OrderedDict):
+                associated = associated.values()
+
+            # Ignore empty relations
+            if not associated or not all(associated):
+                continue
+
+            # Create subelement
+            relation = etree.SubElement(
+                this, 'Relation',
+                type='{}#{}'.format(NAMESPACES['nml'], relname)
+            )
+
+            for associated in associated:
+                etree.SubElement(
+                    relation, associated.__class__.__name__,
+                    id=associated.identifier
                 )
-                reference.attrib['id'] = associated.identifier
 
         return this
 
@@ -1052,7 +1071,7 @@ class {{ cls.name|objectize }}({{ cls.parent|objectize|default('NMLObject', True
         {{ ':param %s %s: %s.'|format(attr.type, attr.name, attr.doc)|wordwrap(71)|indent(9) }}
         \"""
         {%- if attr.validation is not none %}
-        if not {{ attr.validation|format(attr.name) }}:
+        if {{ attr.name }} is not unset and not {{ attr.validation|format(attr.name) }}:
             raise Attribute{{ attr.nml_attribute|objectize }}Error()
         self._{{ attr.name }} = {{ attr.name }}
         {%- else %}

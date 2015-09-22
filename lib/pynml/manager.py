@@ -99,9 +99,10 @@ class NMLManager(object):
         :rtype: str
         :return: The current NML namespace in NML XML format.
         """
-        root = etree.Element(
-            'namespace', nsmap=NAMESPACES
-        )
+        root = etree.Element('Namespace')
+        for xmlns, uri in NAMESPACES.items():
+            root.attrib['xmlns:{}'.format(xmlns)] = uri
+
         for obj_id, obj in self.namespace.items():
             obj.as_nml(parent=root)
 
