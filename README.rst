@@ -5,6 +5,8 @@ NML Python Library
 Python library for the Network Markup Language (NML) standard for network
 topologies representation.
 
+    https://www.ogf.org/documents/GFD.206.pdf
+
 
 Documentation
 =============

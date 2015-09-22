@@ -2,7 +2,7 @@
    :hidden:
 
    developer
-   reference
+   pynml/pynml
    overview
 
 ==================
@@ -22,7 +22,7 @@ Documentation
 
 - :doc:`NML Overview. <overview>`
 - :doc:`Developer Guide. <developer>`
-- :doc:`Internal Documentation Reference. <reference>`
+- :doc:`Internal Documentation Reference. <pynml/pynml>`
 
 
 Development

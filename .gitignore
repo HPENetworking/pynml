@@ -9,10 +9,11 @@ build/*
 
 # Sphinx
 doc/_build/*
-doc/_reference/*
+doc/pynml/*
 
 # Tox
 .tox/*
+.cache/*
 .coverage
 
 # Misc

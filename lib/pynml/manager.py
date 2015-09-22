@@ -31,6 +31,8 @@ from xml.etree import ElementTree as etree  # noqa
 from subprocess import check_call, Popen, PIPE
 from distutils.spawn import find_executable
 
+from six import StringIO, text_type
+
 from .nml import NAMESPACES
 from .nml import Node, Port, BidirectionalPort, Link, BidirectionalLink
 
@@ -105,9 +107,9 @@ class NMLManager(object):
 
         xml = etree.tostring(root, encoding='utf-8')
         if pretty:
-            doc = minidom.parse(xml)
+            doc = minidom.parse(StringIO(xml))
             xml = doc.toprettyxml(indent='    ', encoding='utf-8')
-        return unicode(xml, 'utf-8')
+        return text_type(xml, 'utf-8')
 
     def export_graphviz(self):
         """
@@ -188,12 +190,14 @@ class NMLManager(object):
             makedirs(parent)
 
         # Determine and cache supported formats
+        # dot -T? stderr is in the format:
+        #     Format: "?" not recognized. Use one of: canon cmap cmapx [...]
         if not hasattr(self, '_graphviz_formats_cache'):
             self._graphviz_formats_cache = []
             proc = Popen([dot_exec, '-T?'], stdout=PIPE, stderr=PIPE)
             stdout, stderr = proc.communicate()
             self._graphviz_formats_cache = \
-                sorted(stderr.strip().split(':')[-1].split())
+                sorted(text_type(stderr).strip().split(':')[-1].split())
 
         # Determine plot format
         root, ext = splitext(path)

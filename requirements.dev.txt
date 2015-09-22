@@ -6,3 +6,8 @@ pytest-cov
 sphinx
 sphinx_rtd_theme
 sphinxcontrib-plantuml
+autoapi
+
+# Dependencies for code generation
+jinja2
+inflection
