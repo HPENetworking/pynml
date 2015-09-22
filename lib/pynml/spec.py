@@ -837,6 +837,8 @@ NML_SPEC = {
         },
     ]
 }
+"""NML Specification as a Python dictionary"""
+
 
 NML_TEMPLATE = """\
 {%- macro param_attrs(attrs) -%}
