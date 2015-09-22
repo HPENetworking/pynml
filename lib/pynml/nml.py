@@ -59,24 +59,94 @@ from .exceptions import (
 NAMESPACES = {'nml': 'http://schemas.ogf.org/nml/2013/05/base'}
 
 
-def tree_element(self, this, parent):
+class NMLObject(object):
     """
-    Helper function to identify an XML node to modify in a inheritance and
-    multi-node tree.
+    Base object for every NML object.
+
+    This object is not part of the specification, it is just 'Pure Fabrication'
+    (see GRASP) of refactored functionality of all objects.
     """
-    if this is None:
-        if parent is None:
-            this = etree.Element(
-                self.__class__.__name__, nsmap=NAMESPACES
-            )
-        else:
-            this = etree.SubElement(
-                parent, self.__class__.__name__, nsmap=NAMESPACES
-            )
-    return this
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self, **kwargs):
+        self.attributes = []
+        self.relations = OrderedDict()
+        self.metadata = kwargs
+
+    def _describe_object(self):
+        """
+        Describe and pretty-print the NML object.
+
+        :rtype: str
+        :return: A pretty-printed string with attributes and metadata.
+        """
+        name = self.__class__.__name__
+        attributes = [
+            (attr, getattr(self, attr))
+            for attr in self.attributes + ['metadata']
+            if hasattr(self, attr)
+        ]
+        formatted_attributes = ', '.join([
+            '{}={}'.format(attr, repr(value)) for attr, value in attributes
+        ])
+        return '{}({})'.format(name, formatted_attributes)
+
+    def __repr__(self):
+        return self._describe_object()
+
+    def __str__(self):
+        return self._describe_object()
+
+    def _tree_element(self, this, parent):
+        """
+        Helper function to identify an XML node to modify in a inheritance and
+        multi-node tree.
+        """
+        if this is None:
+            if parent is None:
+                this = etree.Element(
+                    self.__class__.__name__, nsmap=NAMESPACES
+                )
+            else:
+                this = etree.SubElement(
+                    parent, self.__class__.__name__, nsmap=NAMESPACES
+                )
+        return this
+
+    def as_nml(self, this=None, parent=None):
+        """
+        Build NML representation of this node.
+
+        :param this: Node to modify. If `None`, a new node is created.
+        :type this: :py:class:`xml.etree.ElementTree`
+        :param parent: Parent node to hook to. If `None`, a root node is
+         created.
+        :type parent: :py:class:`xml.etree.ElementTree`
+        :rtype: :py:class:`xml.etree.ElementTree`
+        :return: The NML representation of this node.
+        """
+        this = self._tree_element(this, parent)
+
+        # Attributes
+        for attr in self.attributes:
+            this.attrib[attr] = getattr(self, attr)
+
+        # Relations
+        for relname, relgetter in self.relations:
+            relation = etree.SubElement(this, 'Relation')
+            relation.attrib['type'] = relname
+
+            for associated in relgetter():
+                reference = etree.SubElement(
+                    relation, associated.__class__.__name__
+                )
+                reference.attrib['id'] = associated.identifier
+
+        return this
 
 
-class NetworkObject(object):
+class NetworkObject(NMLObject):
     """
     The basic class from other instances inherit from.
 
@@ -91,10 +161,10 @@ class NetworkObject(object):
     @abstractmethod
     def __init__(
             self, name=None, identifier=None, version=None, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
+        super(NetworkObject, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('name')
         if name is None:
             name = '{}<{}>'.format(
@@ -116,16 +186,12 @@ class NetworkObject(object):
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['isAlias'] = \
             self.get_is_alias
         self._is_alias_network_objects = OrderedDict()
-
         self.relations['locatedAt'] = \
             self.get_located_at
         self._located_at_locations = (None, )
-
-        self.metadata = kwargs
 
     @property
     def name(self):
@@ -312,53 +378,6 @@ class NetworkObject(object):
         """
         return copy(self._located_at_locations)
 
-    @abstractmethod
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
-
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['name'] = self._name
-        this.attrib['id'] = self._identifier
-        this.attrib['version'] = self._version
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'isAlias'
-        for network_object in self._network_objects:
-            reference = etree.SubElement(
-                relation, network_object.__class__.__name__
-            )
-            reference.attrib['id'] = network_object.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'locatedAt'
-        for location in self._locations:
-            reference = etree.SubElement(
-                relation, location.__class__.__name__
-            )
-            reference.attrib['id'] = location.identifier
-
-        return this
-
 
 class Node(NetworkObject):
     """
@@ -375,15 +394,12 @@ class Node(NetworkObject):
         self.relations['hasInboundPort'] = \
             self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
-
         self.relations['hasOutboundPort'] = \
             self.get_has_outbound_port
         self._has_outbound_port_ports = OrderedDict()
-
         self.relations['hasService'] = \
             self.get_has_service
         self._has_service_switching_services = OrderedDict()
-
         self.relations['implementedBy'] = \
             self.get_implemented_by
         self._implemented_by_nodes = OrderedDict()
@@ -560,52 +576,6 @@ class Node(NetworkObject):
         """
         return copy(self._implemented_by_nodes)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`NetworkObject.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasInboundPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasOutboundPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasService'
-        for switching_service in self._switching_services:
-            reference = etree.SubElement(
-                relation, switching_service.__class__.__name__
-            )
-            reference.attrib['id'] = switching_service.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'implementedBy'
-        for node in self._nodes:
-            reference = etree.SubElement(
-                relation, node.__class__.__name__
-            )
-            reference.attrib['id'] = node.identifier
-
-        # Parent attributes and relations
-        super(Node, self).as_nml(this, parent)
-
-        return this
-
 
 class Port(NetworkObject):
     """
@@ -623,6 +593,7 @@ class Port(NetworkObject):
         super(Port, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('encoding')
         if encoding is None:
             encoding = 'FIXME: Provide default'
@@ -632,15 +603,12 @@ class Port(NetworkObject):
         self.relations['hasLabel'] = \
             self.get_has_label
         self._has_label_labels = (None, )
-
         self.relations['hasService'] = \
             self.get_has_service
         self._has_service_adaptation_services = OrderedDict()
-
         self.relations['isSink'] = \
             self.get_is_sink
         self._is_sink_links = OrderedDict()
-
         self.relations['isSource'] = \
             self.get_is_source
         self._is_source_links = OrderedDict()
@@ -836,53 +804,6 @@ class Port(NetworkObject):
         """
         return copy(self._is_source_links)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`NetworkObject.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['encoding'] = self._encoding
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasLabel'
-        for label in self._labels:
-            reference = etree.SubElement(
-                relation, label.__class__.__name__
-            )
-            reference.attrib['id'] = label.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasService'
-        for adaptation_service in self._adaptation_services:
-            reference = etree.SubElement(
-                relation, adaptation_service.__class__.__name__
-            )
-            reference.attrib['id'] = adaptation_service.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'isSink'
-        for link in self._links:
-            reference = etree.SubElement(
-                relation, link.__class__.__name__
-            )
-            reference.attrib['id'] = link.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'isSource'
-        for link in self._links:
-            reference = etree.SubElement(
-                relation, link.__class__.__name__
-            )
-            reference.attrib['id'] = link.identifier
-
-        # Parent attributes and relations
-        super(Port, self).as_nml(this, parent)
-
-        return this
-
 
 class Link(NetworkObject):
     """
@@ -900,6 +821,7 @@ class Link(NetworkObject):
         super(Link, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('encoding')
         if encoding is None:
             encoding = 'FIXME: Provide default'
@@ -974,29 +896,6 @@ class Link(NetworkObject):
         """
         return copy(self._has_label_labels)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`NetworkObject.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['encoding'] = self._encoding
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasLabel'
-        for label in self._labels:
-            reference = etree.SubElement(
-                relation, label.__class__.__name__
-            )
-            reference.attrib['id'] = label.identifier
-
-        # Parent attributes and relations
-        super(Link, self).as_nml(this, parent)
-
-        return this
-
 
 class Service(NetworkObject):
     """
@@ -1010,21 +909,6 @@ class Service(NetworkObject):
     def __init__(
             self, **kwargs):
         super(Service, self).__init__(**kwargs)
-
-    @abstractmethod
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`NetworkObject.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        # Parent attributes and relations
-        super(Service, self).as_nml(this, parent)
-
-        return this
 
 
 class SwitchingService(Service):
@@ -1045,6 +929,7 @@ class SwitchingService(Service):
         super(SwitchingService, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('encoding')
         if encoding is None:
             encoding = 'FIXME: Provide default'
@@ -1054,11 +939,9 @@ class SwitchingService(Service):
         self.relations['hasInboundPort'] = \
             self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
-
         self.relations['hasOutboundPort'] = \
             self.get_has_outbound_port
         self._has_outbound_port_ports = OrderedDict()
-
         self.relations['providesLink'] = \
             self.get_provides_link
         self._provides_link_links = OrderedDict()
@@ -1216,45 +1099,6 @@ class SwitchingService(Service):
         """
         return copy(self._provides_link_links)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Service.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['encoding'] = self._encoding
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasInboundPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasOutboundPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'providesLink'
-        for link in self._links:
-            reference = etree.SubElement(
-                relation, link.__class__.__name__
-            )
-            reference.attrib['id'] = link.identifier
-
-        # Parent attributes and relations
-        super(SwitchingService, self).as_nml(this, parent)
-
-        return this
-
 
 class AdaptationService(Service):
     """
@@ -1274,6 +1118,7 @@ class AdaptationService(Service):
         super(AdaptationService, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('adaptation_function')
         self.adaptation_function = adaptation_function
 
@@ -1281,11 +1126,9 @@ class AdaptationService(Service):
         self.relations['canProvidePort'] = \
             self.get_can_provide_port
         self._can_provide_port_ports = OrderedDict()
-
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['providesPort'] = \
             self.get_provides_port
         self._provides_port_ports = OrderedDict()
@@ -1417,45 +1260,6 @@ class AdaptationService(Service):
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._provides_port_ports)
-
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Service.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['adaptationFunction'] = self._adaptation_function
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'canProvidePort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'providesPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        # Parent attributes and relations
-        super(AdaptationService, self).as_nml(this, parent)
-
-        return this
 
 
 class DeAdaptationService(Service):
@@ -1476,6 +1280,7 @@ class DeAdaptationService(Service):
         super(DeAdaptationService, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('adaptation_function')
         self.adaptation_function = adaptation_function
 
@@ -1483,11 +1288,9 @@ class DeAdaptationService(Service):
         self.relations['canProvidePort'] = \
             self.get_can_provide_port
         self._can_provide_port_ports = OrderedDict()
-
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['providesPort'] = \
             self.get_provides_port
         self._provides_port_ports = OrderedDict()
@@ -1620,45 +1423,6 @@ class DeAdaptationService(Service):
         """
         return copy(self._provides_port_ports)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Service.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['adaptationFunction'] = self._adaptation_function
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'canProvidePort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'providesPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        # Parent attributes and relations
-        super(DeAdaptationService, self).as_nml(this, parent)
-
-        return this
-
 
 class Group(NetworkObject):
     """
@@ -1673,21 +1437,6 @@ class Group(NetworkObject):
     def __init__(
             self, **kwargs):
         super(Group, self).__init__(**kwargs)
-
-    @abstractmethod
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`NetworkObject.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        # Parent attributes and relations
-        super(Group, self).as_nml(this, parent)
-
-        return this
 
 
 class Topology(Group):
@@ -1706,23 +1455,18 @@ class Topology(Group):
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['hasNode'] = \
             self.get_has_node
         self._has_node_lifetimes = OrderedDict()
-
         self.relations['hasInboundPort'] = \
             self.get_has_inbound_port
         self._has_inbound_port_ports = OrderedDict()
-
         self.relations['hasOutboundPort'] = \
             self.get_has_outbound_port
         self._has_outbound_port_ports = OrderedDict()
-
         self.relations['hasService'] = \
             self.get_has_service
         self._has_service_switching_services = OrderedDict()
-
         self.relations['hasTopology'] = \
             self.get_has_topology
         self._has_topology_topologies = OrderedDict()
@@ -1981,68 +1725,6 @@ class Topology(Group):
         """
         return copy(self._has_topology_topologies)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Group.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasNode'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasInboundPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasOutboundPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasService'
-        for switching_service in self._switching_services:
-            reference = etree.SubElement(
-                relation, switching_service.__class__.__name__
-            )
-            reference.attrib['id'] = switching_service.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasTopology'
-        for topology in self._topologies:
-            reference = etree.SubElement(
-                relation, topology.__class__.__name__
-            )
-            reference.attrib['id'] = topology.identifier
-
-        # Parent attributes and relations
-        super(Topology, self).as_nml(this, parent)
-
-        return this
-
 
 class PortGroup(Group):
     """
@@ -2059,19 +1741,15 @@ class PortGroup(Group):
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['hasLabelGroup'] = \
             self.get_has_label_group
         self._has_label_group_lifetimes = (None, )
-
         self.relations['hasPort'] = \
             self.get_has_port
         self._has_port_ports = OrderedDict()
-
         self.relations['isSink'] = \
             self.get_is_sink
         self._is_sink_link_groups = OrderedDict()
-
         self.relations['isSource'] = \
             self.get_is_source
         self._is_source_link_groups = OrderedDict()
@@ -2284,60 +1962,6 @@ class PortGroup(Group):
         """
         return copy(self._is_source_link_groups)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Group.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasLabelGroup'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'isSink'
-        for link_group in self._link_groups:
-            reference = etree.SubElement(
-                relation, link_group.__class__.__name__
-            )
-            reference.attrib['id'] = link_group.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'isSource'
-        for link_group in self._link_groups:
-            reference = etree.SubElement(
-                relation, link_group.__class__.__name__
-            )
-            reference.attrib['id'] = link_group.identifier
-
-        # Parent attributes and relations
-        super(PortGroup, self).as_nml(this, parent)
-
-        return this
-
 
 class LinkGroup(Group):
     """
@@ -2354,15 +1978,12 @@ class LinkGroup(Group):
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['hasLabelGroup'] = \
             self.get_has_label_group
         self._has_label_group_lifetimes = (None, )
-
         self.relations['hasLink'] = \
             self.get_has_link
         self._has_link_ports = OrderedDict()
-
         self.relations['isSerialCompoundLink'] = \
             self.get_is_serial_compound_link
         self._is_serial_compound_link_ports = OrderedDict()
@@ -2538,52 +2159,6 @@ class LinkGroup(Group):
         """
         return copy(self._is_serial_compound_link_ports)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Group.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasLabelGroup'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasLink'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'isSerialCompoundLink'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        # Parent attributes and relations
-        super(LinkGroup, self).as_nml(this, parent)
-
-        return this
-
 
 class BidirectionalPort(Group):
     """
@@ -2602,7 +2177,6 @@ class BidirectionalPort(Group):
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['hasPort'] = \
             self.get_has_port
         self._has_port_ports = (None, None, )
@@ -2695,36 +2269,6 @@ class BidirectionalPort(Group):
         """
         return copy(self._has_port_ports)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Group.as_nml`.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasPort'
-        for port in self._ports:
-            reference = etree.SubElement(
-                relation, port.__class__.__name__
-            )
-            reference.attrib['id'] = port.identifier
-
-        # Parent attributes and relations
-        super(BidirectionalPort, self).as_nml(this, parent)
-
-        return this
-
 
 class BidirectionalLink(Group):
     """
@@ -2743,7 +2287,6 @@ class BidirectionalLink(Group):
         self.relations['existsDuring'] = \
             self.get_exists_during
         self._exists_during_lifetimes = OrderedDict()
-
         self.relations['hasLink'] = \
             self.get_has_link
         self._has_link_links = (None, None, )
@@ -2836,38 +2379,8 @@ class BidirectionalLink(Group):
         """
         return copy(self._has_link_links)
 
-    def as_nml(self, this=None, parent=None):
-        """
-        See :meth:`Group.as_nml`.
-        """
-        this = tree_element(self, this, parent)
 
-        # Attributes
-
-        # Relations
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'existsDuring'
-        for lifetime in self._lifetimes:
-            reference = etree.SubElement(
-                relation, lifetime.__class__.__name__
-            )
-            reference.attrib['id'] = lifetime.identifier
-
-        relation = etree.SubElement(this, 'Relation')
-        relation.attrib['type'] = 'hasLink'
-        for link in self._links:
-            reference = etree.SubElement(
-                relation, link.__class__.__name__
-            )
-            reference.attrib['id'] = link.identifier
-
-        # Parent attributes and relations
-        super(BidirectionalLink, self).as_nml(this, parent)
-
-        return this
-
-
-class Location(object):
+class Location(NMLObject):
     """
     Describes where the object is physically located.
 
@@ -2886,10 +2399,10 @@ class Location(object):
     def __init__(
             self, name=None, identifier=None, longitude=None, latitude=None,
             altitude=None, unlocode=None, address=None, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
+        super(Location, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('name')
         if name is None:
             name = '{}<{}>'.format(
@@ -2926,8 +2439,6 @@ class Location(object):
         if address is None:
             address = 'FIXME: Provide default'
         self.address = address
-
-        self.metadata = kwargs
 
     @property
     def name(self):
@@ -3066,34 +2577,8 @@ class Location(object):
         """
         self._address = address
 
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
 
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['name'] = self._name
-        this.attrib['id'] = self._identifier
-        this.attrib['long'] = self._longitude
-        this.attrib['lat'] = self._latitude
-        this.attrib['alt'] = self._altitude
-        this.attrib['unlocode'] = self._unlocode
-        this.attrib['address'] = self._address
-
-        # Relations
-        return this
-
-
-class Lifetime(object):
+class Lifetime(NMLObject):
     """
     A time interval where the object is active.
 
@@ -3108,10 +2593,10 @@ class Lifetime(object):
 
     def __init__(
             self, start=None, end=None, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
+        super(Lifetime, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('start')
         if start is None:
             start = datetime.now().replace(microsecond=0).isoformat()
@@ -3121,8 +2606,6 @@ class Lifetime(object):
         if end is None:
             end = datetime.now().replace(microsecond=0).isoformat()
         self.end = end
-
-        self.metadata = kwargs
 
     @property
     def start(self):
@@ -3166,29 +2649,8 @@ class Lifetime(object):
         """
         self._end = end
 
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
 
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['start'] = self._start
-        this.attrib['end'] = self._end
-
-        # Relations
-        return this
-
-
-class Label(object):
+class Label(NMLObject):
     """
     A value that specifies a single data stream among many.
 
@@ -3201,41 +2663,18 @@ class Label(object):
 
     def __init__(
             self, labeltype=None, value=None, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
+        super(Label, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('labeltype')
         self.labeltype = labeltype
 
         self.attributes.append('value')
         self.value = value
 
-        self.metadata = kwargs
 
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
-
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['labeltype'] = self._labeltype
-        this.attrib['value'] = self._value
-
-        # Relations
-        return this
-
-
-class LabelGroup(object):
+class LabelGroup(NMLObject):
     """
     A unordered set of Labels.
 
@@ -3247,41 +2686,18 @@ class LabelGroup(object):
 
     def __init__(
             self, labeltype=None, value=None, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
+        super(LabelGroup, self).__init__(**kwargs)
 
         # Attributes
+
         self.attributes.append('labeltype')
         self.labeltype = labeltype
 
         self.attributes.append('value')
         self.value = value
 
-        self.metadata = kwargs
 
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
-
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-        this.attrib['labeltype'] = self._labeltype
-        this.attrib['value'] = self._value
-
-        # Relations
-        return this
-
-
-class OrderedList(object):
+class OrderedList(NMLObject):
     """
     An ordered list of Network Objects.
 
@@ -3291,32 +2707,10 @@ class OrderedList(object):
 
     def __init__(
             self, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
-
-        self.metadata = kwargs
-
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
-
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        return this
+        super(OrderedList, self).__init__(**kwargs)
 
 
-class ListItem(object):
+class ListItem(NMLObject):
     """
     An element of an OrderedList.
 
@@ -3325,29 +2719,7 @@ class ListItem(object):
 
     def __init__(
             self, **kwargs):
-        self.attributes = []
-        self.relations = OrderedDict()
-
-        self.metadata = kwargs
-
-    def as_nml(self, this=None, parent=None):
-        """
-        Build NML representation of this node.
-
-        :param this: Node to modify. If `None`, a new node is created.
-        :type this: :py:class:`xml.etree.ElementTree`
-        :param parent: Parent node to hook to. If `None`, a root node is
-         created.
-        :type parent: :py:class:`xml.etree.ElementTree`
-        :rtype: :py:class:`xml.etree.ElementTree`
-        :return: The NML representation of this node.
-        """
-        this = tree_element(self, this, parent)
-
-        # Attributes
-
-        # Relations
-        return this
+        super(ListItem, self).__init__(**kwargs)
 
 
 __all__ = [
