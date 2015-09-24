@@ -74,7 +74,7 @@ setup(
         'network topologies representation.'
     ),
     long_description=read('README.rst'),
-    url='https://pynml.readthedocs.org/',
+    url='https://github-sc-p.corp.hp.com/hpe-networking/pynml/',
     keywords='pynml',
 
     classifiers=[

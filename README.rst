@@ -11,7 +11,7 @@ topologies representation.
 Documentation
 =============
 
-    https://pynml.readthedocs.org/
+    https://github-sc-p.corp.hp.com/hpe-networking/pynml/
 
 
 License

@@ -228,9 +228,11 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'pynml.tex',
-     u'NML Python Library Documentation',
-     u'Hewlett Packard Enterprise Development LP', 'manual'),
+    (
+        'index', 'pynml.tex',
+        'NML Python Library Documentation',
+        'Hewlett Packard Enterprise Development LP', 'manual'
+    ),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -262,7 +264,7 @@ man_pages = [
     (
         'index',
         'pynml',
-        u'NML Python Library Documentation',
+        'NML Python Library Documentation',
         [author], 1
     ),
 ]
@@ -278,13 +280,14 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        master_doc, 'pynml',
-        u'NML Python Library Documentation',
+        master_doc,
+        'pynml',
+        'NML Python Library Documentation',
         author,
         'pynml',
         (
-            u'Python library for the Network Markup Language (NML) standard '
-             'for network topologies representation.'
+            'Python library for the Network Markup Language (NML) standard '
+            'for network topologies representation.'
         ),
         'Miscellaneous'
     ),
@@ -301,6 +304,7 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 # texinfo_no_detailmenu = False
+
 
 # Add style overrides
 def setup(app):
