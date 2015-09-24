@@ -66,8 +66,17 @@ def test_xml_nml():
     # Create base topology
     mgr = common_mgr()
 
-    # Export NML
-    assert mgr.export_nml(pretty=True)
+    # Save XML file
+    tmpdir = mkdtemp(prefix='pynml_test_')
+    xmlfile = join(tmpdir, 'topology.xml')
+    mgr.save_nml(xmlfile)
+
+    assert isfile(xmlfile)
+
+    # FIXME: When parser is implemented, reparse in new namespace and assert
+
+    # Clean-up
+    rmtree(tmpdir)
 
 
 def test_graphviz():

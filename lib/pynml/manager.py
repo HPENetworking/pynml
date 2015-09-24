@@ -133,6 +133,33 @@ class NMLManager(object):
             xml = doc.toprettyxml(indent='    ', encoding='utf-8')
         return text_type(xml, 'utf-8')
 
+    def save_nml(self, path, pretty=True):
+        """
+        Write NML XML file of the current namespace.
+
+        To use this function the following must be considered:
+
+        - The output file will be overriden. If case of permissions or IO error
+          and exception is raised.
+        - If the output parent directories does not exists this function will
+          try to create them using py:func:`os.makedirs`.
+
+        :param str path: Path to save the exported XML of the NML namespace.
+        :param bool pretty: Pretty print the output XML.
+        """
+        # Create parent directories
+        path = abspath(path)
+        parent = dirname(path)
+        if not isdir(parent):
+            makedirs(parent)
+
+        # Export namespace
+        nml_xml = self.export_nml(pretty=True)
+        with open(path, 'w') as fd:
+            fd.write(nml_xml)
+
+        log.info('Saved graphviz file {}'.format(path))
+
     def export_graphviz(self):
         """
         Export current namespace as a Graphviz graph.
@@ -186,7 +213,7 @@ class NMLManager(object):
         - The output file will be overriden. If case of permissions or IO error
           and exception is raised.
         - This function will call the `dot` binary by itself if found
-          (using py:func:`distutils.spawn.find_executable`); if not, and
+          (using py:func:`distutils.spawn.find_executable`); if not, an
           exception is raised.
         - If the output parent directories does not exists this function will
           try to create them using py:func:`os.makedirs`.
@@ -195,7 +222,7 @@ class NMLManager(object):
         :param bool keep_gv: Keep the `.gv` file with the source of the graph.
          This file will live in the same directory of the output file with the
          same name but with the `.gv`.
-        :rtype: tuple
+        :rtype: str o None
         :return: Path to `.gv` file is `keep_gv` is True, else `None`.
         """
         # Find dot executable
