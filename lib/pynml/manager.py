@@ -435,23 +435,23 @@ class ExtendedNMLManager(NMLManager):
         for node_idx, node in enumerate(nodes_idx, 1):
 
             # Render node
-            rdr_nodes.append('    subgraph clusterNode{} {{'.format(node_idx))
-            rdr_nodes.append('        label="{}"'.format(node.name))
+            rdr_nodes.append('subgraph clusterNode{} {{'.format(node_idx))
+            rdr_nodes.append('    label="{}"'.format(node.name))
 
             # Render ports
             if node.identifier in biports_per_node:
                 for port_idx, port in enumerate(
                         biports_per_node[node.identifier], 1):
                     rdr_nodes.append(
-                        '        n{}p{}'.format(node_idx, port_idx)
+                        '    n{}p{}'.format(node_idx, port_idx)
                     )
                     rdr_ports.append(
-                        '    n{0}p{1} [label="p{1}"]'.format(
+                        'n{0}p{1} [label="p{1}"]'.format(
                             node_idx, port_idx
                         )
                     )
 
-            rdr_nodes.append('    }')
+            rdr_nodes.append('}')
             rdr_nodes.append('')
 
         # Render links
