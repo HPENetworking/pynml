@@ -119,7 +119,7 @@ class NMLManager(object):
         :rtype: NMLObject
         :return: The object with given identifier, or None if not found.
         """
-        self.namespace.get(identifier, None)
+        return self.namespace.get(identifier, None)
 
     def export_nml(self, pretty=True):
         """

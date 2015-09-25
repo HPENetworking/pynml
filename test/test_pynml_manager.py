@@ -43,8 +43,11 @@ def common_mgr():
     # Create base topology
     mgr = ExtendedNMLManager(name='Graphviz Namespace')
 
-    sw1 = mgr.create_node(name='My Switch 1')
-    sw2 = mgr.create_node(name='My Switch 2')
+    sw1 = mgr.create_node(identifier='sw1', name='My Switch 1')
+    sw2 = mgr.create_node(identifier='sw2', name='My Switch 2')
+
+    assert mgr.get_object('sw1') is not None
+    assert mgr.get_object('sw2') is not None
 
     sw1p1 = mgr.create_biport(sw1)
     sw1p2 = mgr.create_biport(sw1)
