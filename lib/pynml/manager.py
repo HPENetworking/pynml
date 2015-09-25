@@ -111,6 +111,16 @@ class NMLManager(object):
             )
         self.namespace[obj.identifier] = obj
 
+    def get_object(self, identifier):
+        """
+        Get an object from this namespace by it's unique identifier.
+
+        :param str identifier: Object unique identifier.
+        :rtype: NMLObject
+        :return: The object with given identifier, or None if not found.
+        """
+        self.namespace.get(identifier, None)
+
     def export_nml(self, pretty=True):
         """
         Export current namespace as a NML XML format.
