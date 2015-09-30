@@ -24,9 +24,6 @@ See http://pythontesting.net/framework/pytest/pytest-introduction/#fixtures
 from __future__ import unicode_literals, absolute_import
 from __future__ import print_function, division
 
-from os.path import join, isfile
-from shutil import rmtree
-from tempfile import mkdtemp
 from distutils.spawn import find_executable
 
 import pytest  # noqa
@@ -62,7 +59,7 @@ def common_mgr():
     return mgr
 
 
-def test_xml_nml():
+def test_xml_nml(tmpdir):
     """
     Check that the NML XML export work.
     """
@@ -70,19 +67,15 @@ def test_xml_nml():
     mgr = common_mgr()
 
     # Save XML file
-    tmpdir = mkdtemp(prefix='pynml_test_')
-    xmlfile = join(tmpdir, 'topology.xml')
-    mgr.save_nml(xmlfile)
+    xmlfile = tmpdir.join('topology.xml')
+    mgr.save_nml(str(xmlfile))
 
-    assert isfile(xmlfile)
+    assert xmlfile.check(file=1)
 
     # FIXME: When parser is implemented, reparse in new namespace and assert
 
-    # Clean-up
-    rmtree(tmpdir)
 
-
-def test_graphviz():
+def test_graphviz(tmpdir):
     """
     Check that the graphviz export work.
     """
@@ -98,21 +91,17 @@ def test_graphviz():
     mgr.namespace = cmgr.namespace  # Hack, because I'm lazy
 
     # Plot graphviz file
-    tmpdir = mkdtemp(prefix='pynml_test_')
-    srcfile = join(tmpdir, 'graph.gv')
-    plotfile = join(tmpdir, 'graph.svg')
-    print('Ploting graphviz file to {} ...'.format(plotfile))
-    mgr.save_graphviz(plotfile, keep_gv=True)
+    srcfile = tmpdir.join('graph.gv')
+    plotfile = tmpdir.join('graph.svg')
+    print('Ploting graphviz file to {} ...'.format(str(plotfile)))
+    mgr.save_graphviz(str(plotfile), keep_gv=True)
 
     # Check files were created
-    assert isfile(plotfile)
-    assert isfile(srcfile)
-
-    # Clean-up
-    rmtree(tmpdir)
+    assert plotfile.check(file=1)
+    assert srcfile.check(file=1)
 
 
-def test_graphviz_extended():
+def test_graphviz_extended(tmpdir):
     """
     Check that the graphviz export work.
     """
@@ -125,15 +114,11 @@ def test_graphviz_extended():
     mgr = common_mgr()
 
     # Plot graphviz file
-    tmpdir = mkdtemp(prefix='pynml_test_')
-    srcfile = join(tmpdir, 'graph.gv')
-    plotfile = join(tmpdir, 'graph.svg')
-    print('Ploting graphviz file to {} ...'.format(plotfile))
-    mgr.save_graphviz(plotfile, keep_gv=True)
+    srcfile = tmpdir.join('graph.gv')
+    plotfile = tmpdir.join('graph.svg')
+    print('Ploting graphviz file to {} ...'.format(str(plotfile)))
+    mgr.save_graphviz(str(plotfile), keep_gv=True)
 
     # Check files were created
-    assert isfile(plotfile)
-    assert isfile(srcfile)
-
-    # Clean-up
-    rmtree(tmpdir)
+    assert plotfile.check(file=1)
+    assert srcfile.check(file=1)
