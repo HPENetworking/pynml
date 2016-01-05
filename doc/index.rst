@@ -28,7 +28,7 @@ Documentation
 Development
 ===========
 
-- `Project repository. <https://github-sc-p.corp.hp.com/hpe-networking/pynml/>`_
+- `Project repository. <https://github.com/HPNetworking/pynml>`_
 
 
 Future improvements
@@ -42,7 +42,7 @@ License
 
 ::
 
-   Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+   Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -1,11 +1,11 @@
 {
     "author": "Hewlett Packard Enterprise Development LP",
-    "email": "asicapi@hp.com",
-    "repo_url": "https://github-sc-p.corp.hp.com/hpe-networking/pynml/",
-    "doc_url": "https://github-sc-p.corp.hp.com/hpe-networking/pynml/",
+    "email": "hpe-networking@lists.hp.com",
+    "repo_url": "https://github.com/HPNetworking/pynml",
+    "doc_url": "http://pynml.rtfd.org/",
     "project_name": "NML Python Library",
     "repo_name": "pynml",
     "short_description": "Python library for the Network Markup Language (NML) standard for network topologies representation.",
-    "year": "2015",
-    "version": "0.1.0"
+    "year": "2015-2016",
+    "version": "1.0.0"
 }
