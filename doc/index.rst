@@ -28,7 +28,7 @@ Documentation
 Development
 ===========
 
-- `Project repository. <https://github.com/HPNetworking/pynml>`_
+- `Project repository. <https://github.com/HPENetworking/pynml>`_
 
 
 Future improvements
