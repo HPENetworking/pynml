@@ -730,8 +730,9 @@ class Port(NetworkObject):
                 DeAdaptationService, ):
             raise RelationHasServiceError()
 
-        self._has_service_adaptation_services[adaptation_service.identifier] = \
-            adaptation_service
+        self._has_service_adaptation_services[
+            adaptation_service.identifier
+        ] = adaptation_service
 
     def get_has_service(self):
         """
