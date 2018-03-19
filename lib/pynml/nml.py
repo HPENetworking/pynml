@@ -2401,6 +2401,18 @@ class BidirectionalLink(Group):
         return copy(self._has_link_links)
 
 
+class Environment(NMLObject):
+    """
+    Describes attributes inherent to the environment.
+
+    Attributes to be attached to the environment the topology isin..
+    """
+
+    def __init__(
+            self, **kwargs):
+        super(Environment, self).__init__(**kwargs)
+
+
 class Location(NMLObject):
     """
     Describes where the object is physically located.
@@ -2758,6 +2770,7 @@ __all__ = [
     'LinkGroup',
     'BidirectionalPort',
     'BidirectionalLink',
+    'Environment',
     'Location',
     'Lifetime',
     'Label',
