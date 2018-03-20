@@ -313,7 +313,7 @@ class ExtendedNMLManager(NMLManager):
 
     def __init__(self, **kwargs):
         super(ExtendedNMLManager, self).__init__(**kwargs)
-        self.environment = None
+        self._environment = None
         self._nodes = OrderedDict()
         self._biport_node_map = OrderedDict()
         self._bilink_biport_map = OrderedDict()
@@ -334,6 +334,13 @@ class ExtendedNMLManager(NMLManager):
         self.register_object(environment)
         self.environment = environment
         return environment
+
+    @property
+    def environment(self):
+        """
+        Returns the environment :class: pynml.nml.Environment
+        """
+        return self._environment
 
     def create_node(self, **kwargs):
         """

@@ -121,6 +121,12 @@ class RelationHasNodeError(NMLException):
     """
 
 
+class RelationHasEnvironmentError(NMLException):
+    """
+    A hasEnvironment relation must relate with objects of type Environment.
+    """
+
+
 class RelationHasTopologyError(NMLException):
     """
     A hasTopology relation must relate with objects of type Topology.
@@ -186,6 +192,7 @@ __all__ = [
     'RelationCanProvidePortError',
     'RelationProvidesPortError',
     'RelationHasNodeError',
+    'RelationHasEnvironmentError',
     'RelationHasTopologyError',
     'RelationHasLabelGroupError',
     'RelationHasPortError',

@@ -453,6 +453,12 @@ NML_SPEC = {
                     'doc': 'FIXME: Document hasService relation'
                 },
                 {
+                    'name': 'hasEnvironment',
+                    'with': ['Environment'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: Document hasEnvironment relation'
+                },
+                {
                     'name': 'hasTopology',
                     'with': ['Topology'],
                     'cardinality': '+',
@@ -595,7 +601,7 @@ NML_SPEC = {
             'parent': None,
             'brief': 'Describes attributes inherent to the environment',
             'doc': (
-                'Attributes to be attached to the environment the topology is'
+                'Attributes to be attached to the environment the topology is '
                 'in.'
             ),
             'abstract': False,

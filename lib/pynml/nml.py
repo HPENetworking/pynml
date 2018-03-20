@@ -46,6 +46,7 @@ from .exceptions import (
     RelationCanProvidePortError,
     RelationProvidesPortError,
     RelationHasNodeError,
+    RelationHasEnvironmentError,
     RelationHasTopologyError,
     RelationHasLabelGroupError,
     RelationHasPortError,
@@ -730,9 +731,8 @@ class Port(NetworkObject):
                 DeAdaptationService, ):
             raise RelationHasServiceError()
 
-        self._has_service_adaptation_services[
-            adaptation_service.identifier
-        ] = adaptation_service
+        self._has_service_adaptation_services[adaptation_service.identifier] = \
+            adaptation_service
 
     def get_has_service(self):
         """
@@ -1488,6 +1488,9 @@ class Topology(Group):
         self.relations['hasService'] = \
             self.get_has_service
         self._has_service_switching_services = OrderedDict()
+        self.relations['hasEnvironment'] = \
+            self.get_has_environment
+        self._has_environment_environments = OrderedDict()
         self.relations['hasTopology'] = \
             self.get_has_topology
         self._has_topology_topologies = OrderedDict()
@@ -1704,6 +1707,49 @@ class Topology(Group):
         :return: A copy of the collection of objects related with this object.
         """
         return copy(self._has_service_switching_services)
+
+    def has_environment(self, environment):
+        """
+        Check `hasEnvironment` relation with given `environment` object.
+
+        FIXME: Document hasEnvironment relation.
+
+        :param environment: Object to validate relation `hasEnvironment` with.
+        :type environment: Environment
+        :return: True if `environment` is related to `self` with
+         `hasEnvironment`.
+        :rtype: bool
+        """
+        if environment.__class__ not in (
+                Environment, ):
+            raise RelationHasEnvironmentError()
+
+        return environment.identifier in \
+            self._has_environment_environments
+
+    def add_has_environment(self, environment):
+        """
+        Add given `environment` to this object `hasEnvironment` relations.
+
+        :param environment: Object to add to the `hasEnvironment` relation.
+        :type environment: Environment
+        """
+        if environment.__class__ not in (
+                Environment, ):
+            raise RelationHasEnvironmentError()
+
+        self._has_environment_environments[environment.identifier] = \
+            environment
+
+    def get_has_environment(self):
+        """
+        Get all objects related with this object with relation
+        `hasEnvironment`.
+
+        :rtype: :py:class:`OrderedDict`
+        :return: A copy of the collection of objects related with this object.
+        """
+        return copy(self._has_environment_environments)
 
     def has_topology(self, topology):
         """
@@ -2405,7 +2451,7 @@ class Environment(NMLObject):
     """
     Describes attributes inherent to the environment.
 
-    Attributes to be attached to the environment the topology isin..
+    Attributes to be attached to the environment the topology is in..
     """
 
     def __init__(
