@@ -34,7 +34,9 @@ from distutils.spawn import find_executable
 from six import StringIO, text_type
 
 from .nml import NAMESPACES
-from .nml import Node, Port, BidirectionalPort, Link, BidirectionalLink
+from .nml import (
+    Node, Port, BidirectionalPort, Link, BidirectionalLink, Environment
+)
 
 
 log = getLogger(__name__)
@@ -311,9 +313,34 @@ class ExtendedNMLManager(NMLManager):
 
     def __init__(self, **kwargs):
         super(ExtendedNMLManager, self).__init__(**kwargs)
+        self._environment = None
         self._nodes = OrderedDict()
         self._biport_node_map = OrderedDict()
         self._bilink_biport_map = OrderedDict()
+
+    def create_environment(self, **kwargs):
+        """
+        Helper to create and register a :class:`pynml.nml.Environment`.
+
+        All keyword arguments are passed as is to the
+        :class:`pynml.nml.Environment` constructor.
+
+        :rtype: :class:`pynml.nml.Environment`
+        :return: A new :class:`pynml.nml.Environment` already registered into
+         the namespace.
+        """
+        kwargs['identifier'] = 'env'
+        environment = Environment(**kwargs)
+        self.register_object(environment)
+        self.environment = environment
+        return environment
+
+    @property
+    def environment(self):
+        """
+        Returns the environment :class: pynml.nml.Environment
+        """
+        return self._environment
 
     def create_node(self, **kwargs):
         """

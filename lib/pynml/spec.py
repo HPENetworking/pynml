@@ -453,6 +453,12 @@ NML_SPEC = {
                     'doc': 'FIXME: Document hasService relation'
                 },
                 {
+                    'name': 'hasEnvironment',
+                    'with': ['Environment'],
+                    'cardinality': '+',
+                    'doc': 'FIXME: Document hasEnvironment relation'
+                },
+                {
                     'name': 'hasTopology',
                     'with': ['Topology'],
                     'cardinality': '+',
@@ -588,6 +594,20 @@ NML_SPEC = {
                     'cardinality': '2',
                     'doc': 'FIXME: Document hasLink relation'
                 }
+            ]
+        },
+        {
+            'name': 'Environment',
+            'parent': None,
+            'brief': 'Describes attributes inherent to the environment',
+            'doc': (
+                'Attributes to be attached to the environment the topology is '
+                'in.'
+            ),
+            'abstract': False,
+            'attributes': [
+            ],
+            'relations': [
             ]
         },
         {
@@ -851,7 +871,7 @@ NML_TEMPLATE = """\
 {%- endmacro -%}
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1180,7 +1200,7 @@ __all__ = [
 EXCEPTIONS_TEMPLATE = """\
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
