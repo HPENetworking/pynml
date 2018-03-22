@@ -7,5 +7,5 @@
     "repo_name": "pynml",
     "short_description": "Python library for the Network Markup Language (NML) standard for network topologies representation.",
     "year": "2015-2016",
-    "version": "1.0.0"
+    "version": "1.1.0"
 }
