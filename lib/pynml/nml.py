@@ -2447,7 +2447,7 @@ class BidirectionalLink(Group):
         return copy(self._has_link_links)
 
 
-class Environment(NMLObject):
+class Environment(NetworkObject):
     """
     Describes attributes inherent to the environment.
 

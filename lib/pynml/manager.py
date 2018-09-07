@@ -332,7 +332,7 @@ class ExtendedNMLManager(NMLManager):
         kwargs['identifier'] = 'env'
         environment = Environment(**kwargs)
         self.register_object(environment)
-        self.environment = environment
+        self._environment = environment
         return environment
 
     @property
