@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015-2016 Hewlett Packard Enterprise Development LP
+# Copyright (C) 2015-2018 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@
 """
 topology manager module.
 """
-
-from __future__ import unicode_literals, absolute_import
-from __future__ import print_function, division
 
 from logging import getLogger
 from os import makedirs, remove
@@ -105,6 +102,7 @@ class NMLManager(object):
         Register a NML object into the namespace managed by this Manager.
 
         :param NetworkObject obj: Object to register into the namespace.
+
         :raises Exception: If object already in namespace.
         """
         if obj.identifier in self.namespace:
@@ -118,8 +116,9 @@ class NMLManager(object):
         Get an object from this namespace by it's unique identifier.
 
         :param str identifier: Object unique identifier.
-        :rtype: NMLObject
+
         :return: The object with given identifier, or None if not found.
+        :rtype: NMLObject
         """
         return self.namespace.get(identifier, None)
 
@@ -128,8 +127,9 @@ class NMLManager(object):
         Export current namespace as a NML XML format.
 
         :param pretty: Pretty print the output XML.
-        :rtype: str
+
         :return: The current NML namespace in NML XML format.
+        :rtype: str
         """
         root = etree.Element('Namespace')
         for xmlns, uri in NAMESPACES.items():
@@ -176,8 +176,8 @@ class NMLManager(object):
         """
         Export current namespace as a Graphviz graph.
 
-        :rtype: str
         :return: The current NML namespace in Graphviz graph notation.
+        :rtype: str
         """
         rdr_objects = []
         rdr_relations = []
@@ -234,8 +234,9 @@ class NMLManager(object):
         :param bool keep_gv: Keep the `.gv` file with the source of the graph.
          This file will live in the same directory of the output file with the
          same name but with the `.gv`.
-        :rtype: str o None
+
         :return: Path to `.gv` file is `keep_gv` is True, else `None`.
+        :rtype: str o None
         """
         # Find dot executable
         dot_exec = find_executable('dot')
@@ -325,9 +326,9 @@ class ExtendedNMLManager(NMLManager):
         All keyword arguments are passed as is to the
         :class:`pynml.nml.Environment` constructor.
 
-        :rtype: :class:`pynml.nml.Environment`
         :return: A new :class:`pynml.nml.Environment` already registered into
          the namespace.
+        :rtype: :class:`pynml.nml.Environment`
         """
         kwargs['identifier'] = 'env'
         environment = Environment(**kwargs)
@@ -349,9 +350,9 @@ class ExtendedNMLManager(NMLManager):
         All keyword arguments are passed as is to the :class:`pynml.nml.Node`
         constructor.
 
-        :rtype: :class:`pynml.nml.Node`
         :return: A new :class:`pynml.nml.Node` already registered into the
          namespace.
+        :rtype: :class:`pynml.nml.Node`
         """
         node = Node(**kwargs)
         self.register_object(node)
@@ -368,9 +369,9 @@ class ExtendedNMLManager(NMLManager):
         relates them to the node. The `node` argument is related to those
         subports too.
 
-        :rtype: :class:`pynml.nml.BidirectionalPort`
         :return: A new :class:`pynml.nml.BidirectionalPort` already registered
          into the namespace and with subports already related.
+        :rtype: :class:`pynml.nml.BidirectionalPort`
         """
         # Create objects
         biport = BidirectionalPort(**kwargs)
@@ -400,9 +401,9 @@ class ExtendedNMLManager(NMLManager):
         creates all intermediate directed sink and source sublinks and relates
         them to the inbound and outbound subports.
 
-        :rtype: :class:`pynml.nml.BidirectionalLink`
         :return: A new :class:`pynml.nml.BidirectionalLink` already registered
          into the namespace and with sublinks already related.
+        :rtype: :class:`pynml.nml.BidirectionalLink`
         """
         # Create objects
         bilink = BidirectionalLink(**kwargs)

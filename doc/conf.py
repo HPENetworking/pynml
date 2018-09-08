@@ -30,12 +30,10 @@ from pynml import __version__
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.intersphinx',
-    'sphinxcontrib.plantuml',
-    'sphinx.ext.graphviz',
-    'autoapi.sphinx'
+    'autoapi.sphinx',
+    'plantweb.directive',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,8 +52,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'NML Python Library'
-copyright = '2015-2016, Hewlett Packard Enterprise Development LP'
 author = 'Hewlett Packard Enterprise Development LP'
+copyright = '2015-2018, ' + author
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -311,21 +309,24 @@ texinfo_documents = [
 def setup(app):
     app.add_stylesheet('styles/custom.css')
 
+
 # autoapi configuration
 autoapi_modules = {
     'pynml': None
 }
 
-# Configure PlantUML
-plantuml = 'java -jar ' + join(dirname(abspath(__name__)), 'plantuml.8030.jar')
-plantuml_output_format = 'svg'
+# Plantweb configuration
+plantweb_defaults = {
+    'use_cache': True,
+    'format': 'svg',
+}
 
 # Configure Graphviz
 graphviz_output_format = 'svg'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3.4', None)
+    'python': ('https://docs.python.org/3', None)
 }
 
 # Setup theme if not building in readthedocs.org

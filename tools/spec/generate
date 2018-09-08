@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2015-2018 Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+"""
+NML code generation script.
+"""
+
+from pathlib import Path
+from shutil import copyfile
+from logging import getLogger
+from collections import OrderedDict
+
+from inflection import parameterize, underscore, camelize, pluralize
+from jinja2 import FunctionLoader, Environment, StrictUndefined
+
+from spec import NML_SPEC
+
+
+log = getLogger(__name__)
+
+HERE = Path(__file__).parent.resolve()
+PKGROOT = HERE.parent.parent / 'lib' / 'pynml'
+
+
+def filter_objectize(token):
+    if token is None:
+        return None
+    return camelize(underscore(parameterize(underscore(token))))
+
+
+def filter_methodize(token):
+    if token is None:
+        return None
+    return underscore(parameterize(underscore(token)))
+
+
+def filter_variablize(token):
+    if token is None:
+        return None
+    return underscore(parameterize(underscore(token)))
+
+
+def filter_pluralize(token):
+    if token is None:
+        return None
+    return pluralize(token)
+
+
+def build():
+    """
+    Build NML Python module from specification.
+    """
+
+    # Gather data
+    exceptions = OrderedDict()
+    for cls in NML_SPEC['classes']:
+        for rel in cls['relations']:
+            exc_name = 'Relation{}Error'.format(
+                filter_objectize(rel['name'])
+            )
+            exc_doc = (
+                'A {} relation must relate with objects of type {}'.format(
+                    rel['name'],
+                    ' or '.join(
+                        filter_objectize(w) for w in rel['with']
+                    )
+                )
+            )
+            exceptions[exc_name] = exc_doc
+
+    def lower_first(string):
+        return string[:1].lower() + string[1:] if string else ''
+
+    for cls in NML_SPEC['classes']:
+        for attr in cls['attributes']:
+            if attr['validation'] is not None:
+                exc_name = 'Attribute{}Error'.format(
+                    filter_objectize(attr['nml_attribute'])
+                )
+                exceptions[exc_name] = 'Attribute `{}` must be a {}'.format(
+                    attr['name'],
+                    lower_first(attr['doc'])
+                )
+
+    # Build template environment
+    def load_template(name):
+        template = HERE / '{}.py.j2'.format(name)
+        return template.read_text(encoding='utf-8')
+
+    env = Environment(
+        loader=FunctionLoader(load_template),
+        undefined=StrictUndefined
+    )
+    for ftr in ['objectize', 'methodize', 'variablize', 'pluralize']:
+        env.filters[ftr] = globals()['filter_' + ftr]
+
+    for tpl in ['nml', 'exceptions']:
+
+        # Render template
+        template = env.get_template(tpl)
+        rendered = template.render(
+            spec=NML_SPEC,
+            exceptions=exceptions
+        )
+
+        # Write output
+        output = PKGROOT / '{}.py'.format(tpl)
+        output.write_text(rendered, encoding='utf-8')
+
+    # Copy specification
+    copyfile(
+        str(HERE / 'spec.py'),
+        str(PKGROOT / 'spec.py')
+    )
+
+
+if __name__ == '__main__':
+    build()

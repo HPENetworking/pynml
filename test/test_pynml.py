@@ -21,9 +21,6 @@ Test suite for module pynml.
 See http://pythontesting.net/framework/pytest/pytest-introduction/#fixtures
 """
 
-from __future__ import unicode_literals, absolute_import
-from __future__ import print_function, division
-
 import pytest  # noqa
 
 from pynml import __version__
